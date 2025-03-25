@@ -97,13 +97,60 @@
 
 /* SearchNews Card */
 .searchNewsCard--container{
-    width: 500px;
-    height: 130px;
-    margin: 0px 3px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     background-color: white;
-    border-bottom: 1px solid rgb(224, 224, 224);
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+    min-width: 470px;
+    width: 33vw;
+    height: 15vh;
+    min-height: 140px;
+    margin: 0 10px;
 }
 
+
+.searchNewsCard--contents{
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    padding-top: 20px;
+    margin-left: 10px;;
+}
+
+.searchNewsCard--contents__title{
+    margin:0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.searchNewsCard--contents__preview{
+    margin: 3px 0;
+    font-size: 11px;
+    font-weight: 300;
+}
+
+.searchNewsCard--imageContainer{
+    width: 35%;
+    height: 100%;
+    max-width: 220px;
+    max-height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.searchNewsCard--image{
+    height: 80%;
+    width: 90%;
+    border-radius: 15px;
+    background-image: url('/america.png');
+    background-size: cover;
+    background-position: center center;
+}
 
 
 
