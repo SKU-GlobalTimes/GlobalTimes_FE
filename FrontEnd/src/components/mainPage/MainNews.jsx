@@ -1,27 +1,28 @@
 import styled from './News.module.css';
-
+import HotNewsCard from '../newsCard/HotNewsCard';
+import BasicNewsCard from '../newsCard/BasicNewsCard';
 
 export default function MainNews(){
     return(
         <div className={styled['MainNews--container']}>
             <h1>Hot News</h1>
             <div className={styled['MainNews--hotIssues']}>
-                <div className={styled['news--sample01']}></div>
-                <div className={styled['news--sample01']}></div>
-                <div className={styled['news--sample01']}></div>
-                <div className={styled['news--sample01']}></div>
-                <div className={styled['news--sample01']}></div>
-                <div className={styled['news--sample01']}></div>
+                <HotNewsCard />
+                <HotNewsCard />
+                <HotNewsCard />
+                <HotNewsCard />
+                <HotNewsCard />
+                <HotNewsCard />
             </div>
             <div className={styled['MainNews--Issues']}>
-                <div className={styled['news--sample02']}></div>
-                <div className={styled['news--sample02']}></div>
-                <div className={styled['news--sample02']}></div>
-                <div className={styled['news--sample02']}></div>
-                <div className={styled['news--sample02']}></div>
-                <div className={styled['news--sample02']}></div>
-                <div className={styled['news--sample02']}></div>
-                <div className={styled['news--sample02']}></div>
+                <BasicNewsCard />
+                <BasicNewsCard />
+                <BasicNewsCard />
+                <BasicNewsCard />
+                <BasicNewsCard />
+                <BasicNewsCard />
+                <BasicNewsCard />
+                <BasicNewsCard />
             </div>
 
         </div>

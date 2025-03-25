@@ -1,0 +1,28 @@
+
+.hotNewsCard--container{
+    background-color: pink;
+    width: 300px;
+    height: 150px;
+    margin: 5px;
+}
+
+.basicNewsCard--container{
+    background-color: skyblue;
+    width: 250px;
+    height: 100px;
+    margin: 10px;
+}
+
+
+
+
+.searchNewsCard--container{
+    width: 500px;
+    height: 130px;
+    margin: 0px 3px;
+    background-color: white;
+    border-bottom: 1px solid rgb(224, 224, 224);
+}
+
+
+
