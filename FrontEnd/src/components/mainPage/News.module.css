@@ -8,7 +8,13 @@
     gap: 80px;
     padding: 40px 0px;
 }
+
+.MainNews--hotIssues--titleContainer{
+    width: 70vw;
+}
+
 .MainNews--hotIssues--title{
+    font-size: 2vw;
     margin:0;
 }
 
@@ -42,7 +48,12 @@
     padding: 40px 0px;
 }
 
+.SearchNews--hotIssues--titleContainer{
+    width: 65vw;
+}
+
 .SearchNews--hotIssues--title{
+    font-size: 2vw;
     margin:0;
 }
 
@@ -58,7 +69,6 @@
     padding: 10px 0px;
     margin-bottom: 30px;
     border-radius: 10px;
-    background-color: rgb(248, 248, 248);
 }
 
 
