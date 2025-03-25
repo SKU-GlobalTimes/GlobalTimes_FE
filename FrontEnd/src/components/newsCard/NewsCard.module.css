@@ -1,0 +1,191 @@
+/* HotNews Card */
+.hotNewsCard--container{
+    display: flex;
+    flex-direction: row;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 5px;
+    min-width: 450px;
+    width: 30%;
+    min-height: 200px;
+    height: 42%;
+    margin: 5px;
+    position: relative; /* 위치 지정 */
+    overflow: hidden; /* 자식 요소가 컨테이너 밖으로 나가지 않게 제한 */
+}
+
+
+.hotNewsCard--contents{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    z-index: 1;
+    transition: background-color 0.3s ease;
+}
+
+.hotNewsCard--contents__title{
+    margin:0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.hotNewsCard--contents__preview{
+    margin: 3px 0;
+    font-size: 13px;
+}
+
+.hotNewsCard--image{
+    width: 70%;
+    border-radius: 0 5px 5px 0;
+    background-image: url('/economy.png');
+    background-size: cover;
+    background-position: center center;
+    transition: filter 0.3s ease;
+}
+
+/* 마우스를 올렸을 때 이미지 어두워지게 */
+.hotNewsCard--container:hover .hotNewsCard--image {
+    filter: brightness(0.5); /* 이미지 어두워짐 */
+}
+
+/* 텍스트 영역도 마우스를 올렸을 때 배경색이 천천히 변하도록 설정 */
+.hotNewsCard--container:hover .hotNewsCard--contents {
+    background-color: rgba(0, 0, 0, 0.3); /* 어두운 배경 추가 */
+}
+
+
+
+/* BasicNews Card */
+.basicNewsCard--container{
+    display: flex;
+    flex-direction: row;
+
+    background-color: white;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+    width: 20%;
+    min-width: 350px;
+    height: 10vh;
+    min-height: 140px;
+    position: relative; /* 위치 지정 */
+    overflow: hidden;
+    transition: background-color 0.3s ease, filter 0.3s ease;
+}
+
+.basicNewsCard--container:hover {
+    background-color: rgba(0, 0, 0, 0.3); /* 전체 배경 어두워짐 */
+    filter: brightness(0.7); /* 전체 밝기 어두워짐 */
+}
+
+
+.basicNewsCard--contents{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    padding-top: 20px;
+}
+
+.basicNewsCard--contents__title{
+    margin:0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.basicNewsCard--contents__preview{
+    margin: 3px 0;
+    font-size: 11px;
+    font-weight: 300;
+}
+
+.basicNewsCard--imageContainer{
+    width: 40%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.basicNewsCard--image{
+    height: 90%;
+    width: 90%;
+    border-radius: 5px;
+    background-image: url('/food.png');
+    background-size: cover;
+    background-position: center center;
+}
+
+
+
+
+
+/* SearchNews Card */
+.searchNewsCard--container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: white;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+    min-width: 470px;
+    width: 33vw;
+    height: 15vh;
+    min-height: 140px;
+    margin: 0 10px;
+    position: relative; /* 위치 지정 */
+    overflow: hidden;
+    transition: background-color 0.3s ease, filter 0.3s ease;
+}
+
+.searchNewsCard--container:hover {
+    background-color: rgba(0, 0, 0, 0.3); /* 전체 배경 어두워짐 */
+    filter: brightness(0.7); /* 전체 밝기 어두워짐 */
+}
+
+
+.searchNewsCard--contents{
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    padding-top: 20px;
+    margin-left: 10px;;
+}
+
+.searchNewsCard--contents__title{
+    margin:0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.searchNewsCard--contents__preview{
+    margin: 3px 0;
+    font-size: 11px;
+    font-weight: 300;
+}
+
+.searchNewsCard--imageContainer{
+    width: 35%;
+    height: 100%;
+    max-width: 220px;
+    max-height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.searchNewsCard--image{
+    height: 80%;
+    width: 90%;
+    border-radius: 15px;
+    background-image: url('/america.png');
+    background-size: cover;
+    background-position: center center;
+}
+
+
+
+
+
+

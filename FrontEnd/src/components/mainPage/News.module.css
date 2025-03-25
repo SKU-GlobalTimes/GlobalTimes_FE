@@ -1,0 +1,80 @@
+
+/* Main News */
+.MainNews--container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: max-content;
+    gap: 80px;
+    padding: 40px 0px;
+}
+
+.MainNews--hotIssues--titleContainer{
+    width: 70vw;
+}
+
+.MainNews--hotIssues--title{
+    font-size: 2vw;
+    margin:0;
+}
+
+.MainNews--hotIssues{
+    width: 80vw;
+    min-height: max-content;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.MainNews--Issues{
+    width: 100vw;
+    min-height: max-content;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+
+
+/* Search News */
+.SearchNews--container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: max-content;
+    gap: 80px;
+    padding: 40px 0px;
+}
+
+.SearchNews--hotIssues--titleContainer{
+    width: 65vw;
+}
+
+.SearchNews--hotIssues--title{
+    font-size: 2vw;
+    margin:0;
+}
+
+.SearchNews--resultList{
+    max-width: 70vw;
+    width: max-content;
+    min-width: 500px;
+    min-height: max-content;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+}
+
+
+
+
+
+
+
+
