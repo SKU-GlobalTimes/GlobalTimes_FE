@@ -1,4 +1,5 @@
 import styled from './SearchContainer.module.css';
+import { Search } from "lucide-react";
 
 export default function SearchContainer() {
 
@@ -6,6 +7,7 @@ export default function SearchContainer() {
         <div className={styled['searchContainer--container']}>
             <div className={styled['searchContainer--searchBar']}>
                 <div className={styled['searchContainer--searchInputContainer']}>
+                    <Search className={styled['input-icon']} size={20} />
                     <input className={styled['searchContainer--Input']}></input>
                 </div>
                 <button className={styled['searchContainer--searchButton']}>검색</button>
