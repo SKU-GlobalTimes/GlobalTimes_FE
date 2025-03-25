@@ -1,9 +1,11 @@
 import styled from './LandingPage.module.css';
 import { Search } from "lucide-react";
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
     const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
     function handleInputChange(event){
         setSearchTerm(event.target.value);
@@ -13,6 +15,10 @@ export default function LandingPage() {
         if (event.key === 'Enter') {
             document.getElementById('searchButton').click(); // 버튼 클릭 이벤트 실행
         }
+    }
+    
+    function handleClickBtn() {
+        navigate('/main', { state: { isSearch: true, searchTerm: {searchTerm} } });
     }
 
     return(
@@ -34,7 +40,7 @@ export default function LandingPage() {
                 <button 
                     id="searchButton"
                     className={styled['landingPage--button']} 
-                    onClick={()=>{console.log(searchTerm);}}
+                    onClick={handleClickBtn}
                 >검색</button>
             </div>
         </div>
