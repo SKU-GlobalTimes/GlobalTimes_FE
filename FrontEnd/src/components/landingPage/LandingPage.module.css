@@ -1,0 +1,73 @@
+
+
+.landingPage--container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.landingPage--title{
+    font-size: 76px;
+    color: white;
+}
+
+.landingPage--searchContainer{
+    width: 950px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.landingPage--searchInputContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 17px;
+    width: 770px;
+    height: 50px;
+    border: 1px solid rgb(228, 228, 228);
+    border-radius: 10px;
+    background-color: white;
+    padding-left: 20px;
+}
+.input-icon{
+    color: rgb(0, 0, 0);
+}
+
+.landingPage--input{
+    font-size: 17px;
+    margin-left: 10px;
+    height: 40px;
+    width: 700px;
+    outline: none;
+    border: none;
+}
+
+.landingPage--input::placeholder {
+    font-size: 17px;
+    color: black;
+}
+.landingPage--input:focus {
+    outline: none;
+    border: none;
+}
+
+
+
+.landingPage--button{
+    font-size: 18px;
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: inset 0px 3px 5px rgb(172, 172, 172);
+}
+
+.landingPage--button:hover,
+.landingPage--button:focus{
+    background-color: rgb(226, 226, 226);
+    box-shadow: inset 0px 3px 5px rgb(142, 140, 148);
+    outline: none;
+}
