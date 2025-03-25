@@ -5,7 +5,7 @@ import BasicNewsCard from '../newsCard/BasicNewsCard';
 export default function MainNews(){
     return(
         <div className={styled['MainNews--container']}>
-            <h1>Hot News</h1>
+            <h1 className={styled['MainNews--hotIssues--title']}>Hot News</h1>
             <div className={styled['MainNews--hotIssues']}>
                 <HotNewsCard />
                 <HotNewsCard />

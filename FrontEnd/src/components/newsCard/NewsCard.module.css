@@ -1,21 +1,101 @@
-
+/* HotNews Card */
 .hotNewsCard--container{
-    background-color: pink;
-    width: 300px;
-    height: 150px;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 5px;
+    min-width: 450px;
+    width: 30%;
+    min-height: 200px;
+    height: 42%;
     margin: 5px;
 }
 
+.hotNewsCard--contents{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.hotNewsCard--contents__title{
+    margin:0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.hotNewsCard--contents__preview{
+    margin: 3px 0;
+    font-size: 13px;
+}
+
+.hotNewsCard--image{
+    width: 70%;
+    border-radius: 0 5px 5px 0;
+    background-image: url('/economy.png');
+    background-size: cover;
+    background-position: center center;
+}
+
+
+/* BasicNews Card */
 .basicNewsCard--container{
-    background-color: skyblue;
-    width: 250px;
-    height: 100px;
-    margin: 10px;
+    display: flex;
+    flex-direction: row;
+
+    background-color: white;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+    width: 20%;
+    min-width: 350px;
+    height: 10vh;
+    min-height: 140px;
+}
+
+
+.basicNewsCard--contents{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    padding-top: 20px;
+}
+
+.basicNewsCard--contents__title{
+    margin:0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.basicNewsCard--contents__preview{
+    margin: 3px 0;
+    font-size: 11px;
+    font-weight: 300;
+}
+
+.basicNewsCard--imageContainer{
+    width: 40%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.basicNewsCard--image{
+    height: 90%;
+    width: 90%;
+    border-radius: 5px;
+    background-image: url('/food.png');
+    background-size: cover;
+    background-position: center center;
 }
 
 
 
 
+
+
+/* SearchNews Card */
 .searchNewsCard--container{
     width: 500px;
     height: 130px;
@@ -23,6 +103,10 @@
     background-color: white;
     border-bottom: 1px solid rgb(224, 224, 224);
 }
+
+
+
+
 
 
 
