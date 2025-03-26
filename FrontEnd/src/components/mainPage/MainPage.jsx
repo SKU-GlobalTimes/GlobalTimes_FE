@@ -12,7 +12,6 @@ export default function MainPage() {
     const receivedSearchTerm = location.state?.searchTerm || "";
 
     const [searchTerm, setSearchTerm] = useState(receivedSearchTerm);
-    const [category, setCategory] = useState('전체');
     const [isSearch, setIsSearch] = useState(receivedIsSearch);
 
     useEffect(() => {
@@ -25,7 +24,6 @@ export default function MainPage() {
         <div className={styled['mainPage--container']}>
             <SearchContainer 
                 searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-                category={category} setCategory={setCategory}
                 setIsSearch={setIsSearch}
             />
             {
