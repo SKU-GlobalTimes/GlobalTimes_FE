@@ -11,7 +11,7 @@
 }
 
 .MainNews--hotIssues--titleContainer{
-    width: 68vw;
+    width: 72vw;
 }
 
 .MainNews--hotIssues--title{
@@ -20,7 +20,7 @@
 }
 
 .MainNews--hotIssues{
-    width: 70vw;
+    width: 80vw;
     min-height: max-content;
     display: flex;
     flex-wrap: wrap;
@@ -51,7 +51,7 @@
 }
 
 .SearchNews--hotIssues--titleContainer{
-    width: 68vw;
+    width: 72vw;
 }
 
 .SearchNews--hotIssues--title{
@@ -60,7 +60,7 @@
 }
 
 .SearchNews--resultList{
-    width: 70vw;
+    width: 80vw;
     min-width: 500px;
     height: 60vh;
     display: flex;
