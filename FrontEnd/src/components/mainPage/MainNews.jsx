@@ -10,7 +10,10 @@ export default function MainNews(){
         { title: "Hot News 3", summary: "세 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
         { title: "Hot News 4", summary: "네 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
         { title: "Hot News 5", summary: "다섯 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
-        { title: "Hot News 6", summary: "여섯 번째 핫 뉴스 요약입니다.", image: "/economy.png" }
+        { title: "Hot News 6", summary: "여섯 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
+        { title: "Hot News 7", summary: "일곱 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
+        { title: "Hot News 8", summary: "여덟 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
+        { title: "Hot News 9", summary: "아홉 번째 핫 뉴스 요약입니다.", image: "/economy.png" }
     ];
 
     // 일반 뉴스 데이터
@@ -22,7 +25,11 @@ export default function MainNews(){
         { title: "Basic News 5", summary: "다섯 번째 일반 뉴스 요약입니다.", image: "/food.png" },
         { title: "Basic News 6", summary: "여섯 번째 일반 뉴스 요약입니다.", image: "/food.png" },
         { title: "Basic News 7", summary: "일곱 번째 일반 뉴스 요약입니다.", image: "/food.png" },
-        { title: "Basic News 8", summary: "여덟 번째 일반 뉴스 요약입니다.", image: "/food.png" }
+        { title: "Basic News 8", summary: "여덟 번째 일반 뉴스 요약입니다.", image: "/food.png" },
+        { title: "Basic News 9", summary: "아홉 번째 일반 뉴스 요약입니다.", image: "/food.png" },
+        { title: "Basic News 10", summary: "열 번째 일반 뉴스 요약입니다.", image: "/food.png" },
+        { title: "Basic News 11", summary: "열한 번째 일반 뉴스 요약입니다.", image: "/food.png" },
+        { title: "Basic News 12", summary: "열두 번째 일반 뉴스 요약입니다.", image: "/food.png" }
     ];
 
     return(

@@ -24,7 +24,18 @@ export default function SearchNews() {
         { title: "검색 뉴스 18", summary: "열여덟 번째 검색 뉴스 요약입니다.", image: "/america.png" },
         { title: "검색 뉴스 19", summary: "열아홉 번째 검색 뉴스 요약입니다.", image: "/america.png" },
         { title: "검색 뉴스 20", summary: "스무 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 21", summary: "스물한 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 22", summary: "스물두 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 23", summary: "스물세 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 24", summary: "스물네 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 25", summary: "스물다섯 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 26", summary: "스물여섯 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 27", summary: "스물일곱 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 28", summary: "스물여덟 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 29", summary: "스물아홉 번째 검색 뉴스 요약입니다.", image: "/america.png" },
+        { title: "검색 뉴스 30", summary: "서른 번째 검색 뉴스 요약입니다.", image: "/america.png" }
     ];
+    
 
     return(
         <div className={styled['SearchNews--container']}>
