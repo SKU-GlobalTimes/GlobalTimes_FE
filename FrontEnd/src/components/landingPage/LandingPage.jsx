@@ -18,7 +18,7 @@ export default function LandingPage() {
     }
     
     function handleClickBtn() {
-        navigate('/main', { state: { isSearch: true, searchTerm: {searchTerm} } });
+        navigate('/main', { state: { isSearch: true, searchTerm } });
     }
 
     return(
