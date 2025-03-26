@@ -2,9 +2,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
     padding: 15px 40px;
     position: relative;
     color: currentColor;
+    box-sizing: border-box;
+    max-width: calc(100vw - 17px);
 }
 
 .whiteText {
@@ -42,7 +45,6 @@
     color: black;
 }
 
-/* 기본 스타일 */
 .header p {
     margin: 0 20px;
     font-size: 18px;
@@ -54,7 +56,6 @@
     text-decoration: underline;
 }
 
-/* 언어 선택 토글 */
 .languageToggle {
     position: relative;
     margin-left: 100px;
@@ -75,7 +76,6 @@
     box-shadow: none;
 }
 
-/* 드롭다운 옵션 스타일 적용 */
 .languageToggle select option {
     background: white;
     color: black;
@@ -89,7 +89,6 @@
     border-radius: 0;
 }
 
-/* 드롭다운 화살표 스타일 */
 .languageToggle::after {
     content: "▼";
     position: absolute;
@@ -105,7 +104,6 @@
     color: black;
 }
 
-/* 활성화된 페이지 표시 */
 .active {
     font-weight: bold;
     position: relative;

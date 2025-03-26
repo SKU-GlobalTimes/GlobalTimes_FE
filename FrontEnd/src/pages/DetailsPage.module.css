@@ -1,0 +1,15 @@
+.detailsPage {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.article {
+    flex: 2; /* 메인 기사 영역 */
+}
+
+.sidebar {
+    flex: 1; /* 사이드바 영역 */
+}
