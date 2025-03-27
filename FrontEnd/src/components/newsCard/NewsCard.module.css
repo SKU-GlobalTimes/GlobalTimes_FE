@@ -6,16 +6,17 @@
     border-radius: 5px;
     min-width: 450px;
     width: 30%;
-    min-height: 200px;
+    min-height: 225px;
     height: 42%;
     margin: 5px;
     position: relative; /* 위치 지정 */
     overflow: hidden; /* 자식 요소가 컨테이너 밖으로 나가지 않게 제한 */
+    cursor: pointer;
 }
 
 
 .hotNewsCard--contents{
-    width: 30%;
+    width: 40%;
     display: flex;
     flex-direction: column;
     padding: 15px;
@@ -25,17 +26,17 @@
 
 .hotNewsCard--contents__title{
     margin:0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
 }
 
 .hotNewsCard--contents__preview{
     margin: 3px 0;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .hotNewsCard--image{
-    width: 70%;
+    width: 60%;
     border-radius: 0 5px 5px 0;
     background-image: url('/economy.png');
     background-size: cover;
@@ -70,12 +71,9 @@
     position: relative; /* 위치 지정 */
     overflow: hidden;
     transition: background-color 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
 }
 
-.basicNewsCard--container:hover {
-    background-color: rgba(0, 0, 0, 0.3); /* 전체 배경 어두워짐 */
-    filter: brightness(0.7); /* 전체 밝기 어두워짐 */
-}
 
 
 .basicNewsCard--contents{
@@ -88,14 +86,20 @@
 
 .basicNewsCard--contents__title{
     margin:0;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
+    transition: text-decoration 0.3s ease;
 }
 
 .basicNewsCard--contents__preview{
     margin: 3px 0;
     font-size: 11px;
     font-weight: 300;
+    transition: text-decoration 0.3s ease;
+}
+
+.basicNewsCard--contents:hover {
+    text-decoration: underline;
 }
 
 .basicNewsCard--imageContainer{
@@ -106,15 +110,31 @@
     align-items: center;
 }
 
-.basicNewsCard--image{
+.basicNewsCard--imageBorder{
     height: 90%;
     width: 90%;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+
+.basicNewsCard--image{
+    height: 100%;
+    width: 100%;
     border-radius: 5px;
     background-image: url('/food.png');
     background-size: cover;
     background-position: center center;
+    transition: transform 0.3s ease-in-out;  /* 부드러운 확대 효과 */
 }
 
+/* 호버 시 배경 이미지 확대 */
+.basicNewsCard--imageBorder:hover .basicNewsCard--image {
+    transform: scale(1.1); /* 배경 이미지만 확대 */
+}
 
 
 
@@ -135,6 +155,7 @@
     position: relative; /* 위치 지정 */
     overflow: hidden;
     transition: background-color 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
 }
 
 .searchNewsCard--container:hover {

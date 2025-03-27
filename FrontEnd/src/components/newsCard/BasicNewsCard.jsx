@@ -13,10 +13,13 @@ export default function BasicNewsCard({ title, summary, image }) {
                 </p>
             </div>
             <div className={styled['basicNewsCard--imageContainer']}>
-                <div 
-                    className={styled['basicNewsCard--image']}
-                    style={{ backgroundImage: `url(${image})` }} 
-                ></div>
+                <div className={styled['basicNewsCard--imageBorder']}>
+                    <div 
+                        className={styled['basicNewsCard--image']}
+                        style={{ backgroundImage: `url(${image})` }} 
+                    ></div>
+                </div>
+                
             </div>
         </div>
     )
