@@ -1,10 +1,17 @@
 import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
+import { useNavigate } from "react-router-dom";
 
 export default function HotNewsCard({ title, summary, image }) {
+    const navigate = useNavigate();
+    
+    function handleClickNewsCard(){
+        console.log('클릭됨.');
+        navigate('/detail');
+    }
 
     return(
-        <div className={styled['hotNewsCard--container']}>
+        <div className={styled['hotNewsCard--container']} onClick={handleClickNewsCard}>
             <div className={styled['hotNewsCard--contents']}>
                 <p className={styled['hotNewsCard--contents__title']}>{title}</p>
                 <p className={styled['hotNewsCard--contents__preview']}>
