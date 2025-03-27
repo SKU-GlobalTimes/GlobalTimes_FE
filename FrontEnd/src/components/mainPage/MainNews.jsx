@@ -5,7 +5,7 @@ import BasicNewsCard from '../newsCard/BasicNewsCard';
 export default function MainNews(){
 
     const hotNews = [
-        { title: "Hot News 1", summary: "이것은 핫 뉴스 요약입니다.", image: "/economy.png" },
+        { title: "러시아와 우크라이나, 흑해에서의 해상 휴전 합의", summary: "러시아와 우크라이나는 평화 회담을 마친 후 해상 휴전을 합의했습니다.", image: "/image_37.png" },
         { title: "Hot News 2", summary: "이것은 두 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
         { title: "Hot News 3", summary: "세 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
         { title: "Hot News 4", summary: "네 번째 핫 뉴스 요약입니다.", image: "/economy.png" },
