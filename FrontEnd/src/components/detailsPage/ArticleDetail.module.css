@@ -9,12 +9,20 @@
     font-weight: bold;
     margin-top: 20px;
     margin-bottom: 10px;
+    color: black;
 }
 
 .meta {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.timeText{
     font-size: 14px;
     color: gray;
-    margin-bottom: 15px;
 }
 
 .image {
@@ -31,10 +39,26 @@
 }
 
 .stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 14px;
-    color: gray;
-    margin-bottom: 15px;
-}
+    color: #555;
+  }
+  
+  .scrap {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .icon {
+    color: transparent;
+    stroke: #555;
+    stroke-width: 50;
+    font-size: 13px;
+  }
+  
 
 .infoContainer{
     display: flex;

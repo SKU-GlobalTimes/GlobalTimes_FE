@@ -10,6 +10,7 @@ export default function MainLayout() {
   const location = useLocation();
 
   const isLandingPage = location.pathname === "/" || location.pathname === "";
+  const isFooterVisible = location.pathname !== "/"; // /일 때 footer 숨기기
 
   return (
     <div 
@@ -19,7 +20,7 @@ export default function MainLayout() {
     >
       <Header />
       <Outlet />
-      <Footer />
+      {isFooterVisible && <Footer />}
     </div>
   );
 }

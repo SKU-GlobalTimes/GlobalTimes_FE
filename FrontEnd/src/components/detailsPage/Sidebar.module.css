@@ -2,9 +2,37 @@
     width: 100%;
     padding: 20px;
     background-color: #f9f9f9;
-    border-left: 1px solid #ddd;
+    border: 1px solid #ddd;
+    border-top: none;
     box-sizing: border-box;
+    max-height: 1300px;
+    overflow-y: auto;
+    
+    /* 스크롤바 스타일 */
+    scrollbar-width: thin; /* 파이어폭스용 */
+    scrollbar-color: #b0b0b0 #f1f1f1; /* 파이어폭스용 (스크롤 색, 배경 색) */
 }
+
+/* 크롬, 엣지, 사파리용 스크롤바 스타일 */
+.sidebar::-webkit-scrollbar {
+    width: 8px; /* 스크롤바 너비 */
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1; /* 스크롤바 배경 */
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #b0b0b0; /* 스크롤바 색상 */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #888; /* 마우스 오버 시 색상 변경 */
+}
+
 
 .sidebar h2 {
     font-size: 20px;
@@ -16,7 +44,14 @@
 .articleItem {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding: 3%;
+}
+
+.articleItem:hover {
+    background-color: #EAEAEA;
+    border-radius: 8px;
 }
 
 .thumbnail {

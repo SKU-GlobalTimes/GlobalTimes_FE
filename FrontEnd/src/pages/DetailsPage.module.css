@@ -1,15 +1,23 @@
 .detailsPage {
     display: flex;
+    flex-direction: column;
     max-width: 1200px;
     margin: 0 auto;
     gap: 20px;
     box-sizing: border-box;
 }
 
+.content {
+    display: flex;
+    gap: 20px;
+}
+
 .article {
-    flex: 2; /* 메인 기사 영역 */
+    flex: 2;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar {
-    flex: 1; /* 사이드바 영역 */
+    flex: 1;
 }
