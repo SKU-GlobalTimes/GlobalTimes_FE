@@ -74,10 +74,6 @@
     cursor: pointer;
 }
 
-.basicNewsCard--container:hover {
-    background-color: rgba(0, 0, 0, 0.3); /* 전체 배경 어두워짐 */
-    filter: brightness(0.7); /* 전체 밝기 어두워짐 */
-}
 
 
 .basicNewsCard--contents{
@@ -92,12 +88,18 @@
     margin:0;
     font-size: 15px;
     font-weight: 600;
+    transition: text-decoration 0.3s ease;
 }
 
 .basicNewsCard--contents__preview{
     margin: 3px 0;
     font-size: 11px;
     font-weight: 300;
+    transition: text-decoration 0.3s ease;
+}
+
+.basicNewsCard--contents:hover {
+    text-decoration: underline;
 }
 
 .basicNewsCard--imageContainer{
@@ -108,15 +110,31 @@
     align-items: center;
 }
 
-.basicNewsCard--image{
+.basicNewsCard--imageBorder{
     height: 90%;
     width: 90%;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+
+.basicNewsCard--image{
+    height: 100%;
+    width: 100%;
     border-radius: 5px;
     background-image: url('/food.png');
     background-size: cover;
     background-position: center center;
+    transition: transform 0.3s ease-in-out;  /* 부드러운 확대 효과 */
 }
 
+/* 호버 시 배경 이미지 확대 */
+.basicNewsCard--imageBorder:hover .basicNewsCard--image {
+    transform: scale(1.1); /* 배경 이미지만 확대 */
+}
 
 
 
