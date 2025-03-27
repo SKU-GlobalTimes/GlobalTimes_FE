@@ -20,7 +20,7 @@ export default function Header() {
         onClick={() => navigate("/")}
         className={location.pathname === "/" ? styles.active : ""}
       >
-        GLOBAL NEWS
+        GLOBAL TIMES
       </p>
       <p
         onClick={() => navigate("/main", { state: { isSearch: false } })}
