@@ -10,6 +10,11 @@ export default function Header() {
   // 현재 경로가 "/"이면 흰색 테마 적용
   const isHome = location.pathname === "/";
 
+  function handleMainPageClick() {
+    navigate('/main', {state: {isSearch: false}});
+    window.location.reload();  // 페이지 강제 새로고침
+  }
+
   return (
     <div
       className={`${styles.header} ${
@@ -23,7 +28,7 @@ export default function Header() {
         GLOBAL TIMES
       </p>
       <p
-        onClick={() => navigate("/main", { state: { isSearch: false } })}
+        onClick={handleMainPageClick}
         className={location.pathname === "/main" ? styles.active : ""}
       >
         메인페이지

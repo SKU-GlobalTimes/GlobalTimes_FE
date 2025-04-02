@@ -1,10 +1,17 @@
 import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
+import { useNavigate } from "react-router-dom";
 
 export default function SearchNewsCard({ press, title, summary, image, year, month, day }) {
+    const navigate = useNavigate();
+    
+    function handleClickNewsCard(){
+        console.log('클릭됨.');
+        navigate('/detail');
+    }
 
     return(
-        <div className={styled['searchNewsCard--container']}>
+        <div className={styled['searchNewsCard--container']} onClick={handleClickNewsCard}>
             <div className={styled['searchNewsCard--contents']}>
                 <div className={styled['searchNewsCard--contents__topContainer']}>
                     <p className={styled['searchNewsCard--contents__press']}>{press}</p>
