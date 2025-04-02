@@ -1,7 +1,7 @@
 import styles from './Pagenation.module.css';
 import PropTypes from 'prop-types';
 
-function Pagination({ currentPage, totalPages, onPageChange }) {
+function Pagenation({ currentPage, totalPages, onPageChange }) {
   // 이전 페이지 버튼 핸들러
   function handlePrevClick() {
     if (currentPage > 1) {
@@ -70,12 +70,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
   );
 }
 
-export default Pagination;
+export default Pagenation;
 
 
 
 
-Pagination.propTypes = {
+Pagenation.propTypes = {
     currentPage: PropTypes.number.isRequired,
     totalPages: PropTypes.number.isRequired,
     onPageChange: PropTypes.func.isRequired
