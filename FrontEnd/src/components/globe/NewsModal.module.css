@@ -1,7 +1,7 @@
 .newsModal {
     position: fixed;
-    top: 40%;
-    left: 70%;
+    top: 50%;
+    left: 75%;
     transform: translate(-50%, -50%);
     width: 380px;
     background: white;
@@ -15,6 +15,11 @@
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 10px;
+  }
+
+  .newsModal a {
+    text-decoration: none;
+    color: black;
   }
   
   .newsModal p {
@@ -33,3 +38,22 @@
     align-items: center;
   }
   
+  .image{
+    border-radius: 6px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  .contentContainer{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 260px;
+  }
