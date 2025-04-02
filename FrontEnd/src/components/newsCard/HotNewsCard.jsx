@@ -2,7 +2,7 @@ import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 
-export default function HotNewsCard({ title, summary, image }) {
+export default function HotNewsCard({ title, summary, image, year, month, day }) {
     const navigate = useNavigate();
     
     function handleClickNewsCard(){
@@ -17,10 +17,16 @@ export default function HotNewsCard({ title, summary, image }) {
                 style={{ backgroundImage: `url(${image})` }} 
             ></div>
             <div className={styled['hotNewsCard--contents']}>
-                <p className={styled['hotNewsCard--contents__title']}>{title}</p>
-                <p className={styled['hotNewsCard--contents__preview']}>
-                    {summary}
-                </p>
+                <div className={styled['hotNewsCard--contents__letterContainer']}>
+                    <p className={styled['hotNewsCard--contents__title']}>{title}</p>
+                    <p className={styled['hotNewsCard--contents__preview']}>
+                        {summary}
+                    </p>
+                </div>
+                
+                <div className={styled['hotNewsCard--contents__dateContainer']}>
+                    <p className={styled['hotNewsCard--contents__date']}>{year}.{month}.{day}</p>
+                </div>
             </div>
             
         </div>
@@ -31,6 +37,9 @@ export default function HotNewsCard({ title, summary, image }) {
 HotNewsCard.propTypes = {
     title: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired
+    image: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    month: PropTypes.number.isRequired,
+    day: PropTypes.number.isRequired
 };
 

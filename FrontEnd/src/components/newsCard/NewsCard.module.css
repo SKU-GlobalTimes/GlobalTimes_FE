@@ -12,15 +12,25 @@
 }
 
 
+
+
 .hotNewsCard--contents{
     width: 22.3avw;
-    height: 20%;
+    height: 24%;
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    justify-content: space-between;
+    padding: 14px;
     z-index: 1;
     transition: background-color 0.3s ease;
+    
 }
+
+.hotNewsCard--contents__letterContainer{
+    display: flex;
+    flex-direction: column;
+}
+
 
 .hotNewsCard--contents__title{
     margin:0;
@@ -31,6 +41,22 @@
 .hotNewsCard--contents__preview{
     margin: 3px 0;
     font-size: 12px;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
+}
+
+.hotNewsCard--contents__dateContainer{
+    display: flex;
+    flex-direction:row-reverse;
+}
+
+.hotNewsCard--contents__date{
+    font-size: 10px;
+    margin:0;
 }
 
 .hotNewsCard--image{
