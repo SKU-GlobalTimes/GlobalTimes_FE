@@ -1,40 +1,75 @@
 
 /* Main News */
 .MainNews--container{
+    
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: max-content;
     gap: 40px;
     width: 100vw;
-    padding: 20px 0px 40px 0px;
+    padding: 20px 0px 60px 0px;
 }
 
-.MainNews--hotIssues--titleContainer{
-    width: 72vw;
+.MainNews--Newscontainer{
+    width: 75vw;
+    height: max-content;
+    margin: 50px 0;
 }
 
-.MainNews--hotIssues--title{
+.MainNews--titleContainer{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.MainNews--title{
     font-size: 2vw;
     margin:0;
 }
 
-.MainNews--hotIssues{
-    width: 80vw;
-    min-height: max-content;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 30px;
-}
 
-.MainNews--Issues{
-    width: 100vw;
-    min-height: max-content;
+
+.MainNews--News {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3열 그리드 설정 */
+    gap: 10px;
+    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
+    align-items: center; /* 세로 정렬 */
+    min-height: 50vh; /* 프로젝트가 없을 때도 공간 확보 */
+    padding: 0px 10px;
+  }
+  
+  @media (max-width: 768px) {
+    /* 화면 가로 크기가 768px 이하일 때 */
+    .MainNews--News {
+      grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+    }
+  }
+
+  .MainNews--News__latest {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 3열 그리드 설정 */
+    gap: 10px;
+    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
+    align-items: center; /* 세로 정렬 */
+    min-height: 32vh; /* 프로젝트가 없을 때도 공간 확보 */
+    padding: 0px 10px;
+  }
+  
+  @media (max-width: 768px) {
+    /* 화면 가로 크기가 768px 이하일 때 */
+    .MainNews--News__latest {
+      grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+    }
+  }
+
+.MainNews--pages{
+    width: 100%;
+    height: 7vh;
     display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
+    flex-direction: row;
     justify-content: center;
+    align-items: center;
 }
 
 

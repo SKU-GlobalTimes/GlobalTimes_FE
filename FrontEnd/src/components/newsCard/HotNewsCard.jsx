@@ -12,16 +12,17 @@ export default function HotNewsCard({ title, summary, image }) {
 
     return(
         <div className={styled['hotNewsCard--container']} onClick={handleClickNewsCard}>
+            <div 
+                className={styled['hotNewsCard--image']}
+                style={{ backgroundImage: `url(${image})` }} 
+            ></div>
             <div className={styled['hotNewsCard--contents']}>
                 <p className={styled['hotNewsCard--contents__title']}>{title}</p>
                 <p className={styled['hotNewsCard--contents__preview']}>
                     {summary}
                 </p>
             </div>
-            <div 
-                className={styled['hotNewsCard--image']}
-                style={{ backgroundImage: `url(${image})` }} 
-            ></div>
+            
         </div>
     )
 }
