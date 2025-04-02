@@ -1,4 +1,4 @@
-import GlobeComponent from '../globe/Globe';
+import GlobeComponent from '../components/globe/Globe';
 
 export default function LandingPage() {
 
