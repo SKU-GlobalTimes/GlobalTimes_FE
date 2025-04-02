@@ -1,7 +1,7 @@
 import { Routes as ReactRouters, Route } from 'react-router-dom';
 
 // pages
-import LandingPage from '../components/landingPage/LandingPage';
+import LandingPage from '../pages/LandingPage';
 import MainPage from '../components/mainPage/MainPage';
 import DetailsPage from '../pages/DetailsPage';
 import ScrapPage from '../components/scrapPage/ScrapPage';

@@ -1,0 +1,64 @@
+.trendModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    font-family: "Arial", sans-serif;
+  }
+  
+  .trendModal h3 {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .trendModal .dateTime {
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: rgb(230, 74, 74);
+  }
+  
+  .trendModal ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .trendModal li {
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .trendModal li:last-child {
+    border-bottom: none;
+  }
+
+  .trendModal li:hover {
+    background: #f0f0f0;
+  }
+  
+  .trendModal button {
+    margin-top: 10px;
+    width: 100%;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .titleContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
