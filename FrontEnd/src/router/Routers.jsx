@@ -4,6 +4,7 @@ import { Routes as ReactRouters, Route } from 'react-router-dom';
 import LandingPage from '../components/landingPage/LandingPage';
 import MainPage from '../components/mainPage/MainPage';
 import DetailsPage from '../pages/DetailsPage';
+import ScrapPage from '../components/scrapPage/ScrapPage';
 
 // layouts
 import MainLayout from '../layouts/MainLayout';
@@ -16,6 +17,7 @@ export default function Routes() {
                 <Route index element={<LandingPage />} />
                 <Route path='main' element={<MainPage />} />
                 <Route path='detail' element={<DetailsPage />} />
+                <Route path='scrap' element={<ScrapPage />} />
             </Route>
         </ReactRouters>
     )
