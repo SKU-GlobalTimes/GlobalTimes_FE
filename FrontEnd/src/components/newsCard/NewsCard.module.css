@@ -1,43 +1,79 @@
 /* HotNews Card */
 .hotNewsCard--container{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     border: 1px solid rgb(231, 231, 231);
     border-radius: 5px;
-    min-width: 450px;
-    width: 30%;
-    min-height: 225px;
-    height: 42%;
-    margin: 5px;
+    width: 24vw;
+    height: 32vh;;
     position: relative; /* 위치 지정 */
     overflow: hidden; /* 자식 요소가 컨테이너 밖으로 나가지 않게 제한 */
     cursor: pointer;
 }
 
 
+
+
 .hotNewsCard--contents{
-    width: 40%;
+    width: 22.3avw;
+    height: 33%;
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    justify-content: space-between;
+    padding: 10px 14px;
     z-index: 1;
     transition: background-color 0.3s ease;
+    
+}
+
+.hotNewsCard--contents__letterContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.hotNewsCard--contents__press{
+    margin:0;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .hotNewsCard--contents__title{
     margin:0;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
 }
 
 .hotNewsCard--contents__preview{
     margin: 3px 0;
     font-size: 12px;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
+}
+
+.hotNewsCard--contents__dateContainer{
+    display: flex;
+    flex-direction:row-reverse;
+}
+
+.hotNewsCard--contents__date{
+    font-size: 9px;
+    margin:0;
 }
 
 .hotNewsCard--image{
-    width: 60%;
-    border-radius: 0 5px 5px 0;
+    width: 22.3avw;
+    height: 70%;
+    border-radius: 5px 5px 0 0;
     background-image: url('/economy.png');
     background-size: cover;
     background-position: center center;
@@ -64,10 +100,8 @@
     background-color: white;
     border: 1px solid rgb(238, 238, 238);
     border-radius: 3px;
-    width: 20%;
-    min-width: 350px;
-    height: 10vh;
-    min-height: 140px;
+    width: 18vw;
+    height: 14vh;;
     position: relative; /* 위치 지정 */
     overflow: hidden;
     transition: background-color 0.3s ease, filter 0.3s ease;
@@ -77,11 +111,18 @@
 
 
 .basicNewsCard--contents{
-    width: 60%;
+    width: 9.5vw;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     padding: 10px;
-    padding-top: 20px;
+}
+
+.basicNewsCard--contents__press{
+    margin:0;
+    font-size: 9px;
+    font-weight: 600;
+    transition: text-decoration 0.3s ease;
 }
 
 .basicNewsCard--contents__title{
@@ -89,6 +130,12 @@
     font-size: 15px;
     font-weight: 600;
     transition: text-decoration 0.3s ease;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
 }
 
 .basicNewsCard--contents__preview{
@@ -96,15 +143,28 @@
     font-size: 11px;
     font-weight: 300;
     transition: text-decoration 0.3s ease;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
 }
 
-.basicNewsCard--contents:hover {
+.basicNewsCard--contents__date{
+    margin: 3px 0;
+    font-size: 10px;
+    font-weight: 300;
+    transition: text-decoration 0.3s ease;
+}
+
+.basicNewsCard--contents__letterContainer:hover {
     text-decoration: underline;
 }
 
 .basicNewsCard--imageContainer{
-    width: 40%;
-    height: 100%;
+    width: 7vw;
+    height: 98%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -147,12 +207,8 @@
     background-color: white;
     border: 1px solid rgb(238, 238, 238);
     border-radius: 3px;
-    min-width: 470px;
-    width: 33vw;
-    height: 15vh;
-    min-height: 140px;
-    margin: 0 10px;
-    position: relative; /* 위치 지정 */
+    width: 37vw;
+    height: 18vh;
     overflow: hidden;
     transition: background-color 0.3s ease, filter 0.3s ease;
     cursor: pointer;
@@ -165,31 +221,53 @@
 
 
 .searchNewsCard--contents{
-    width: 65%;
+    width: 21.5vw;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     padding: 10px;
-    padding-top: 20px;
-    margin-left: 10px;;
+    margin-left: 10px;
+}
+
+.searchNewsCard--contents__press{
+    margin:0;
+    font-size: 10px;
+    font-weight: 600;
 }
 
 .searchNewsCard--contents__title{
     margin:0;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
 }
 
 .searchNewsCard--contents__preview{
     margin: 3px 0;
     font-size: 11px;
     font-weight: 300;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
+}
+
+.searchNewsCard--contents__date{
+    margin: 3px 0;
+    font-size: 10px;
+    font-weight: 300;
 }
 
 .searchNewsCard--imageContainer{
-    width: 35%;
-    height: 100%;
-    max-width: 220px;
-    max-height: 160px;
+    width: 13vw;
+    height: 98%;
     display: flex;
     justify-content: center;
     align-items: center;
