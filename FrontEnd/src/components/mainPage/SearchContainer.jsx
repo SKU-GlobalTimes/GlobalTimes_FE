@@ -3,16 +3,11 @@ import PropTypes from 'prop-types';
 import { Search } from "lucide-react";
 import { useState } from 'react';
 
-export default function SearchContainer(props) {
+export default function SearchContainer(props) { 
+
     const { searchTerm, setSearchTerm, onSearch} = props;
     const [value, setValue] = useState(searchTerm || ''); 
     
-    const [num, setNum] = useState(1);
-
-    function clickedBTN() {
-        clicked();
-    }
-
     function handleInputChange(event){
         setSearchTerm(event.target.value);
         setValue(event.target.value);
@@ -24,17 +19,6 @@ export default function SearchContainer(props) {
         }
     }
 
-    function clicked() {
-        const storedScrapIds = JSON.parse(localStorage.getItem('scrapIds')) || [];
-    
-        if (!storedScrapIds.includes(num)) {
-            storedScrapIds.push(num);
-            localStorage.setItem('scrapIds', JSON.stringify(storedScrapIds)); // 키 수정
-        }
-    
-        console.log("scrapIds = ", localStorage.getItem("scrapIds"));
-        setNum(1+num);
-    }
 
     return(
         <div className={styled['searchContainer--container']}>
@@ -55,9 +39,6 @@ export default function SearchContainer(props) {
                     onClick={onSearch}
                     disabled={!value.trim()}
                 >검색</button>
-            </div>
-            <div>
-                <button onClick={clickedBTN}>스크랩스크랩 {num}</button>
             </div>
             
         </div>

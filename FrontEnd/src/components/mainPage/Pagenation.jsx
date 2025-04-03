@@ -1,4 +1,4 @@
-import styles from './Pagenation.module.css';
+import styled from './Pagenation.module.css';
 import PropTypes from 'prop-types';
 
 function Pagenation({ currentPage, totalPages, onPageChange}) {
@@ -35,12 +35,12 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
 
 
   return (
-    <div className={styles.pagenationContainer}>
+    <div className={styled['pagenationContainer']}>
       
       {currentPage > 1 ? 
       (
         <button
-          className={`${styles.pagenationButton} ${currentPage === 1 ? styles.hidden : ''}`}
+        className={`${styled.pagenationButton} ${currentPage === 1 ? styled.hidden : ''}`}
           onClick={prevClick}
           disabled={currentPage === 1}
         >
@@ -52,7 +52,7 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
       {getPageNumbers().map((pageNumber) => (
         <button
           key={pageNumber}
-          className={`${styles.pagenationButton} ${pageNumber === currentPage ? styles.activePage : ''}`}
+          className={`${styled.pagenationButton} ${pageNumber === currentPage ? styled.activePage : ''}`}
           onClick={() => {onPageChange(pageNumber); }}
         >
           { pageNumber }
@@ -62,7 +62,7 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
       {currentPage<totalPages ? 
       (
         <button
-          className={`${styles.pagenationButton} ${currentPage === totalPages ? styles.hidden : ''}`}
+        className={`${styled.pagenationButton} ${currentPage === totalPages ? styled.hidden : ''}`}
           onClick={nextClick}
           disabled={currentPage === totalPages}
         >

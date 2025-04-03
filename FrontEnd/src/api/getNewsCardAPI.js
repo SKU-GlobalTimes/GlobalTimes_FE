@@ -23,7 +23,7 @@ export async function getHot(page, size) {
             return formattedResults;
         }
         else {
-            console.log("hot 설마");
+            return [];
         }
         
     } catch (error) {
@@ -54,7 +54,7 @@ export async function getLatest(page, size) {
             return formattedResults;
         }
         else {
-            console.log("latest 설마");
+            return [];
         }
     } catch (error) {
         console.error("최근 뉴스 데이터를 불러오는 데 실패했습니다:", error);
@@ -67,7 +67,6 @@ export async function getLatest(page, size) {
 // response.data.data.originalText
 export async function getSearch(input) {
     try {
-        console.log("input: " + input);
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/search?text=${input}`;
         const response = await axios.get(baseUrl);
 
@@ -87,7 +86,7 @@ export async function getSearch(input) {
             return formattedResults;
         }
         else{
-            console.log("설마...?");
+            return [];
         }
     } catch (error) {
         console.error("검색 뉴스 결과 데이터를 불러오는 데 실패했습니다:", error);
@@ -100,7 +99,6 @@ export async function getSearch(input) {
 export async function getScrap() {
     try {
         const storedScrapIds = JSON.parse(localStorage.getItem('scrapIds')) || []; // 저장된 ID 가져오기
-        console.log("불러온 scrapIds: ", storedScrapIds);
 
         if (storedScrapIds.length === 0) return [];
 
@@ -108,8 +106,6 @@ export async function getScrap() {
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/scrap?${queryString}`;
         
         const response = await axios.get(baseUrl);
-
-        console.log("Scrap 응답: ", response.data);
 
         if (response.data.isSuccess) {
             // 날짜를 분리해서 새로운 객체 생성
@@ -130,7 +126,6 @@ export async function getScrap() {
 
             return formattedResults;
         } else {
-            console.log("설마...?");
             return [];
         }
     } catch (error) {

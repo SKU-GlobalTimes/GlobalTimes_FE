@@ -11,14 +11,13 @@ export default function MainNews(){
     const [basicNews, setBasicNews] = useState([]);
     const [hotPage, setHotPage] = useState(1);
     const [basicPage, setBasicPage] = useState(1);
-    const hotTotalPages = 5;
-    const basicTotalPages = 10;
+    const hotTotalPages = 3;
+    const basicTotalPages = 5;
 
 
     useEffect(() => {
         async function fetchHotNews() {
             const data = await getHot(hotPage - 1, 6);
-            //console.log("받아온 최신 뉴스 데이터:", data);
             
             if (data && typeof data === "object") {
                 setHotNews(Object.values(data));  

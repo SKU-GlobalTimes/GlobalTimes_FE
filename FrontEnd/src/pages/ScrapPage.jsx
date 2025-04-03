@@ -15,16 +15,12 @@ export default function ScrapPage() {
         async function fetchScrapNews() {
             
             const storedScrapIds = JSON.parse(localStorage.getItem("ids") || "[]");
-            
-            console.log("📌 저장된 스크랩 뉴스 ID 목록:", storedScrapIds);
     
             // 전체 페이지 수 계산
             const newTotalPages = Math.ceil(storedScrapIds.length / newsPerPage);
-            console.log("📌 계산된 총 페이지 수:", newTotalPages);
     
             // 현재 페이지가 전체 페이지보다 크면 1로 리셋
             if (scrapPage > newTotalPages) {
-                console.log("⚠️ 현재 페이지가 전체 페이지보다 크므로 1로 변경:", scrapPage, "➡ 1");
                 setScrapPage(1);
             }
     
@@ -33,14 +29,11 @@ export default function ScrapPage() {
             // 현재 페이지에 해당하는 ID들 가져오기
             const startIdx = (scrapPage - 1) * newsPerPage;
             const currentPageIds = storedScrapIds.slice(startIdx, startIdx + newsPerPage);
-            console.log("📌 현재 페이지에서 가져올 뉴스 ID 목록:", currentPageIds);
     
             if (currentPageIds.length > 0) {
                 const data = await getScrap(currentPageIds);
-                console.log("📌 가져온 스크랩 뉴스 데이터:", data);
                 setScrapNews(data);
             } else {
-                console.log("⚠️ 현재 페이지에 해당하는 뉴스가 없음.");
                 setScrapNews([]);
             }
         }
