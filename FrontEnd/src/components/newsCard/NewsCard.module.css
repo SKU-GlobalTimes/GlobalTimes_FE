@@ -287,6 +287,119 @@
 
 
 
+/* Scrap News Card */
+
+.ScrapNewsCard--container{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 5px;
+    width: 24vw;
+    height: 32vh;;
+    position: relative; /* 위치 지정 */
+    overflow: hidden; /* 자식 요소가 컨테이너 밖으로 나가지 않게 제한 */
+    cursor: pointer;
+}
+
+
+
+
+.ScrapNewsCard--contents{
+    width: 22.3avw;
+    height: 33%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 14px;
+    z-index: 1;
+    transition: background-color 0.3s ease;
+    
+}
+
+.ScrapNewsCard--contents__letterContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.ScrapNewsCard--contents__press{
+    margin:0;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.ScrapNewsCard--contents__title{
+    margin:0;
+    font-size: 18px;
+    font-weight: bold;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
+}
+
+.ScrapNewsCard--contents__preview{
+    margin: 3px 0;
+    font-size: 12px;
+
+    /* 말줄임표 (...) 적용 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 필요하면 조절 */
+}
+
+.ScrapNewsCard--contents__dateContainer{
+    display: flex;
+    flex-direction:row-reverse;
+}
+
+.ScrapNewsCard--contents__date{
+    font-size: 9px;
+    margin:0;
+}
+
+.ScrapNewsCard--image{
+    width: 22.3avw;
+    height: 70%;
+    border-radius: 5px 5px 0 0;
+    background-image: url('/economy.png');
+    background-size: cover;
+    background-position: center center;
+    transition: filter 0.3s ease;
+}
+
+/* 마우스를 올렸을 때 이미지 어두워지게 */
+.ScrapNewsCard--container:hover .ScrapNewsCard--image {
+    filter: brightness(0.5); /* 이미지 어두워짐 */
+}
+
+/* 텍스트 영역도 마우스를 올렸을 때 배경색이 천천히 변하도록 설정 */
+.ScrapNewsCard--container:hover .ScrapNewsCard--contents {
+    background-color: rgba(0, 0, 0, 0.3); /* 어두운 배경 추가 */
+}
+
+
+/* 별 아이콘 기본 스타일 */
+.ScrapNewsCard--star {
+    position: absolute;
+    top: 0px;
+    right: 14px;
+    font-size: 30px;
+    cursor: pointer;
+    color: gray;
+    transition: color 0.3s ease;
+}
+
+/* 스크랩 상태일 때 (노란색으로 변경) */
+.ScrapNewsCard--star.active {
+    color: gold;
+}
+
+
+
+
 
 
 

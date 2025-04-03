@@ -1,6 +1,6 @@
 import styled from './ScrapPage.module.css';
 import { useState,useEffect } from 'react';
-import HotNewsCard from '../components/newsCard/HotNewsCard';
+import ScrapNewsCard from '../components/newsCard/ScrapNewsCard';
 import Pagenation from '../components/mainPage/Pagenation';
 
 export default function ScrapPage() {
@@ -37,7 +37,7 @@ export default function ScrapPage() {
 
                 <div className={styled['ScrapNews--News']}>
                     {hotNewsToShow.map((news, index) => (
-                        <HotNewsCard key={index}  press={news.press}  title={news.title} summary={news.summary} image={news.image} year={news.year} month={news.month} day={news.day} />
+                        <ScrapNewsCard key={index}  press={news.press}  title={news.title} summary={news.summary} image={news.image} year={news.year} month={news.month} day={news.day} />
                     ))}
                 </div>
                 
