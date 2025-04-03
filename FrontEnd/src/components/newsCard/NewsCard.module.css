@@ -389,12 +389,17 @@
     font-size: 30px;
     cursor: pointer;
     color: gray;
-    transition: color 0.3s ease;
+    /* transition: color 0.3s ease; */
 }
 
 /* 스크랩 상태일 때 (노란색으로 변경) */
 .ScrapNewsCard--star.active {
     color: gold;
+    text-shadow: 
+        -1px -1px 0 rgb(160, 108, 12),  
+         1px -1px 0 rgb(160, 108, 12), 
+        -1px  1px 0 rgb(160, 108, 12), 
+         1px  1px 0 rgb(160, 108, 12), 
 }
 
 

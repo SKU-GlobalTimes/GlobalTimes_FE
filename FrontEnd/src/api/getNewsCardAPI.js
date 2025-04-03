@@ -99,20 +99,43 @@ export async function getSearch(input) {
 // scrapPage - Scrap News Card //
 export async function getScrap() {
     try {
-        const ids = JSON.parse(localStorage.getItem("ids") || "[]");
-        const queryString = ids.map(id => `id=${id}`).join("&");
+        const storedScrapIds = JSON.parse(localStorage.getItem('scrapIds')) || []; // 저장된 ID 가져오기
+        console.log("불러온 scrapIds: ", storedScrapIds);
+
+        if (storedScrapIds.length === 0) return [];
+
+        const queryString = storedScrapIds.map(id => `id=${id}`).join("&");
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/scrap?${queryString}`;
-        const response = await axios.get(baseUrl);
-        console.log("Scrap: \n" + response.data);
         
-        if(response.data.success === true){
-            return response.data;
+        const response = await axios.get(baseUrl);
+
+        console.log("Scrap 응답: ", response.data);
+
+        if (response.data.isSuccess) {
+            // 날짜를 분리해서 새로운 객체 생성
+            const formattedResults = response.data.data.map(article => {
+                if (!article.publishedAt) {
+                    console.warn("날짜 정보 없음:", article);
+                    return { ...article, year: "", month: "", day: "" }; // 날짜 없는 경우 빈 값 처리
+                }
+
+                const date = new Date(article.publishedAt); // 날짜 변환
+                return {
+                    ...article,
+                    year: date.getFullYear().toString(),
+                    month: (date.getMonth() + 1).toString().padStart(2, '0'), // 두 자리수 맞춤
+                    day: date.getDate().toString().padStart(2, '0'), // 두 자리수 맞춤
+                };
+            });
+
+            return formattedResults;
+        } else {
+            console.log("설마...?");
+            return [];
         }
     } catch (error) {
         console.error("스크랩 뉴스 데이터를 불러오는 데 실패했습니다:", error);
         return [];
     }
 }
-
-
 

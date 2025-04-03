@@ -1,42 +1,44 @@
 import styles from './Pagenation.module.css';
 import PropTypes from 'prop-types';
 
-function Pagenation({ currentPage, totalPages, onPageChange }) {
+function Pagenation({ currentPage, totalPages, onPageChange}) {
+
+  
+
+  function getPageNumbers() {
+    const maxVisiblePages = 3; 
+    const halfVisible = Math.floor(maxVisiblePages/2);
+
+    let startPage = Math.max(1, currentPage - halfVisible); 
+    let endPage = Math.min(totalPages,startPage + maxVisiblePages -1);
+
+    if (endPage-startPage +1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    return Array.from({length: endPage - startPage + 1 }, (_, idx) => startPage + idx);
+  }
+
+
 
   // 페이지 화살표
   function prevClick() {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
+    if(currentPage > 1) {
+      onPageChange(currentPage-1);
     }
   }
-
   function nextClick() {
-    if (currentPage < totalPages) {
+    if (currentPage<totalPages){
       onPageChange(currentPage + 1);
     }
   }
 
 
-  function getPageNumbers() {
-    const maxVisiblePages = 3; 
-    const halfVisible = Math.floor(maxVisiblePages / 2);
-
-    let startPage = Math.max(1, currentPage - halfVisible); 
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    return Array.from({ length: endPage - startPage + 1 }, (_, idx) => startPage + idx);
-  }
-
-
-
   return (
     <div className={styles.pagenationContainer}>
       
-      {currentPage > 1 ? (
+      {currentPage > 1 ? 
+      (
         <button
           className={`${styles.pagenationButton} ${currentPage === 1 ? styles.hidden : ''}`}
           onClick={prevClick}
@@ -51,13 +53,14 @@ function Pagenation({ currentPage, totalPages, onPageChange }) {
         <button
           key={pageNumber}
           className={`${styles.pagenationButton} ${pageNumber === currentPage ? styles.activePage : ''}`}
-          onClick={() => onPageChange(pageNumber)}
+          onClick={() => {onPageChange(pageNumber); }}
         >
-          {pageNumber}
+          { pageNumber }
         </button>
       ))}
 
-      {currentPage < totalPages ? (
+      {currentPage<totalPages ? 
+      (
         <button
           className={`${styles.pagenationButton} ${currentPage === totalPages ? styles.hidden : ''}`}
           onClick={nextClick}
@@ -66,6 +69,7 @@ function Pagenation({ currentPage, totalPages, onPageChange }) {
           &gt;
         </button>
       ) : null}
+
     </div>
   );
 }

@@ -4,7 +4,7 @@ import styled from "./NewsCard.module.css";
 import { useNavigate } from "react-router-dom";
 
 export default function ScrapNewsCard({ id, press, title, summary, image, year, month, day }) {
-    const [isScrapped, setIsScrapped] = useState(false);
+    const [isScrapped, setIsScrapped] = useState(true);
     const navigate = useNavigate();
 
     function handleClickNewsCard(){

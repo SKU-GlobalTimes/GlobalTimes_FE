@@ -2,30 +2,51 @@ import styled from './ScrapPage.module.css';
 import { useState,useEffect } from 'react';
 import ScrapNewsCard from '../components/newsCard/ScrapNewsCard';
 import Pagenation from '../components/mainPage/Pagenation';
+import BlankNews from '../components/mainPage/BlankNews';
+import { getScrap } from '../api/getNewsCardAPI';
 
 export default function ScrapPage() {
-    const [hotNews, setHotNews] = useState([]);
-    const [hotPage, setHotPage] = useState(1);
+    const [scrapNews, setScrapNews] = useState([]);
+    const [scrapPage, setScrapPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const newsPerPage = 12;
 
     useEffect(() => {
-        setHotNews([
-            { press: "BBC", title: "러시아와 우크라이나, 흑해에서의 해상 휴전 합의", summary: "러시아와 우크라이나는 사우디아라비아에서 열린 평화 회담 후 해상 휴전을 합의했습니다.", image: "/image_37.png", year: "2025", month: "3", day: "29" },
-            { press: "CNN", title: "Hot News 2", summary: "이것은 두 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "Reuters", title: "Hot News 3", summary: "세 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "The Guardian", title: "Hot News 4", summary: "네 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "NY Times", title: "Hot News 5", summary: "다섯 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "Washington Post", title: "Hot News 6", summary: "여섯 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "Al Jazeera", title: "Hot News 7", summary: "일곱 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "Le Monde", title: "Hot News 8", summary: "여덟 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "The Times", title: "Hot News 9", summary: "아홉 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-            { press: "NHK", title: "Hot News 10", summary: "열 번째 핫 뉴스 요약입니다.", image: "/economy.png", year: "2025", month: "3", day: "29" },
-        ]);
-        
-    }, []);
-
-    const hotPerPage = 6;
-    const hotTotalPages = Math.ceil(hotNews.length / hotPerPage);
-    const hotNewsToShow = hotNews.slice((hotPage - 1) * hotPerPage, hotPage * hotPerPage);
+        async function fetchScrapNews() {
+            
+            const storedScrapIds = JSON.parse(localStorage.getItem("ids") || "[]");
+            
+            console.log("📌 저장된 스크랩 뉴스 ID 목록:", storedScrapIds);
+    
+            // 전체 페이지 수 계산
+            const newTotalPages = Math.ceil(storedScrapIds.length / newsPerPage);
+            console.log("📌 계산된 총 페이지 수:", newTotalPages);
+    
+            // 현재 페이지가 전체 페이지보다 크면 1로 리셋
+            if (scrapPage > newTotalPages) {
+                console.log("⚠️ 현재 페이지가 전체 페이지보다 크므로 1로 변경:", scrapPage, "➡ 1");
+                setScrapPage(1);
+            }
+    
+            setTotalPages(newTotalPages);
+    
+            // 현재 페이지에 해당하는 ID들 가져오기
+            const startIdx = (scrapPage - 1) * newsPerPage;
+            const currentPageIds = storedScrapIds.slice(startIdx, startIdx + newsPerPage);
+            console.log("📌 현재 페이지에서 가져올 뉴스 ID 목록:", currentPageIds);
+    
+            if (currentPageIds.length > 0) {
+                const data = await getScrap(currentPageIds);
+                console.log("📌 가져온 스크랩 뉴스 데이터:", data);
+                setScrapNews(data);
+            } else {
+                console.log("⚠️ 현재 페이지에 해당하는 뉴스가 없음.");
+                setScrapNews([]);
+            }
+        }
+    
+        fetchScrapNews();
+    }, [scrapPage]);
 
 
     return(
@@ -36,16 +57,30 @@ export default function ScrapPage() {
                 </div>
 
                 <div className={styled['ScrapNews--News']}>
-                    {hotNewsToShow.map((news, index) => (
-                        <ScrapNewsCard key={index}  press={news.press}  title={news.title} summary={news.summary} image={news.image} year={news.year} month={news.month} day={news.day} />
-                    ))}
+                    {scrapNews.length > 0 ? (
+                        scrapNews.map((news) => (
+                            <ScrapNewsCard
+                                key={news.id}
+                                id={news.id}
+                                press={news.sourceName}
+                                title={news.title}
+                                summary={news.description}
+                                image={news.urlToImage}
+                                year={news.year}
+                                month={news.month}
+                                day={news.day}
+                            />
+                        ))
+                    ) : (
+                        <BlankNews message="스크랩한 뉴스가 없습니다" /> // 👈 추가!
+                    )}
                 </div>
                 
                 <div className={styled['ScrapNews--pages']}>
                         <Pagenation
-                            currentPage={hotPage}
-                            totalPages={hotTotalPages}
-                            onPageChange={setHotPage}
+                            currentPage={scrapPage}
+                            totalPages={totalPages}
+                            onPageChange={setScrapPage}
                         />
                 </div>
             </div>
