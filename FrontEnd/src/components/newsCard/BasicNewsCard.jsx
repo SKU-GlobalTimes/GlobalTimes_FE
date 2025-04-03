@@ -2,11 +2,11 @@ import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 
-export default function BasicNewsCard({press, title, summary, image, year, month, day }) {
+export default function BasicNewsCard({id, press, title, summary, image, year, month, day }) {
     const navigate = useNavigate();
     
     function handleClickNewsCard(){
-        console.log('클릭됨.');
+        console.log(id + '클릭됨.');
         navigate('/detail');
     }
 
@@ -39,6 +39,7 @@ export default function BasicNewsCard({press, title, summary, image, year, month
 }
 
 BasicNewsCard.propTypes = {
+    id: PropTypes.number.isRequired,
     press: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
