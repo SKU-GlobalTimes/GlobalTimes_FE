@@ -1,8 +1,11 @@
+import PropTypes from 'prop-types';
 import styled from './News.module.css';
 import SearchNewsCard from '../newsCard/SearchNewsCard';
 
-export default function SearchNews() {
 
+export default function SearchNews({ searchResults = [] }) {
+
+    /*
     const searchResults = [
         { press: "The Times", title: "검색 뉴스 1", summary: "이것은 검색된 뉴스 요약입니다. 이것은 검색된 뉴스 요약입니다.이것은 검색된 뉴스 요약입니다.이것은 검색된 뉴스 요약입니다.이것은 검색된 뉴스 요약입니다.이것은 검색된 뉴스 요약입니다.이것은 검색된 뉴스 요약입니다.", image: "/america.png", year: "2025", month: "3", day: "30" },
         { press: "The Times", title: "검색 뉴스 2", summary: "이것은 두 번째 검색 뉴스 요약입니다.", image: "/america.png", year: "2025", month: "3", day: "30" },
@@ -36,6 +39,7 @@ export default function SearchNews() {
         { press: "The Times", title: "검색 뉴스 30", summary: "서른 번째 검색 뉴스 요약입니다.", image: "/america.png", year: "2025", month: "3", day: "30" },
         { press: "The Times", title: "검색 뉴스 31", summary: "서른 번째 검색 뉴스 요약입니다.", image: "/america.png", year: "2025", month: "3", day: "30" }
     ];
+    */
     
 
     return(
@@ -47,11 +51,30 @@ export default function SearchNews() {
 
                 <div className={styled['SearchNews--News']}>
                     {searchResults.map((news, index) => (
-                        <SearchNewsCard key={index} press={news.press} title={news.title} summary={news.summary} image={news.image} year={news.year} month={news.month} day={news.day}  />
+                        <SearchNewsCard key={index} press={news.sourceName} title={news.title} summary={news.description} image={news.urlToImage} year={news.year} month={news.month} day={news.day}  />
                     ))}
                 </div>
             </div>
         </div>
     )
 }
+
+
+
+SearchNews.propTypes = {
+    searchResults: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            sourceName: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            description: PropTypes.string,
+            urlToImage: PropTypes.string,
+            publishedAt: PropTypes.string.isRequired, // 원래 날짜 형태
+            year: PropTypes.string.isRequired,
+            month: PropTypes.string.isRequired,
+            day: PropTypes.string.isRequired,
+        })
+    ).isRequired
+};
+
 

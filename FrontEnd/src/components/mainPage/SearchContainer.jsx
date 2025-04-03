@@ -14,11 +14,16 @@ export default function SearchContainer(props) {
 
     function handleKeyDown(event) {
         if (event.key === 'Enter') {
-            document.getElementById('searchButton').click(); 
+            setIsSearch(false);
+            setIsSearch(true);
+            // document.getElementById('searchButton').click(); 
         }
     }
     
-    function handleClickBtn() {
+    function handleClickDownBtn(){
+        setIsSearch(false);
+    }
+    function handleClickUpBtn() {
         setIsSearch(true);
     }
 
@@ -38,7 +43,8 @@ export default function SearchContainer(props) {
                 <button 
                     id="searchButton"
                     className={styled['searchContainer--searchButton']}
-                    onClick={handleClickBtn}
+                    onMouseDown={handleClickDownBtn}
+                    onMouseUp={handleClickUpBtn}
                 >검색</button>
             </div>
             

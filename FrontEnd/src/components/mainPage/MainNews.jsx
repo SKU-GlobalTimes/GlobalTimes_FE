@@ -4,6 +4,8 @@ import BasicNewsCard from '../newsCard/BasicNewsCard';
 import Pagenation from './Pagenation';
 import { useState, useEffect } from 'react';
 
+import { getHot } from '../../api/getNewsCardAPI';
+
 export default function MainNews(){
     const [hotNews, setHotNews] = useState([]);
     const [basicNews, setBasicNews] = useState([]);
@@ -51,6 +53,13 @@ export default function MainNews(){
     }, []);
 
 
+    useEffect(()=>{
+        getHot(hotPage-1, 6);
+    }, [setHotPage])
+
+    useEffect(()=>{
+        getHot(basicPage-1, 6);
+    }, [setBasicPage])
 
     const hotPerPage = 6;
     const basicPerPage = 8;

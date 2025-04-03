@@ -37,14 +37,32 @@ export async function getLatest(page, size) {
 
 
 // mainPage - Search News Card //
+// response.data.data.originalText
 export async function getSearch(input) {
     try {
+        console.log("input: " + input);
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/search?text=${input}`;
         const response = await axios.get(baseUrl);
-        console.log("Search: \n" + response.data);
-        
-        if(response.data.success === true){
-            return response.data;
+
+        console.log("응답: " + response.data);
+
+        if (response.data.isSuccess === true) {
+            console.log("기사들:" + response.data.data.searchArticles);
+            // 날짜를 분리해서 새로운 객체 생성
+            const formattedResults = response.data.data.searchArticles.map(article => {
+                const date = new Date(article.publishedAt); // 문자열을 Date 객체로 변환
+                return {
+                    ...article,
+                    year: date.getFullYear().toString(),
+                    month: (date.getMonth() + 1).toString().padStart(2, '0'), // 두 자리로 맞춤
+                    day: date.getDate().toString().padStart(2, '0'), // 두 자리로 맞춤
+                };
+            });
+
+            return formattedResults;
+        }
+        else{
+            console.log("설마...?");
         }
     } catch (error) {
         console.error("검색 뉴스 결과 데이터를 불러오는 데 실패했습니다:", error);
