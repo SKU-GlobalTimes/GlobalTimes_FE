@@ -1,7 +1,7 @@
 import styled from './MainPage.module.css';
-import SearchContainer from './SearchContainer';
-import MainNews from './MainNews';
-import SearchNews from './SearchNews';
+import SearchContainer from '../components/mainPage/SearchContainer';
+import MainNews from '../components/mainPage/MainNews';
+import SearchNews from '../components/mainPage/SearchNews';
 import { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 

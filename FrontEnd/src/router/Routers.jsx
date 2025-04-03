@@ -2,9 +2,9 @@ import { Routes as ReactRouters, Route } from 'react-router-dom';
 
 // pages
 import LandingPage from '../pages/LandingPage';
-import MainPage from '../components/mainPage/MainPage';
+import MainPage from '../pages/MainPage';
 import DetailsPage from '../pages/DetailsPage';
-import ScrapPage from '../components/scrapPage/ScrapPage';
+import ScrapPage from '../pages/ScrapPage';
 
 // layouts
 import MainLayout from '../layouts/MainLayout';

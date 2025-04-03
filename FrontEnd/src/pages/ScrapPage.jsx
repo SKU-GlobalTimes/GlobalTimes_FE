@@ -1,7 +1,7 @@
 import styled from './ScrapPage.module.css';
 import { useState,useEffect } from 'react';
-import HotNewsCard from '../newsCard/HotNewsCard';
-import Pagenation from '../mainPage/Pagenation';
+import HotNewsCard from '../components/newsCard/HotNewsCard';
+import Pagenation from '../components/mainPage/Pagenation';
 
 export default function ScrapPage() {
     const [hotNews, setHotNews] = useState([]);
