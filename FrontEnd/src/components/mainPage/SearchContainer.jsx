@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { useState } from 'react';
 
 export default function SearchContainer(props) {
-    const { searchTerm, setSearchTerm, setIsSearch} = props;
+    const { searchTerm, setSearchTerm, onSearch} = props;
     const [value, setValue] = useState(searchTerm || ''); 
 
     function handleInputChange(event){
@@ -13,19 +13,11 @@ export default function SearchContainer(props) {
     }
 
     function handleKeyDown(event) {
-        if (event.key === 'Enter') {
-            setIsSearch(false);
-            setIsSearch(true);
-            // document.getElementById('searchButton').click(); 
+        if (event.key === "Enter" && value.trim()) {
+            onSearch(); // 
         }
     }
     
-    function handleClickDownBtn(){
-        setIsSearch(false);
-    }
-    function handleClickUpBtn() {
-        setIsSearch(true);
-    }
 
     return(
         <div className={styled['searchContainer--container']}>
@@ -43,8 +35,8 @@ export default function SearchContainer(props) {
                 <button 
                     id="searchButton"
                     className={styled['searchContainer--searchButton']}
-                    onMouseDown={handleClickDownBtn}
-                    onMouseUp={handleClickUpBtn}
+                    onClick={onSearch}
+                    disabled={!value.trim()}
                 >검색</button>
             </div>
             
@@ -55,7 +47,7 @@ export default function SearchContainer(props) {
 SearchContainer.propTypes = {
     searchTerm: PropTypes.string.isRequired,   // searchTerm은 string이어야 함
     setSearchTerm: PropTypes.func.isRequired,  // setSearchTerm은 함수여야 함
-    setIsSearch: PropTypes.func.isRequired,
+    onSearch: PropTypes.func.isRequired,
 };
 
 

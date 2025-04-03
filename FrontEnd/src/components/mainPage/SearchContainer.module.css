@@ -62,7 +62,10 @@
     outline: none;
 }
 
-
+.searchContainer--searchButton:disabled {
+    background-color: #ccc;
+    cursor:default;
+}
 
 
 

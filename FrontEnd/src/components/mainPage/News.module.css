@@ -120,3 +120,23 @@
 
 
 
+  /* Blank News */
+  .BlankNews--Container{
+    width: 70vw;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .BlankNews--Message{
+    font-size: 30px;
+    font-weight: bold;
+    color: #979797;
+  }
+
+
+
+
+
+
