@@ -59,7 +59,8 @@ const GlobeComponent = () => {
     const markers = countries.map((country) => ({
       lat: country.latlng[0],
       lng: country.latlng[1],
-      name: country.cca2, // 2글자 국가 코드 사용
+      countryCode: country.cca2,
+      label: country.name.common,
     }));
 
     globe
@@ -70,10 +71,11 @@ const GlobeComponent = () => {
       .pointRadius(() => 0.8)
       .pointColor(() => "rgba(125, 231, 50, 0.5)")
       .pointResolution(10)
+      .pointLabel((d) => d.label)
       .onPointClick((marker) => {
-        const countryCode = marker.name;
+        const countryCode = marker.countryCode;
         if (countryCodeMap[countryCode]) {
-          setSelectedCountry(countryCode); // 선택한 국가 코드 저장
+          setSelectedCountry(countryCode);
         }
       });
 
