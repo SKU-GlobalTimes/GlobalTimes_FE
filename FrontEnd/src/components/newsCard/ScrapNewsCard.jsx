@@ -11,8 +11,7 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
     const navigate = useNavigate();
 
     function handleClickNewsCard(){
-        console.log(id + '클릭됨.');
-        navigate('/detail');
+        navigate(`/detail/${id}`);
     }
 
     const toggleScrap = (e) => {

@@ -6,8 +6,7 @@ export default function HotNewsCard({ id, press, title, summary, image, year, mo
     const navigate = useNavigate();
     
     function handleClickNewsCard(){
-        console.log(id + '클릭됨.');
-        navigate('/detail');
+        navigate(`/detail/${id}`);
     }
 
     return(

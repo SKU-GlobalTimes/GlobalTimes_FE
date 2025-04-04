@@ -6,8 +6,7 @@ export default function BasicNewsCard({id, press, title, summary, image, year, m
     const navigate = useNavigate();
     
     function handleClickNewsCard(){
-        console.log(id + '클릭됨.');
-        navigate('/detail');
+        navigate(`/detail/${id}`);
     }
 
     return(

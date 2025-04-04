@@ -16,7 +16,7 @@ export default function Routes() {
             <Route path="/" element={<MainLayout />}>
                 <Route index element={<LandingPage />} />
                 <Route path='main' element={<MainPage />} />
-                <Route path='detail' element={<DetailsPage />} />
+                <Route path="/detail/:id" element={<DetailsPage />} />
                 <Route path='scrap' element={<ScrapPage />} />
             </Route>
         </ReactRouters>
