@@ -10,6 +10,11 @@ export default function Chatbot({ articleId }) {
     ]);
     const chatRef = useRef(null);
 
+    useEffect(() => {
+        setMessages([{ type: "bot", text: "안녕하세요! 무엇을 도와드릴까요?" }]);
+    }, [articleId]);
+    
+
     const handleSend = () => {
         if (!input.trim()) return;
 
