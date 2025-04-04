@@ -1,44 +1,52 @@
 .pagenationContainer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2vh;
-    gap: 0.5rem;
-    position: relative;
-  }
-  
-  .pagenationButton {
-    background-color: transparent;
-    border-radius: 4px;
-    padding: 10px 15px; 
-    font-size: 10px;
-    cursor: pointer;
-    color: black;
-    border: none;
-  }
-  
-  .pagenationButton:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px; /* 텍스트와 밑줄 간격 조정 */
-    text-decoration-color: black;
-  }
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4vh;
+  gap: 0.1rem;
+  position: relative;
+}
 
-  .hidden {
-    visibility: hidden;
-    width: 30px; 
-    height: 30px;
-  }
+.pagenationButton {
+  margin: 0 4px;
+  padding: 6px 12px;
+  border: none;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  outline: none;
+}
 
-  
-  .activePage {
-    background-color: black;
-    color: white;
-    text-decoration: none;
-  }
+.pagenationButton:focus {
+  outline: none;
+}
 
 
+.pagenationButton:hover {
+  background-color: #f0f0f0;
+  transition: all 0.3s ease;
+}
 
 
-  
+.activePage {
+  background-color: rgb(255, 191, 53);
+  color: white;
+  font-weight: bold;
+}
+
+
+.pagenationButton.activePage:hover {
+  background-color: rgb(255, 191, 53);
+  color: white;
+}
+
+/* ... 표시용 */
+.ellipsis {
+  margin: 0 6px;
+  font-size: 16px;
+  color: #aaa;
+}

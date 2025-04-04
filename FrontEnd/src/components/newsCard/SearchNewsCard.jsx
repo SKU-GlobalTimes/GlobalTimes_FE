@@ -19,7 +19,7 @@ export default function SearchNewsCard({ id, press, title, summary, image, year,
                         {summary}
                     </p>
                 </div>
-                <p className={styled['searchNewsCard--contents__date']}>{year}.{month}.{day} | ({id}) </p>
+                <p className={styled['searchNewsCard--contents__date']}>{year}.{month}.{day}</p>
             </div>
             <div className={styled['searchNewsCard--imageContainer']}>
                 <div 

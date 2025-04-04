@@ -21,7 +21,7 @@ export default function BasicNewsCard({id, press, title, summary, image, year, m
                 </div>
                 
                 <div className={styled['basicNewsCard--contents__dateContainer']}>
-                    <p className={styled['basicNewsCard--contents__date']}>{year}.{month}.{day} | ({id})</p>
+                    <p className={styled['basicNewsCard--contents__date']}>{year}.{month}.{day}</p>
                 </div>
             </div>
             <div className={styled['basicNewsCard--imageContainer']}>

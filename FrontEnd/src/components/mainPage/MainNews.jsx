@@ -11,7 +11,7 @@ export default function MainNews(){
     const [basicNews, setBasicNews] = useState([]);
     const [hotPage, setHotPage] = useState(1);
     const [basicPage, setBasicPage] = useState(1);
-    const hotTotalPages = 5;
+    const hotTotalPages = 7;
     const basicTotalPages = 10;
 
 
