@@ -142,6 +142,7 @@
     margin: 3px 0;
     font-size: 11px;
     font-weight: 300;
+    line-height: 13px;
     transition: text-decoration 0.3s ease;
 
     /* 말줄임표 (...) 적용 */
@@ -395,10 +396,6 @@
 .ScrapNewsCard--star:hover {
     transform: scale(1.1);
 }
-
-
-
-
 
 
 
