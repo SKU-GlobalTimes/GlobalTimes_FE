@@ -7,6 +7,7 @@ import StarFilled from "../../assets/icons/star_filled.svg";
 import StarBlank from "../../assets/icons/star_blank.svg";
 
 export default function ScrapNewsCard({ id, press, title, summary, image, year, month, day }) {
+    const articleId = id;
     const [isScrapped, setIsScrapped] = useState(true);
     const navigate = useNavigate();
 
@@ -14,9 +15,19 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
         navigate(`/detail/${id}`);
     }
 
+
     const toggleScrap = (e) => {
         e.stopPropagation();  // 부모 div 클릭 이벤트 방지
         setIsScrapped(!isScrapped);
+
+        const storedScrapIds = JSON.parse(localStorage.getItem('scrapIds')) || [];
+
+        // articleId가 배열에 있는 경우 제거
+        const updatedScrapIds = storedScrapIds.filter(id => id !== articleId);
+
+        localStorage.setItem('scrapIds', JSON.stringify(updatedScrapIds));
+        console.log("Updated scrapIds =", localStorage.getItem("scrapIds"));
+
     };
 
     return(
