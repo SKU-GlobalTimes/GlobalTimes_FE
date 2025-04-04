@@ -3,6 +3,8 @@ import SearchContainer from '../components/mainPage/SearchContainer';
 import MainNews from '../components/mainPage/MainNews';
 import SearchNews from '../components/mainPage/SearchNews';
 import BlankNews from '../components/mainPage/BlankNews';
+// import GoogleTranslate from "../api/GoogleTranslate";
+
 import { useState } from 'react';
 
 import { getSearch } from '../api/getNewsCardAPI';
@@ -55,6 +57,13 @@ export default function MainPage() {
             ) : (
                 <BlankNews message="검색 결과가 없습니다." />
             )}
+
+            {/*
+            <div>
+                <GoogleTranslate />
+            </div>
+            */}
+            
         </div>
     )
 }
