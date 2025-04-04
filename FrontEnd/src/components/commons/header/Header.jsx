@@ -12,24 +12,22 @@ export default function Header() {
   const isHome = location.pathname === "/";
 
   function handleMainPageClick() {
-    navigate('/main', {state: {isSearch: false}});
-    window.location.reload();  // 페이지 강제 새로고침
+    navigate("/main", { state: { isSearch: false } });
+    window.location.reload(); // 페이지 강제 새로고침
   }
 
   return (
     <div
       className={`${styles.header} ${
         isHome ? styles.whiteText : styles.blackText
-      }`}
+      } ${isHome ? styles.blackBackground : styles.whiteBackground}`}
     >
       <div className={styles.logoContainer}>
-        <img src={Logo} className={styles.image} onClick={() => navigate("/")} />
-        {/* <p
+        <img
+          src={Logo}
+          className={styles.image}
           onClick={() => navigate("/")}
-          className={location.pathname === "/" ? styles.active : ""}
-        >
-          GLOBAL TIMES
-        </p> */}
+        />
       </div>
       <p
         onClick={handleMainPageClick}
