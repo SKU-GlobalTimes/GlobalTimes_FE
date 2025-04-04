@@ -13,26 +13,19 @@ export default function ScrapPage() {
 
     useEffect(() => {
         async function fetchScrapNews() {
-            
-            const storedScrapIds = JSON.parse(localStorage.getItem("ids") || "[]");
-    
-            // 전체 페이지 수 계산
+            const storedScrapIds = JSON.parse(localStorage.getItem("scrapIds") || "[]");
             const newTotalPages = Math.ceil(storedScrapIds.length / newsPerPage);
-    
-            // 현재 페이지가 전체 페이지보다 크면 1로 리셋
-            if (scrapPage > newTotalPages) {
-                setScrapPage(1);
-            }
-    
             setTotalPages(newTotalPages);
     
-            // 현재 페이지에 해당하는 ID들 가져오기
             const startIdx = (scrapPage - 1) * newsPerPage;
             const currentPageIds = storedScrapIds.slice(startIdx, startIdx + newsPerPage);
+            console.log(`Current Page: ${scrapPage}`, currentPageIds);
     
             if (currentPageIds.length > 0) {
                 const data = await getScrap(currentPageIds);
-                setScrapNews(data);
+
+                const filteredData = data.filter(news => currentPageIds.includes(news.id));
+                setScrapNews(filteredData);
             } else {
                 setScrapNews([]);
             }
@@ -51,30 +44,34 @@ export default function ScrapPage() {
 
                 <div className={styled['ScrapNews--News']}>
                     {scrapNews.length > 0 ? (
-                        scrapNews.map((news) => (
-                            <ScrapNewsCard
-                                key={news.id}
-                                id={news.id}
-                                press={news.sourceName}
-                                title={news.title}
-                                summary={news.description}
-                                image={news.urlToImage}
-                                year={news.year}
-                                month={news.month}
-                                day={news.day}
-                            />
-                        ))
+                        <div className={styled['ScrapNews--News__container']}>
+                            <div className={styled['ScrapNews--News__items']}>
+                            {scrapNews.map((news) => (
+                                <ScrapNewsCard
+                                    key={news.id}
+                                    id={news.id}
+                                    press={news.sourceName}
+                                    title={news.title}
+                                    summary={news.description}
+                                    image={news.urlToImage}
+                                    year={news.year}
+                                    month={news.month}
+                                    day={news.day}
+                                />
+                            ))}
+                            </div>
+                            
+                            <div className={styled['ScrapNews--pages']}>
+                                <Pagenation
+                                    currentPage={scrapPage}
+                                    totalPages={totalPages}
+                                    onPageChange={setScrapPage}
+                                />
+                            </div>
+                        </div>
                     ) : (
-                        <BlankNews message="스크랩한 뉴스가 없습니다" /> // 👈 추가!
+                        <BlankNews message="스크랩한 뉴스가 없습니다" /> 
                     )}
-                </div>
-                
-                <div className={styled['ScrapNews--pages']}>
-                        <Pagenation
-                            currentPage={scrapPage}
-                            totalPages={totalPages}
-                            onPageChange={setScrapPage}
-                        />
                 </div>
             </div>
         </div>

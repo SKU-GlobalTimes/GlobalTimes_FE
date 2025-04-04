@@ -3,6 +3,9 @@ import { useState } from "react";
 import styled from "./NewsCard.module.css";
 import { useNavigate } from "react-router-dom";
 
+import StarFilled from "../../assets/icons/star_filled.svg";
+import StarBlank from "../../assets/icons/star_blank.svg";
+
 export default function ScrapNewsCard({ id, press, title, summary, image, year, month, day }) {
     const [isScrapped, setIsScrapped] = useState(true);
     const navigate = useNavigate();
@@ -34,15 +37,16 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
                 
                 <div className={styled['ScrapNewsCard--contents__dateContainer']}>
                     <p className={styled['ScrapNewsCard--contents__date']}>{year}.{month}.{day}</p>
+                    <p className={styled['ScrapNewsCard--contents__date']}> ({id}) </p>
                 </div>
             </div>
             
-            <div 
-                className={`${styled['ScrapNewsCard--star']} ${isScrapped ? styled['active'] : ''}`} 
+            <img 
+                src={isScrapped ? StarFilled : StarBlank} 
+                alt="스크랩 버튼"
+                className={styled['ScrapNewsCard--star']}
                 onClick={toggleScrap}
-            >
-                ★
-            </div>
+            />
         </div>
     )
 

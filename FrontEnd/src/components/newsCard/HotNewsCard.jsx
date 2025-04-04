@@ -27,6 +27,7 @@ export default function HotNewsCard({ id, press, title, summary, image, year, mo
                 
                 <div className={styled['hotNewsCard--contents__dateContainer']}>
                     <p className={styled['hotNewsCard--contents__date']}>{year}.{month}.{day}</p>
+                    <p className={styled['hotNewsCard--contents__date']}> ({id}) </p>
                 </div>
             </div>
             
