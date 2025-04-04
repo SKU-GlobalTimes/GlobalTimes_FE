@@ -6,7 +6,6 @@ import axios from "axios";
 export async function getHot(page, size) {
     try {
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/articles/popular?page=${page}&size=${size}`;
-        console.log("hot= " + baseUrl);
         const response = await axios.get(baseUrl);
         
         if (response.data.isSuccess === true) {
@@ -69,7 +68,6 @@ export async function getLatest(page, size) {
 export async function getSearch(input) {
     try {
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/search?text=${input}`;
-        console.log("search= " + baseUrl);
         const response = await axios.get(baseUrl);
 
 
@@ -106,7 +104,6 @@ export async function getScrap() {
 
         const queryString = storedScrapIds.map(id => `id=${id}`).join("&");
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/scrap?${queryString}`;
-        console.log("scrap= " + baseUrl);
         const response = await axios.get(baseUrl);
 
         if (response.data.isSuccess) {

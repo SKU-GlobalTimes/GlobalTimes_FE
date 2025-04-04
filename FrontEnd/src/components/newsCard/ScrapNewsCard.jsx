@@ -25,8 +25,6 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
         const updatedScrapIds = storedScrapIds.filter(id => id !== articleId);
 
         localStorage.setItem('scrapIds', JSON.stringify(updatedScrapIds));
-        console.log("Updated scrapIds =", localStorage.getItem("scrapIds"));
-
     };
 
     return(

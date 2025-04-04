@@ -26,8 +26,6 @@ export default function ArticleDetail({ id, newsDetail, content }) {
         localStorage.setItem('scrapIds', JSON.stringify(updatedScrapIds));
         setIsScrapped(false);
     }
-
-    console.log("scrapIds = ", localStorage.getItem("scrapIds"));
   }
 
   return (

@@ -20,7 +20,6 @@ export default function ScrapPage() {
     
             const startIdx = (scrapPage - 1) * newsPerPage;
             const currentPageIds = storedScrapIds.slice(startIdx, startIdx + newsPerPage);
-            console.log(`Current Page: ${scrapPage}`, currentPageIds);
     
             if (currentPageIds.length > 0) {
                 const data = await getScrap(currentPageIds);
