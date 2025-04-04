@@ -8,7 +8,6 @@
   color: currentColor;
   box-sizing: border-box;
   max-width: calc(100vw - 17px);
-  margin-top: 25px;
 }
 
 .header p {
@@ -148,4 +147,14 @@
   height: 3px;
   background-color: currentColor;
   transform: translateX(-50%);
+}
+
+.image{
+  margin-top: 1px;
+  width: 90px;
+  height: 60px;
+}
+
+.logoContainer{
+
 }

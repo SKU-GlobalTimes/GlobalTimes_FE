@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./Chatbot.module.css";
-import { Send } from "lucide-react"; // 아이콘 사용
+import { Send } from "lucide-react";
+import { getNewsDetailsAsk } from "../../api/detailsAPI.js";
 
-export default function Chatbot() {
+export default function Chatbot({ articleId }) {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState([
         { type: "bot", text: "안녕하세요! 무엇을 도와드릴까요?" }
@@ -16,13 +17,25 @@ export default function Chatbot() {
         setMessages(newMessages);
         setInput("");
 
-        setTimeout(() => {
-            setMessages([...newMessages, { type: "bot", text: "현재 학습 중이에요! 더 정확한 답변을 준비할게요." }]);
-        }, 1000);
+        // 봇의 응답을 빈 문자열로 추가
+        const botMsg = { type: "bot", text: "" };
+        setMessages([...newMessages, botMsg]);
+
+        getNewsDetailsAsk(
+            articleId,
+            input,
+            (chunk) => {
+                setMessages((prev) => {
+                    const updated = [...prev];
+                    updated[updated.length - 1].text += chunk; // 새 글자만 추가
+                    return updated;
+                });
+            },
+            (error) => console.error("스트리밍 에러:", error)
+        );
     };
 
     useEffect(() => {
-        // 스크롤을 최신 메시지로 이동
         chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
     }, [messages]);
 
@@ -42,7 +55,7 @@ export default function Chatbot() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="질문을 입력하세요..."
-                    onKeyDown={(e) => e.key === "Enter" && handleSend()} // 엔터로 전송
+                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 />
                 <button onClick={handleSend}>
                     <Send size={20} />
