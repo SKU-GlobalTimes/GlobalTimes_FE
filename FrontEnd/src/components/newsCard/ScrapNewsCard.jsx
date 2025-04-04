@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
-import { useState } from "react";
 import styled from "./NewsCard.module.css";
 import { useNavigate } from "react-router-dom";
 
 import StarFilled from "../../assets/icons/star_filled.svg";
 import StarBlank from "../../assets/icons/star_blank.svg";
 
-export default function ScrapNewsCard({ id, press, title, summary, image, year, month, day }) {
+export default function ScrapNewsCard({ id, press, title, summary, image, year, month, day, isScrapped, setIsScrapped }) {
     const articleId = id;
-    const [isScrapped, setIsScrapped] = useState(true);
+    
     const navigate = useNavigate();
 
     function handleClickNewsCard(){
@@ -77,6 +76,8 @@ ScrapNewsCard.propTypes = {
     image: PropTypes.string.isRequired,
     year: PropTypes.string.isRequired,
     month: PropTypes.string.isRequired,
-    day: PropTypes.string.isRequired
+    day: PropTypes.string.isRequired,
+    isScrapped: PropTypes.bool.isRequired,
+    setIsScrapped: PropTypes.func.isRequired,
 };
 

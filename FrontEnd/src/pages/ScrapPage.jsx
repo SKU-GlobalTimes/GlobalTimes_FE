@@ -9,6 +9,7 @@ export default function ScrapPage() {
     const [scrapNews, setScrapNews] = useState([]);
     const [scrapPage, setScrapPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isScrapped, setIsScrapped] = useState(true);
     const newsPerPage = 12;
 
     useEffect(() => {
@@ -29,10 +30,12 @@ export default function ScrapPage() {
             } else {
                 setScrapNews([]);
             }
+
+            setIsScrapped(true);
         }
     
         fetchScrapNews();
-    }, [scrapPage]);
+    }, [scrapPage, isScrapped]);
 
 
     return(
@@ -57,6 +60,8 @@ export default function ScrapPage() {
                                     year={news.year}
                                     month={news.month}
                                     day={news.day}
+                                    isScrapped={isScrapped}
+                                    setIsScrapped={setIsScrapped}
                                 />
                             ))}
                             </div>
