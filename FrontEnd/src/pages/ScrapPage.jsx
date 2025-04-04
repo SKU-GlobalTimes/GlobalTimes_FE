@@ -9,6 +9,7 @@ export default function ScrapPage() {
     const [scrapNews, setScrapNews] = useState([]);
     const [scrapPage, setScrapPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isScrapped, setIsScrapped] = useState(true);
     const newsPerPage = 12;
 
     useEffect(() => {
@@ -19,7 +20,6 @@ export default function ScrapPage() {
     
             const startIdx = (scrapPage - 1) * newsPerPage;
             const currentPageIds = storedScrapIds.slice(startIdx, startIdx + newsPerPage);
-            console.log(`Current Page: ${scrapPage}`, currentPageIds);
     
             if (currentPageIds.length > 0) {
                 const data = await getScrap(currentPageIds);
@@ -29,10 +29,12 @@ export default function ScrapPage() {
             } else {
                 setScrapNews([]);
             }
+
+            setIsScrapped(true);
         }
     
         fetchScrapNews();
-    }, [scrapPage]);
+    }, [scrapPage, isScrapped]);
 
 
     return(
@@ -57,6 +59,8 @@ export default function ScrapPage() {
                                     year={news.year}
                                     month={news.month}
                                     day={news.day}
+                                    isScrapped={isScrapped}
+                                    setIsScrapped={setIsScrapped}
                                 />
                             ))}
                             </div>

@@ -1,9 +1,32 @@
 import styles from "./ArticleDetail.module.css";
 import { FaBookmark } from "react-icons/fa";
+import { useState } from "react";
 
-export default function ArticleDetail({ newsDetail, content }) {
+export default function ArticleDetail({ id, newsDetail, content }) {
+  const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
     newsDetail;
+
+  const [isScrapped, setIsScrapped] = useState(() => {
+    const storedScrapIds = JSON.parse(localStorage.getItem("scrapIds")) || [];
+    return storedScrapIds.includes(articleId);
+  });
+
+  function clickScrapBTN() {
+    const storedScrapIds = JSON.parse(localStorage.getItem('scrapIds')) || [];
+
+    if (!storedScrapIds.includes(articleId)) {
+        storedScrapIds.push(articleId);
+        localStorage.setItem('scrapIds', JSON.stringify(storedScrapIds)); // 키 수정
+        setIsScrapped(true);
+    }
+    else{
+        // articleId가 배열에 있는 경우 제거
+        const updatedScrapIds = storedScrapIds.filter(id => id !== articleId);
+        localStorage.setItem('scrapIds', JSON.stringify(updatedScrapIds));
+        setIsScrapped(false);
+    }
+  }
 
   return (
     <div className={styles.articleDetail}>
@@ -14,9 +37,14 @@ export default function ArticleDetail({ newsDetail, content }) {
         </p>
         <div className={styles.stats}>
           <span>조회수 {viewCount}</span>
-          <span className={styles.scrap}>
-            스크랩 <FaBookmark className={styles.icon} />
-          </span>
+          <button 
+            className={styles.scrap}
+            onClick={clickScrapBTN}
+            >
+            스크랩 <FaBookmark 
+                className={`${styles.icon} ${isScrapped ? styles.active : ""}`} 
+              />
+          </button>
         </div>
       </div>
       <p className={styles.meta}>
