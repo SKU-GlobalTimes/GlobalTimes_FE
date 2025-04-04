@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import styles from "./Header.module.css";
+import Logo from "../../../assets/logo/logo.png";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -21,12 +22,15 @@ export default function Header() {
         isHome ? styles.whiteText : styles.blackText
       }`}
     >
-      <p
-        onClick={() => navigate("/")}
-        className={location.pathname === "/" ? styles.active : ""}
-      >
-        GLOBAL TIMES
-      </p>
+      <div className={styles.logoContainer}>
+        <img src={Logo} className={styles.image} onClick={() => navigate("/")} />
+        {/* <p
+          onClick={() => navigate("/")}
+          className={location.pathname === "/" ? styles.active : ""}
+        >
+          GLOBAL TIMES
+        </p> */}
+      </div>
       <p
         onClick={handleMainPageClick}
         className={location.pathname === "/main" ? styles.active : ""}
