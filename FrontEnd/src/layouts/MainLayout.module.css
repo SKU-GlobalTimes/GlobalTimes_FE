@@ -3,28 +3,17 @@
     position: relative;
     min-height: 100vh;
     min-width: 100vw;
-    z-index: 0;
   }
   
-  /* 랜딩 페이지에만 배경 이미지 설정 */
-  .layout.landing-page {
-    background-image: url('/backgroundImg.png');
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed; /* 배경이 스크롤 시 고정되도록 */
-    z-index: 0;
-    overflow: hidden;
-  }
   
   /* Header와 Footer는 배경 위에 오도록 z-index 설정 */
   header, footer {
     position: relative;
-    z-index: 1;
   }
   
   /* Outlet에 해당하는 페이지 콘텐츠는 기본적으로 배경 위에 오도록 */
   main {
     position: relative;
-    z-index: 2;
+ 
   }
   
