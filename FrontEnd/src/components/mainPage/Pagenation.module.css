@@ -1,4 +1,4 @@
-.pagination {
+.pagenationContainer {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -8,7 +8,7 @@
     position: relative;
   }
   
-  .paginationButton {
+  .pagenationButton {
     background-color: transparent;
     border-radius: 4px;
     padding: 10px 15px; 
@@ -18,7 +18,7 @@
     border: none;
   }
   
-  .paginationButton:hover {
+  .pagenationButton:hover {
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 4px; /* 텍스트와 밑줄 간격 조정 */
@@ -37,3 +37,8 @@
     color: white;
     text-decoration: none;
   }
+
+
+
+
+  

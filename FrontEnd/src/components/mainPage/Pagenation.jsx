@@ -1,71 +1,75 @@
-import styles from './Pagenation.module.css';
+import styled from './Pagenation.module.css';
 import PropTypes from 'prop-types';
 
-function Pagenation({ currentPage, totalPages, onPageChange }) {
-  // 이전 페이지 버튼 핸들러
-  function handlePrevClick() {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
+function Pagenation({ currentPage, totalPages, onPageChange}) {
+
+  
+
+  function getPageNumbers() {
+    const maxVisiblePages = 3; 
+    const halfVisible = Math.floor(maxVisiblePages/2);
+
+    let startPage = Math.max(1, currentPage - halfVisible); 
+    let endPage = Math.min(totalPages,startPage + maxVisiblePages -1);
+
+    if (endPage-startPage +1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
+
+    return Array.from({length: endPage - startPage + 1 }, (_, idx) => startPage + idx);
   }
 
-  // 다음 페이지 버튼 핸들러
-  function handleNextClick() {
-    if (currentPage < totalPages) {
+
+
+  // 페이지 화살표
+  function prevClick() {
+    if(currentPage > 1) {
+      onPageChange(currentPage-1);
+    }
+  }
+  function nextClick() {
+    if (currentPage<totalPages){
       onPageChange(currentPage + 1);
     }
   }
 
-  // 페이지 번호 계산
-  function getPageNumbers() {
-    const maxVisiblePages = 3; // 화면에 보일 최대 페이지 숫자
-    const halfVisible = Math.floor(maxVisiblePages / 2);
-
-    let startPage = Math.max(1, currentPage - halfVisible); // 시작 페이지 계산
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1); // 끝 페이지 계산
-
-    // 시작 페이지가 1이 아닌 경우, 끝 페이지 조정
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    return Array.from({ length: endPage - startPage + 1 }, (_, idx) => startPage + idx);
-  }
 
   return (
-    <div className={styles.pagination}>
-      {/* 이전 페이지 버튼 */}
-      {currentPage > 1 ? (
+    <div className={styled['pagenationContainer']}>
+      
+      {currentPage > 1 ? 
+      (
         <button
-          onClick={handlePrevClick}
+        className={`${styled.pagenationButton} ${currentPage === 1 ? styled.hidden : ''}`}
+          onClick={prevClick}
           disabled={currentPage === 1}
-          className={`${styles.paginationButton} ${currentPage === 1 ? styles.hidden : ''}`}
         >
           &lt;
         </button>
       ) : null}
 
-      {/* 페이지 번호 버튼 */}
+      {/* 페이지 숫자 */}
       {getPageNumbers().map((pageNumber) => (
         <button
           key={pageNumber}
-          onClick={() => onPageChange(pageNumber)}
-          className={`${styles.paginationButton} ${pageNumber === currentPage ? styles.activePage : ''}`}
+          className={`${styled.pagenationButton} ${pageNumber === currentPage ? styled.activePage : ''}`}
+          onClick={() => {onPageChange(pageNumber); }}
         >
-          {pageNumber}
+          { pageNumber }
         </button>
       ))}
 
-      {/* 다음 페이지 버튼 */}
-      {currentPage < totalPages ? (
+      {currentPage<totalPages ? 
+      (
         <button
-          onClick={handleNextClick}
+        className={`${styled.pagenationButton} ${currentPage === totalPages ? styled.hidden : ''}`}
+          onClick={nextClick}
           disabled={currentPage === totalPages}
-          className={`${styles.paginationButton} ${currentPage === totalPages ? styles.hidden : ''}`}
         >
           &gt;
         </button>
       ) : null}
+
     </div>
   );
 }

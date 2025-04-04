@@ -2,12 +2,11 @@ import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 
-export default function SearchNewsCard({ press, title, summary, image, year, month, day }) {
+export default function SearchNewsCard({ id, press, title, summary, image, year, month, day }) {
     const navigate = useNavigate();
     
     function handleClickNewsCard(){
-        console.log('클릭됨.');
-        navigate('/detail');
+        navigate(`/detail/${id}`);
     }
 
     return(
@@ -20,7 +19,7 @@ export default function SearchNewsCard({ press, title, summary, image, year, mon
                         {summary}
                     </p>
                 </div>
-                <p className={styled['searchNewsCard--contents__date']}>{year}.{month}.{day}</p>
+                <p className={styled['searchNewsCard--contents__date']}>{year}.{month}.{day} | ({id}) </p>
             </div>
             <div className={styled['searchNewsCard--imageContainer']}>
                 <div 
@@ -33,6 +32,7 @@ export default function SearchNewsCard({ press, title, summary, image, year, mon
 }
 
 SearchNewsCard.propTypes = {
+    id: PropTypes.number.isRequired,
     press: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
