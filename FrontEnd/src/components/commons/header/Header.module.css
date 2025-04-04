@@ -21,6 +21,15 @@
   transition: color 0.3s ease-in-out, font-weight 0.3s ease-in-out;
 }
 
+.whiteBackground {
+  background-color: white;
+}
+
+.blackBackground {
+  background-color: black;
+}
+
+
 .whiteText p,
 .whiteText select,
 .whiteText option {
@@ -150,9 +159,8 @@
 }
 
 .image{
-  margin-top: 1px;
-  width: 90px;
-  height: 60px;
+  width: 200px;
+  height: 45px;
 }
 
 .logoContainer{
