@@ -63,7 +63,7 @@ export default function DetailsPage() {
               />
             </div>
           ) : (
-            <ArticleDetail newsDetail={newsDetail} content={content} />
+            <ArticleDetail id={id} newsDetail={newsDetail} content={content} />
           )}
           <Chatbot articleId={id} />
         </div>
