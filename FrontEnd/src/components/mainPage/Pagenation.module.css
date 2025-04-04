@@ -1,0 +1,44 @@
+.pagenationContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2vh;
+    gap: 0.5rem;
+    position: relative;
+  }
+  
+  .pagenationButton {
+    background-color: transparent;
+    border-radius: 4px;
+    padding: 10px 15px; 
+    font-size: 10px;
+    cursor: pointer;
+    color: black;
+    border: none;
+  }
+  
+  .pagenationButton:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px; /* 텍스트와 밑줄 간격 조정 */
+    text-decoration-color: black;
+  }
+
+  .hidden {
+    visibility: hidden;
+    width: 30px; 
+    height: 30px;
+  }
+
+  
+  .activePage {
+    background-color: black;
+    color: white;
+    text-decoration: none;
+  }
+
+
+
+
+  

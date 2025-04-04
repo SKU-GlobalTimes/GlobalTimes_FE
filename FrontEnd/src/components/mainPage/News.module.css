@@ -1,40 +1,75 @@
 
 /* Main News */
 .MainNews--container{
+    
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: max-content;
     gap: 40px;
     width: 100vw;
-    padding: 20px 0px 40px 0px;
+    padding: 0px 0px 60px 0px;
 }
 
-.MainNews--hotIssues--titleContainer{
-    width: 72vw;
+.MainNews--Newscontainer{
+    width: 75vw;
+    height: max-content;
+    margin: 50px 0;
 }
 
-.MainNews--hotIssues--title{
+.MainNews--titleContainer{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.MainNews--title{
     font-size: 2vw;
     margin:0;
 }
 
-.MainNews--hotIssues{
-    width: 80vw;
-    min-height: max-content;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 30px;
-}
 
-.MainNews--Issues{
-    width: 100vw;
-    min-height: max-content;
+
+.MainNews--News {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3열 그리드 설정 */
+    gap: 10px;
+    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
+    align-items: center; /* 세로 정렬 */
+    min-height: 50vh; /* 프로젝트가 없을 때도 공간 확보 */
+    padding: 0px 10px;
+  }
+  
+  @media (max-width: 768px) {
+    /* 화면 가로 크기가 768px 이하일 때 */
+    .MainNews--News {
+      grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+    }
+  }
+
+  .MainNews--News__latest {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 3열 그리드 설정 */
+    gap: 10px;
+    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
+    align-items: center; /* 세로 정렬 */
+    min-height: 32vh; /* 프로젝트가 없을 때도 공간 확보 */
+    padding: 0px 10px;
+  }
+  
+  @media (max-width: 768px) {
+    /* 화면 가로 크기가 768px 이하일 때 */
+    .MainNews--News__latest {
+      grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+    }
+  }
+
+.MainNews--pages{
+    width: 100%;
+    height: 7vh;
     display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
+    flex-direction: row;
     justify-content: center;
+    align-items: center;
 }
 
 
@@ -47,60 +82,72 @@
     min-height: max-content;
     gap: 40px;
     width: 100vw;
-    padding: 20px 0px 40px 0px;
+    padding: 0px 0px 60px 0px;
 }
 
-.SearchNews--hotIssues--titleContainer{
-    width: 72vw;
+.SearchNews--Newscontainer{
+    width: 75vw;
+    height: max-content;
+    margin: 50px 0;
 }
 
-.SearchNews--hotIssues--title{
-    font-size: 2vw;
+.SearchNews--titleContainer{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.SearchNews--title{
+    font-size: 2cqi;
     margin:0;
 }
 
-.SearchNews--resultList{
-    width: 80vw;
-    min-width: 500px;
-    height: 60vh;
+.SearchNews--News{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 3열 그리드 설정 */
+    gap: 5px;
+    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
+    min-height: 50vh; /* 프로젝트가 없을 때도 공간 확보 */
+}
+
+@media (max-width: 768px) {
+    /* 화면 가로 크기가 768px 이하일 때 */
+    .SearchNews--News {
+      grid-template-columns: repeat(1, 1fr); /* 2열로 변경 */
+    }
+  }
+
+
+
+
+
+  /* Blank News */
+  .BlankNews--Container{
+    width: 70vw;
+    height: 70vh;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px 0px;
-    margin-bottom: 30px;
-    border-radius: 10px;
-    overflow-y: auto;
+    gap: 30px;
+  }
+
+  .BlankNews--Message{
+    font-size: 30px;
+    font-weight: bold;
+    color: #979797;
+  }
+
+.BlankNews--Button { 
+  font-size: 14px;
+  padding: 15px 40px;
+  color: white;
+  background-color: #4b4b4d;
 }
 
-/* 스크롤바 전체 스타일 */
-.SearchNews--resultList::-webkit-scrollbar {
-    width: 8px; /* 스크롤바 너비 */
+.BlankNews--Button:hover {
+  background-color: #1d1d20;
+  transition: background-color 0.3s ease;
 }
-
-/* 위아래 화살표 숨기기 */
-.SearchNews--resultList::-webkit-scrollbar-button {
-    display: none;
-}
-
-/* 스크롤바 트랙 (배경) */
-.SearchNews--resultList::-webkit-scrollbar-track {
-    background: transparent; /* 배경 투명 */
-}
-
-/* 스크롤바 자체 (움직이는 부분) */
-.SearchNews--resultList::-webkit-scrollbar-thumb {
-    background: #D9D9D9; /* 바 색상 */
-    border-radius: 4px; /* 바 둥글게 */
-}
-
-/* 마우스 호버 시 스크롤바 색상 변경 */
-.SearchNews--resultList::-webkit-scrollbar-thumb:hover {
-    background: #c4c4c4;
-}
-
-
-
 
 
 

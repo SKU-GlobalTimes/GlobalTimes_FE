@@ -1,15 +1,25 @@
 import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
+import { useNavigate } from "react-router-dom";
 
-export default function SearchNewsCard({ title, summary, image }) {
+export default function SearchNewsCard({ id, press, title, summary, image, year, month, day }) {
+    const navigate = useNavigate();
+    
+    function handleClickNewsCard(){
+        navigate(`/detail/${id}`);
+    }
 
     return(
-        <div className={styled['searchNewsCard--container']}>
+        <div className={styled['searchNewsCard--container']} onClick={handleClickNewsCard}>
             <div className={styled['searchNewsCard--contents']}>
-                <p className={styled['searchNewsCard--contents__title']}>{title}</p>
-                <p className={styled['searchNewsCard--contents__preview']}>
-                    {summary}
-                </p>
+                <div className={styled['searchNewsCard--contents__topContainer']}>
+                    <p className={styled['searchNewsCard--contents__press']}>{press}</p>
+                    <p className={styled['searchNewsCard--contents__title']}>{title}</p>
+                    <p className={styled['searchNewsCard--contents__preview']}>
+                        {summary}
+                    </p>
+                </div>
+                <p className={styled['searchNewsCard--contents__date']}>{year}.{month}.{day} | ({id}) </p>
             </div>
             <div className={styled['searchNewsCard--imageContainer']}>
                 <div 
@@ -22,8 +32,14 @@ export default function SearchNewsCard({ title, summary, image }) {
 }
 
 SearchNewsCard.propTypes = {
+    id: PropTypes.number.isRequired,
+    press: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired
+    image: PropTypes.string.isRequired,
+    year: PropTypes.string.isRequired,
+    month: PropTypes.string.isRequired,
+    day: PropTypes.string.isRequired
 };
+
 
