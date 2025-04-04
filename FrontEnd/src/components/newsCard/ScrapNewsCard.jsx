@@ -44,7 +44,6 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
                 
                 <div className={styled['ScrapNewsCard--contents__dateContainer']}>
                     <p className={styled['ScrapNewsCard--contents__date']}>{year}.{month}.{day}</p>
-                    <p className={styled['ScrapNewsCard--contents__date']}> ({id}) </p>
                 </div>
             </div>
             
