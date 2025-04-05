@@ -5,6 +5,7 @@ import LandingPage from '../pages/LandingPage';
 import MainPage from '../components/mainPage/MainPage';
 import DetailsPage from '../pages/DetailsPage';
 import ScrapPage from '../components/scrapPage/ScrapPage';
+import IntroPage from "../pages/IntroPage";
 
 // layouts
 import MainLayout from '../layouts/MainLayout';
@@ -18,6 +19,7 @@ export default function Routes() {
                 <Route path='main' element={<MainPage />} />
                 <Route path='detail' element={<DetailsPage />} />
                 <Route path='scrap' element={<ScrapPage />} />
+                <Route path='intro' element={<IntroPage />} />
             </Route>
         </ReactRouters>
     )
