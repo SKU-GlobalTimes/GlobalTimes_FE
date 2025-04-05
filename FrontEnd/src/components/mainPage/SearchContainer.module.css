@@ -53,13 +53,15 @@
 
 .searchContainer--searchButton{
     font-size: 0.8vw;
+    font-weight: bold;
     width: 9%;
     height: 100%;
-    color:white;
+    color: white;
     background-color: rgb(44, 44, 44);
     border: none;
     border-radius: 12px;
     outline: none;
+    box-shadow: 3px 3px 5px #a7a7a7;
 }
 
 .searchContainer--searchButton:hover {
