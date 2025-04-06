@@ -3,7 +3,7 @@ import styled from './News.module.css';
 import SearchNewsCard from '../newsCard/SearchNewsCard';
 
 
-export default function SearchNews({ searchResults = [] }) {
+export default function SearchNews({ searchResults = [], translatedText = "" }) {
 
 
     return(
@@ -15,7 +15,12 @@ export default function SearchNews({ searchResults = [] }) {
 
                 <div className={styled['SearchNews--News']}>
                     {searchResults.map((news) => (
-                        <SearchNewsCard key={news.id} id={news.id} press={news.sourceName} title={news.title} summary={news.description} image={news.urlToImage} year={news.year} month={news.month} day={news.day}  />
+                        <SearchNewsCard 
+                            key={news.id} id={news.id} press={news.sourceName} 
+                            title={news.title} summary={news.description} image={news.urlToImage} 
+                            year={news.year} month={news.month} day={news.day}  
+                            translatedText={translatedText}
+                        />
                     ))}
                 </div>
             </div>
@@ -38,7 +43,8 @@ SearchNews.propTypes = {
             month: PropTypes.string.isRequired,
             day: PropTypes.string.isRequired,
         })
-    ).isRequired
+    ).isRequired,
+    translatedText: PropTypes.string.isRequired
 };
 
 
