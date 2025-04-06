@@ -82,7 +82,8 @@
     /* 레이아웃 */
     position: fixed;
     top: 250px;
-    width: 100%;
+    left: 0px;
+    width: 95%;
     height: 100%;
     z-index: 1;
     display: flex;
@@ -137,7 +138,8 @@
 
         & img{
             width: 85%;
-            height: 50%;
+            min-width: 300px;
+            object-fit: cover;
         }
     }
   }
