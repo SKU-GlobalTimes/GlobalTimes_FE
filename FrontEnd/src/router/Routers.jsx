@@ -2,9 +2,9 @@ import { Routes as ReactRouters, Route } from 'react-router-dom';
 
 // pages
 import LandingPage from '../pages/LandingPage';
-import MainPage from '../components/mainPage/MainPage';
+import MainPage from '../pages/MainPage';
 import DetailsPage from '../pages/DetailsPage';
-import ScrapPage from '../components/scrapPage/ScrapPage';
+import ScrapPage from '../pages/ScrapPage';
 import IntroPage from "../pages/IntroPage";
 
 // layouts
@@ -17,7 +17,7 @@ export default function Routes() {
             <Route path="/" element={<MainLayout />}>
                 <Route index element={<LandingPage />} />
                 <Route path='main' element={<MainPage />} />
-                <Route path='detail' element={<DetailsPage />} />
+                <Route path="/detail/:id" element={<DetailsPage />} />
                 <Route path='scrap' element={<ScrapPage />} />
                 <Route path='intro' element={<IntroPage />} />
             </Route>
