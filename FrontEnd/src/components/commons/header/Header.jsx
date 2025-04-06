@@ -8,7 +8,8 @@ export default function Header() {
   const location = useLocation();
 
   // 현재 경로가 "/"이면 흰색 테마 적용
-  const isHome = location.pathname === "/";
+  const isHome = location.pathname === "/" || 
+                  location.pathname === "/intro";
 
   function handleMainPageClick() {
     navigate("/main", { state: { isSearch: false } });
@@ -41,8 +42,8 @@ export default function Header() {
         마이스크랩
       </p>
       <p
-        onClick={() => navigate("/about")}
-        className={location.pathname === "/about" ? styles.active : ""}
+        onClick={() => navigate("/intro")}
+        className={location.pathname === "/intro" ? styles.active : ""}
       >
         서비스 소개
       </p>

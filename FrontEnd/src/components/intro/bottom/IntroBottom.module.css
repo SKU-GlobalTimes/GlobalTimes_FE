@@ -1,0 +1,114 @@
+/* 전체 영역 */
+.introPage--container{
+    /* 레이아웃 */
+    width: 100%;
+    height: 1700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15%;
+
+    /* 스타일 */
+    background-color: white;
+    color: black;
+}
+
+
+/* 팀 소개 */
+.introPage--team{
+    /* 레이아웃 */
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15%;
+    
+
+    & .contentDiv{
+        /* 레이아웃 */
+        flex: 5;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        margin-left: 5%;
+
+        & p{
+            /* 레이아웃 */
+            width: 280px;
+            margin-bottom: 5%;
+
+            /* 스타일 */
+            font-size: 45px;
+            font-weight: 500;
+
+            /* 밑줄 */
+            border-bottom: 2px solid;
+            padding-bottom: 4px;
+        }
+
+        & span{
+            /* 레이아웃 */
+            width: 70%;
+
+            /* 스타일 */
+            font-size: 25px;
+            font-weight: 400;
+
+            word-break: keep-all; /* 단어 중간에서 줄바꿈 X */
+            overflow-wrap: break-word; /* 너무 길면 단어 단위로 줄바꿈 허용 */
+        }
+    }
+
+    & .imgDiv{
+        flex: 5;
+
+        & img{
+            /* 레이아웃 */
+            width: 90%;
+            /* height: 100%; */
+            object-fit: cover;
+
+            min-width: 450px;
+        }
+    }
+}
+
+/* 코딩하는 사진 */
+.introPage--works{
+    /* 레이아웃 */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    margin-bottom: 5%;
+
+    & p{
+        /* 레이아웃 */
+        width: 300px;
+        margin-left: 5%;
+
+        /* 스타일 */
+        font-size: 45px;
+        font-weight: 500;
+
+        /* 밑줄 */
+        border-bottom: 2px solid;
+        padding-bottom: 4px;
+    }
+}
+
+/* 이미지 그리디 */
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3열 */
+    grid-template-rows: repeat(2, 1fr);    /* 2행 */
+    gap: 5%; /* 이미지 간격 */
+    width: fit-content;
+
+    & img{
+        width: 100%;
+        aspect-ratio: 1/1; /* 정사각형 유지 */
+        object-fit: cover;
+        border-radius: 8px;
+    }
+  }
+  

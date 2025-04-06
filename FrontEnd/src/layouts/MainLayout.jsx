@@ -9,11 +9,15 @@ import Header from '../components/commons/header/Header';
 export default function MainLayout() {
   const location = useLocation();
 
+  const isIntroPage = location.pathname === "/intro";
+
   const isFooterVisible = location.pathname !== "/"; // /일 때 footer 숨기기
 
   return (
     <div 
-      className={classNames(styles.layout)}
+      className={classNames(styles.layout, {
+        [styles['intro-page']]: isIntroPage,
+      })}
     >
       <Header />
       <Outlet />
