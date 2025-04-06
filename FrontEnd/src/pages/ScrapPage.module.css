@@ -1,0 +1,78 @@
+
+/* Main News */
+.ScrapNews--container{
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: max-content;
+    gap: 40px;
+    width: 100vw;
+    padding: 20px 0px 60px 0px;
+}
+
+.ScrapNews--Newscontainer{
+    width: 75vw;
+    height: max-content;
+    margin: 50px 0;
+}
+
+.ScrapNews--titleContainer{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.ScrapNews--title{
+    font-size: 2vw;
+    margin:0;
+}
+
+
+
+.ScrapNews--News {
+  height: max-content;
+  width: 75vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  }
+  
+
+  .ScrapNews--News__container{
+    width: 74vw;
+    min-height: 54vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ScrapNews--News__items{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3열 그리드 설정 */
+    gap: 10px;
+    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
+    align-items: center; /* 세로 정렬 */
+    min-height: 40vh; /* 프로젝트가 없을 때도 공간 확보 */
+    padding: 0px 10px;
+  }
+
+  @media (max-width: 768px) {
+    /* 화면 가로 크기가 768px 이하일 때 */
+    .ScrapNews--News__items {
+      grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+    }
+  }
+
+
+.ScrapNews--pages{
+    width: 100%;
+    height: 7vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
+

@@ -8,7 +8,7 @@
     min-height: max-content;
     gap: 40px;
     width: 100vw;
-    padding: 20px 0px 60px 0px;
+    padding: 0px 0px 60px 0px;
 }
 
 .MainNews--Newscontainer{
@@ -82,7 +82,7 @@
     min-height: max-content;
     gap: 40px;
     width: 100vw;
-    padding: 20px 0px 60px 0px;
+    padding: 0px 0px 60px 0px;
 }
 
 .SearchNews--Newscontainer{
@@ -106,7 +106,6 @@
     grid-template-columns: repeat(2, 1fr); /* 3열 그리드 설정 */
     gap: 5px;
     justify-content: center; /* 카드들을 가로로 중앙 정렬 */
-    align-items: center; /* 세로 정렬 */
     min-height: 50vh; /* 프로젝트가 없을 때도 공간 확보 */
 }
 
@@ -118,6 +117,37 @@
   }
 
 
+
+
+
+  /* Blank News */
+  .BlankNews--Container{
+    width: 70vw;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .BlankNews--Message{
+    font-size: 30px;
+    font-weight: bold;
+    color: #979797;
+  }
+
+.BlankNews--Button { 
+  font-size: 14px;
+  padding: 15px 40px;
+  color: white;
+  background-color: #4b4b4d;
+}
+
+.BlankNews--Button:hover {
+  background-color: #1d1d20;
+  transition: background-color 0.3s ease;
+}
 
 
 

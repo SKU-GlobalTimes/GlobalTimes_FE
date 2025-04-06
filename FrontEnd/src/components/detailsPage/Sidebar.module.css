@@ -1,81 +1,89 @@
 .sidebar {
-    width: 100%;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-top: none;
-    box-sizing: border-box;
-    max-height: 1360px;
-    overflow-y: auto;
-    
-    /* 스크롤바 스타일 */
-    scrollbar-width: thin; /* 파이어폭스용 */
-    scrollbar-color: #b0b0b0 #f1f1f1; /* 파이어폭스용 (스크롤 색, 배경 색) */
+  width: 100%;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-top: none;
+  box-sizing: border-box;
+  max-height: 1360px;
+  overflow-y: auto;
+
+  /* 스크롤바 스타일 */
+  scrollbar-width: thin; /* 파이어폭스용 */
+  scrollbar-color: #b0b0b0 #f1f1f1; /* 파이어폭스용 (스크롤 색, 배경 색) */
 }
 
 /* 크롬, 엣지, 사파리용 스크롤바 스타일 */
 .sidebar::-webkit-scrollbar {
-    width: 8px; /* 스크롤바 너비 */
+  width: 8px; /* 스크롤바 너비 */
 }
 
 .sidebar::-webkit-scrollbar-track {
-    background: #f1f1f1; /* 스크롤바 배경 */
-    border-radius: 10px;
+  background: #f1f1f1; /* 스크롤바 배경 */
+  border-radius: 10px;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background: #b0b0b0; /* 스크롤바 색상 */
-    border-radius: 10px;
-    transition: background 0.3s ease;
+  background: #b0b0b0; /* 스크롤바 색상 */
+  border-radius: 10px;
+  transition: background 0.3s ease;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: #888; /* 마우스 오버 시 색상 변경 */
+  background: #888; /* 마우스 오버 시 색상 변경 */
 }
 
-
 .sidebar h2 {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 15px;
 }
 
 .articleItem {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    cursor: pointer;
-    padding: 3%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  padding: 3%;
 }
 
 .articleItem:hover {
-    background-color: #EAEAEA;
-    border-radius: 8px;
+  background-color: #eaeaea;
+  border-radius: 8px;
 }
 
 .thumbnail {
-    width: 70px;
-    height: 70px;
-    margin-right: 20px;
+  width: 70px;
+  height: 70px;
+  margin-right: 20px;
+  border-radius: 12px;
 }
 
-.articleSource{
-    font-size: 14px;
+.articleSource {
+  font-size: 14px;
 }
 
 .articleTitle {
-    font-size: 16px;
-    font-weight: bold;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .articleTime {
-    font-size: 12px;
-    color: gray;
+  font-size: 12px;
+  color: gray;
 }
 
 .sidebar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  min-height: 100vh;
+  justify-content: center;
+}

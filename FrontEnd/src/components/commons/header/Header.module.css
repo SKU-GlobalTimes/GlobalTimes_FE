@@ -7,8 +7,6 @@
   position: relative;
   color: currentColor;
   box-sizing: border-box;
-  max-width: calc(100vw - 17px);
-  margin-top: 25px;
 }
 
 .header p {
@@ -21,6 +19,15 @@
   font-weight: bold;
   transition: color 0.3s ease-in-out, font-weight 0.3s ease-in-out;
 }
+
+.whiteBackground {
+  background-color: white;
+}
+
+.blackBackground {
+  background-color: black;
+}
+
 
 .whiteText p,
 .whiteText select,
@@ -75,7 +82,7 @@
   bottom: 0;
   left: 50%;
   width: 95%;
-  height: 1px;
+  height: 1.5px;
   background-color: currentColor;
   transform: translateX(-50%);
 }
@@ -148,4 +155,13 @@
   height: 3px;
   background-color: currentColor;
   transform: translateX(-50%);
+}
+
+.image{
+  width: 200px;
+  height: 45px;
+}
+
+.logoContainer{
+
 }

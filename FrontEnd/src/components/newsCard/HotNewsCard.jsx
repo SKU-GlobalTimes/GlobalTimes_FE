@@ -2,12 +2,11 @@ import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 
-export default function HotNewsCard({ press, title, summary, image, year, month, day }) {
+export default function HotNewsCard({ id, press, title, summary, image, year, month, day }) {
     const navigate = useNavigate();
     
     function handleClickNewsCard(){
-        console.log('클릭됨.');
-        navigate('/detail');
+        navigate(`/detail/${id}`);
     }
 
     return(
@@ -36,12 +35,13 @@ export default function HotNewsCard({ press, title, summary, image, year, month,
 
 
 HotNewsCard.propTypes = {
+    id: PropTypes.number.isRequired,
     press: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
-    year: PropTypes.number.isRequired,
-    month: PropTypes.number.isRequired,
-    day: PropTypes.number.isRequired
+    year: PropTypes.string.isRequired,
+    month: PropTypes.string.isRequired,
+    day: PropTypes.string.isRequired
 };
 
