@@ -1,12 +1,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
 import styles from "./Header.module.css";
 import Logo from "../../../assets/logo/logo.png";
+import GoogleTranslate from "../../../api/GoogleTranslate";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [language, setLanguage] = useState("KO");
 
   // 현재 경로가 "/"이면 흰색 테마 적용
   const isHome = location.pathname === "/" || 
@@ -53,10 +52,7 @@ export default function Header() {
           isHome ? styles.whiteText : styles.blackText
         }`}
       >
-        <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-          <option value="KO">한국어</option>
-          <option value="EN">English</option>
-        </select>
+        <GoogleTranslate />
       </div>
     </div>
   );

@@ -1,0 +1,11 @@
+.translateContainer {
+    font-size: 14px;
+  }
+  
+  .select {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+  }
+  
