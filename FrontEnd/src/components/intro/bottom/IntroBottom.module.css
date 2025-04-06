@@ -52,6 +52,9 @@
             /* 스타일 */
             font-size: 25px;
             font-weight: 400;
+
+            word-break: keep-all; /* 단어 중간에서 줄바꿈 X */
+            overflow-wrap: break-word; /* 너무 길면 단어 단위로 줄바꿈 허용 */
         }
     }
 

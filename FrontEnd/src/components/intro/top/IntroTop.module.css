@@ -40,6 +40,7 @@
         /* 레이아웃 */
         display: flex;
         text-align: center;
+        width: 540px;
         margin-top: 30px;
 
         /* 스타일 */
