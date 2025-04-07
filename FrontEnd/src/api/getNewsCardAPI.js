@@ -69,9 +69,10 @@ export async function getSearch(input) {
     try {
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/search?text=${input}`;
         const response = await axios.get(baseUrl);
-
+        console.log("translatedText: "+response.data.data.translatedText); // 'translatedText' <- 이게 굵게 해줄 단어
 
         if (response.data.isSuccess === true) {
+            const translatedText = response.data.data.translatedText;
             // 날짜를 분리해서 새로운 객체 생성
             const formattedResults = response.data.data.searchArticles.map(article => {
                 const date = new Date(article.publishedAt); // 문자열을 Date 객체로 변환
@@ -83,14 +84,17 @@ export async function getSearch(input) {
                 };
             });
 
-            return formattedResults;
+            return {
+                results: formattedResults,
+                translatedText: translatedText
+            };
         }
         else{
-            return [];
+            return { results: [], translatedText: "" };
         }
     } catch (error) {
         console.error("검색 뉴스 결과 데이터를 불러오는 데 실패했습니다:", error);
-        return [];
+        return { results: [], translatedText: "" };
     }
 }
 
