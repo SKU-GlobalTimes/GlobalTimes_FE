@@ -5,11 +5,10 @@ import styles from "./DetailsPage.module.css";
 import ArticleDetail from "../components/detailsPage/ArticleDetail";
 import Sidebar from "../components/detailsPage/Sidebar";
 import Chatbot from "../components/detailsPage/Chatbot";
-import { CirclesWithBar } from "react-loader-spinner";
 
 export default function DetailsPage() {
   const { id } = useParams(); // URL에서 기사 ID 가져오기
-  const [newsDetail, setNewsDetail] = useState(null);
+  const [newsDetail, setNewsDetail] = useState("");
   const [recentNewsList, setRecentNewsList] = useState([]);
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -17,25 +16,25 @@ export default function DetailsPage() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      try {
-        const [detailRes, summaryRes] = await Promise.all([
-          getNewsDetails(id),
-          getNewsDetailsSummary(id),
-        ]);
 
+      try {
+        // 먼저 뉴스 상세 요청
+        const detailRes = await getNewsDetails(id);
         if (detailRes?.isSuccess) {
           setNewsDetail(detailRes.data.newsDetail);
           setRecentNewsList(detailRes.data.recentNewsList);
         }
 
+        // 뉴스 요약 요청
+        const summaryRes = await getNewsDetailsSummary(id);
         if (summaryRes?.isSuccess && typeof summaryRes.data === "string") {
           setContent(summaryRes.data);
         }
+        setIsLoading(false);
+
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+      } 
     };
 
     if (id) {
@@ -47,24 +46,12 @@ export default function DetailsPage() {
     <div className={styles.detailsPage}>
       <div className={styles.content}>
         <div className={styles.article}>
-          {isLoading ? (
-            <div className={styles.loadingWrapper}>
-              <CirclesWithBar
-                height="100"
-                width="100"
-                color="#000"
-                outerCircleColor="#000"
-                innerCircleColor="#000"
-                barColor="#000"
-                ariaLabel="circles-with-bar-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
-                visible={true}
-              />
-            </div>
-          ) : (
-            <ArticleDetail id={id} newsDetail={newsDetail} content={content} />
-          )}
+          <ArticleDetail 
+            id={id} 
+            newsDetail={newsDetail} 
+            content={content} 
+            isLoading={isLoading}
+            />
           <Chatbot articleId={id} />
         </div>
         <div className={styles.sidebar}>

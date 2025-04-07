@@ -1,8 +1,9 @@
 import styles from "./ArticleDetail.module.css";
 import { FaBookmark } from "react-icons/fa";
 import { useState } from "react";
+import { MutatingDots } from "react-loader-spinner";
 
-export default function ArticleDetail({ id, newsDetail, content }) {
+export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
   const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
     newsDetail;
@@ -51,7 +52,22 @@ export default function ArticleDetail({ id, newsDetail, content }) {
         {sourceName} - {author}
       </p>
       <img src={urlToImage} alt="기사 이미지" className={styles.image} />
-      <p className={styles.content}>{content}</p>
+
+      {/* 기사 요약내용 */}
+      {isLoading ? (
+        <MutatingDots 
+          height={100} 
+          width={100} 
+          color="#4fa94d" 
+          secondaryColor="#ccc"
+          radius={12.5}
+          ariaLabel="mutating-dots-loading"
+          visible={true}
+        />
+        ) : (
+          <p className={styles.content}>{content}</p>
+        )
+      }
     </div>
   );
 }
