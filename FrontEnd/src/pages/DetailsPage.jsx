@@ -27,7 +27,7 @@ export default function DetailsPage() {
 
         // 뉴스 요약 요청
         const summaryRes = await getNewsDetailsSummary(id);
-        if (summaryRes?.isSuccess && typeof summaryRes.data === "string") {
+        if (summaryRes && typeof summaryRes.data === "string") {
           setContent(summaryRes.data);
         }
         setIsLoading(false);
