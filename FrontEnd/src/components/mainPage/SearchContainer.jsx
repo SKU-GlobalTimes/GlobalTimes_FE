@@ -28,7 +28,7 @@ export default function SearchContainer(props) {
                     <input 
                         className={styled['searchContainer--Input']}
                         value={value}
-                        placeholder={'뉴스 검색'}
+                        placeholder={'Search news'}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                     ></input>
@@ -38,7 +38,7 @@ export default function SearchContainer(props) {
                     className={styled['searchContainer--searchButton']}
                     onClick={onSearch}
                     disabled={!value.trim()}
-                >검색</button>
+                >Search</button>
             </div>
             
         </div>
