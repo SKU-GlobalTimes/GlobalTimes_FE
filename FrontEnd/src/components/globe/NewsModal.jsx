@@ -4,6 +4,9 @@ import { IoClose } from "react-icons/io5";
 import { getSummary } from "../../api/landingPageAPI";
 import { ClipLoader } from "react-spinners";
 
+// 번역 컴포넌트
+import TranslatedText from "../../api/TranslatedText";
+
 const NewsModal = ({ news, onClose }) => {
   const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +26,7 @@ const NewsModal = ({ news, onClose }) => {
   return (
     <div className={styles.newsModal}>
       <div className={styles.titleContainer}>
-        <p>{news.sourceName}</p>
+        <p><TranslatedText text={news.sourceName}/></p>
         <IoClose className={styles.closeIcon} onClick={onClose} />
       </div>
       <h3>
@@ -33,7 +36,7 @@ const NewsModal = ({ news, onClose }) => {
           rel="noopener noreferrer"
           className={styles.newsTitle}
         >
-          {news.title}
+          <TranslatedText text={news.title}/>
         </a>
       </h3>
       <div className={styles.contentContainer}>
@@ -51,7 +54,7 @@ const NewsModal = ({ news, onClose }) => {
               <ClipLoader color="#000" size={30} />
             </div>
           ) : (
-            <p>{summary}</p>
+            <p><TranslatedText text={summary}/></p>
           )}
         </div>
       </div>

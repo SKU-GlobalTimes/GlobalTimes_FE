@@ -6,6 +6,13 @@ import { useEffect, useState } from "react";
 // 컴포넌트
 import IntroTopAnimation from "./IntroTopAnimation";
 
+// 번역 컴포넌트
+import TranslatedText from "../../../api/TranslatedText";
+// 번역 함수
+import { fetchTranslatedText } from "../../../api/fetchTranslatedText";
+// 전역 사용자 언어
+import { useLanguage } from "../../../util/LanguageContext";
+
 // img
 import askImg from "../../../assets/askImg.png";
 import scrapImg from "../../../assets/scrapImg.png";
@@ -14,6 +21,9 @@ import summarizeImg from "../../../assets/summarizeImg.png";
 
 
 export default function IntroTop(){
+    // 전역 현재 사용자 언어
+    const { language } = useLanguage();
+
     //상단 위치
     const { ref: topRef, inView: topInView } = useInView({
         threshold: 0.8,
@@ -33,6 +43,12 @@ export default function IntroTop(){
     // 스크랩 visible여부
     const [isScrapVisible, setIsScrapVisible] = useState(false);
 
+    // 서비스 소개 변수
+    const [serviceText1, setServiceText1] = useState("사용자 언어에 맞는<br/>실시간 번역");
+    const [serviceText2, setServiceText2] = useState("AI를 통한 실시간<br/>기사 요약");
+    const [serviceText3, setServiceText3] = useState("AI를 통해 뉴스 기사에 대한<br/>상세한 답변 제공");
+    const [serviceText4, setServiceText4] = useState("스크랩을 통해 관심있는<br/>뉴스 기사를 저장");
+
     
     // 고정 시작/끝 지점 (스크롤 Y값 기준)
     const pinStart = 740;  // Our Service가 고정되는 시점
@@ -43,7 +59,20 @@ export default function IntroTop(){
     const pinAskStart = 2420; // Ask가 고정되는 시점
     const pinScrapStart = 3220; // Scrap이 고정되는 시점
 
-
+    useEffect(()=>{
+        const getTranslation = async () => {
+            const translatedText1 = await fetchTranslatedText("사용자 언어에 맞는<br/>실시간 번역", language);
+            const translatedText2 = await fetchTranslatedText("AI를 통한 실시간<br/>기사 요약", language);
+            const translatedText3 = await fetchTranslatedText("AI를 통해 뉴스 기사에 대한<br/>상세한 답변 제공", language);
+            const translatedText4 = await fetchTranslatedText("스크랩을 통해 관심있는<br/>뉴스 기사를 저장", language);
+            
+            setServiceText1(translatedText1);
+            setServiceText2(translatedText2);
+            setServiceText3(translatedText3);
+            setServiceText4(translatedText4);
+        }
+        getTranslation();
+    }, [language])
 
     useEffect(() => {
         const unsubscribe = scrollY.on("change", () => {
@@ -75,9 +104,9 @@ export default function IntroTop(){
                 className={styles['introPage--top']}
             >
                 <p>We Are</p>
-                <span>세계 각국의 뉴스를 실시간으로 AI요약 및 번역하여,<br/>
-                        시간과 언어의 장벽으로 인한 정보격차를<br />
-                        해소하고자 합니다.</span>
+                <span><TranslatedText text="세계 각국의 뉴스를 실시간으로 AI요약 및 번역하여"/>,<br/>
+                        <TranslatedText text="시간과 언어의 장벽으로 인한 정보격차를"/><br />
+                        <TranslatedText text="해소하고자 합니다."/></span>
             </motion.div>
 
 
@@ -96,32 +125,32 @@ export default function IntroTop(){
             {/* 번역 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isTranslateVisible}
-                title="1. TRANSLATE"
-                description={"사용자 언어에 맞는<br/>실시간 번역"}
+                title="TRANSLATE"
+                description={serviceText1}
                 imgSrc={translateImg}
             />
 
             {/* 요약 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isSummarizeVisible}
-                title="2. SUMMARIZE"
-                description={"AI를 통한 실시간<br/>기사 요약"}
+                title="SUMMARIZE"
+                description={serviceText2}
                 imgSrc={summarizeImg}
             />
 
             {/* 질문 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isAskVisible}
-                title="3. QUESTION"
-                description={"AI를 통해 뉴스 기사에 대한<br/>상세한 답변 제공"}
+                title="QUESTION"
+                description={serviceText3}
                 imgSrc={askImg}
             />
 
             {/* 스크랩 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isScrapVisible}
-                title="4. SCRAP"
-                description={"스크랩을 통해 관심있는<br/>뉴스 기사를 저장"}
+                title="SCRAP"
+                description={serviceText4}
                 imgSrc={scrapImg}
             />
         </div>
