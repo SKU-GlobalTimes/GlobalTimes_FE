@@ -237,16 +237,15 @@
     font-weight: 600;
 }
 
-.searchNewsCard--contents__title{
-    margin:0;
-    font-size: 17px;
+.searchNewsCard--contents__title {
     font-weight: 600;
-
-    /* 말줄임표 (...) 적용 */
-    white-space: nowrap;
+    font-size: 17px;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;        /* 2줄까지만 표시 */
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%; /* 필요하면 조절 */
+    word-break: break-word;
 }
 
 .searchNewsCard--contents__preview{
@@ -285,6 +284,36 @@
     background-size: cover;
     background-position: center center;
 }
+
+
+
+.highlight {
+    font-weight: 900;
+    color: rgb(255, 191, 53);
+    white-space: normal;
+  }
+
+
+
+
+
+/*
+// 아주 화려한 폰트 설정
+.highlight {
+    font-weight: 700;
+    color: #ffb800;
+  
+    background: linear-gradient(90deg, #fff3c2, #ffd966, #ffb800);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  
+    text-shadow: 1px 1px 2px rgba(255, 184, 28, 0.4);
+  }
+*/
 
 
 
