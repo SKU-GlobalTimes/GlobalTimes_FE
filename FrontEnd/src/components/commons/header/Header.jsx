@@ -20,8 +20,7 @@ export default function Header() {
                   location.pathname === "/intro";
 
   function handleMainPageClick() {
-    navigate("/main", { state: { isSearch: false } });
-    window.location.reload(); // 페이지 강제 새로고침
+    navigate("/main");
   }
 
   return (

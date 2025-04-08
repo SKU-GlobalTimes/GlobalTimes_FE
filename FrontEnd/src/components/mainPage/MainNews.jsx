@@ -48,7 +48,7 @@ export default function MainNews(){
         <div className={styled['MainNews--container']}>
             <div className={styled['MainNews--Newscontainer']}>
                 <div className={styled['MainNews--titleContainer']}>
-                    <h1 className={styled['MainNews--title']}>Hot News</h1>
+                    <h1 className={styled['MainNews--title']}>Popular News</h1>
                 </div>
 
                 <div className={styled['MainNews--News']}>
