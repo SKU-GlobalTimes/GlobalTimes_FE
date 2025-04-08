@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function SearchContainer(props) { 
     const navigate = useNavigate();
-    const { searchTerm, setSearchTerm, onSearch} = props;
+    const { searchTerm, setSearchTerm} = props;
     const [value, setValue] = useState(searchTerm || ''); 
     
     function handleInputChange(event){
@@ -19,6 +19,11 @@ export default function SearchContainer(props) {
             const keyword = searchTerm;
             navigate(`/search/${keyword}`);
         }
+    }
+
+    function handleClickSearch(){
+        const keyword = searchTerm;
+        navigate(`/search/${keyword}`);
     }
 
 
@@ -38,7 +43,7 @@ export default function SearchContainer(props) {
                 <button 
                     id="searchButton"
                     className={styled['searchContainer--searchButton']}
-                    onClick={onSearch}
+                    onClick={handleClickSearch}
                     disabled={!value.trim()}
                 >Search</button>
             </div>
