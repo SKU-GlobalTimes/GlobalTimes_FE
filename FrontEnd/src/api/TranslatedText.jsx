@@ -23,9 +23,6 @@ const TranslatedText = ({ text }) => {
           .replace(/…/g, "...") // 줄임표 기호 → ...
           .replace(/[“”]/g, '"'); // 쌍따옴표도 처리
 
-        console.log(cleanedText);
-        console.log(language);
-  
         try {
             const response = await axios.post(
                 "https://translation.googleapis.com/language/translate/v2",
@@ -53,7 +50,7 @@ const TranslatedText = ({ text }) => {
       };
   
       translate();
-    }, [text, language]);
+    }, [language]);
     
     console.log("translated:" + translated);
   

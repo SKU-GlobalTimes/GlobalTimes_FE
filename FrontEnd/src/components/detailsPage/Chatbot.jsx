@@ -3,8 +3,6 @@ import styles from "./Chatbot.module.css";
 import { Send } from "lucide-react";
 import { getNewsDetailsAsk } from "../../api/detailsAPI.js";
 
-//번역 컴포넌트
-import TranslatedText from "../../api/TranslatedText.jsx";
 //번역 함수 (text반환)
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 //전역 현재 사용자 언어
