@@ -52,8 +52,6 @@ const TranslatedText = ({ text }) => {
       translate();
     }, [language]);
     
-    console.log("translated:" + translated);
-  
     return <>{translated}</>;
   };
   
