@@ -1,11 +1,14 @@
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './router/Routers';
+import { LanguageProvider } from './util/LanguageContext.jsx';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes />
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </LanguageProvider>
   )
 }
 

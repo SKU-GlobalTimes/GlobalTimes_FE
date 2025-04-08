@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import styled from "./NewsCard.module.css";
 import { useNavigate } from "react-router-dom";
+import TranslatedText from '../../api/TranslatedText';
 
 import StarFilled from "../../assets/icons/star_filled.svg";
 import StarBlank from "../../assets/icons/star_blank.svg";
@@ -36,9 +37,11 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
             <div className={styled['ScrapNewsCard--contents']}>
                 <div className={styled['ScrapNewsCard--contents__letterContainer']}>
                     <p className={styled['ScrapNewsCard--contents__press']}>{press}</p>
-                    <p className={styled['ScrapNewsCard--contents__title']}>{title}</p>
+                    <p className={styled['ScrapNewsCard--contents__title']}>
+                        <TranslatedText text={title}/>
+                    </p>
                     <p className={styled['ScrapNewsCard--contents__preview']}>
-                        {summary}
+                        <TranslatedText text={summary}/>
                     </p>
                 </div>
                 

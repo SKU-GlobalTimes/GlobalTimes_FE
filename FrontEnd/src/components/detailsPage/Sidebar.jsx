@@ -2,6 +2,9 @@ import styles from "./Sidebar.module.css";
 import { useNavigate } from "react-router-dom";
 import { Bars } from "react-loader-spinner";
 
+//번역 컴포넌트
+import TranslatedText from "../../api/TranslatedText";
+
 export default function Sidebar({ recentNewsList }) {
   const navigate = useNavigate();
 
@@ -22,7 +25,7 @@ export default function Sidebar({ recentNewsList }) {
 
   return (
     <div className={styles.sidebar}>
-      <h2>최근기사</h2>
+      <h2><TranslatedText text="최근기사"/></h2>
       <ul>
         {recentNewsList.map((article) => (
           <li
@@ -36,10 +39,14 @@ export default function Sidebar({ recentNewsList }) {
               className={styles.thumbnail}
             />
             <div>
-              <p className={styles.articleSource}>{article.sourceName}</p>
-              <p className={styles.articleTitle}>{article.title}</p>
+              <p className={styles.articleSource}>
+                <TranslatedText text={article.sourceName}/>
+              </p>
+              <p className={styles.articleTitle}>
+                <TranslatedText text={article.title}/>
+              </p>
               <p className={styles.articleTime}>
-                {new Date(article.publishedAt).toLocaleString("ko-KR")}
+                <TranslatedText text={new Date(article.publishedAt).toLocaleString("ko-KR")}/>
               </p>
             </div>
           </li>
