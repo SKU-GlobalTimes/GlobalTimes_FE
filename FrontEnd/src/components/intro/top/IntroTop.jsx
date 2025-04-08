@@ -96,7 +96,7 @@ export default function IntroTop(){
             {/* 번역 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isTranslateVisible}
-                title="1. TRANSLATE"
+                title="TRANSLATE"
                 description={"사용자 언어에 맞는<br/>실시간 번역"}
                 imgSrc={translateImg}
             />
@@ -104,7 +104,7 @@ export default function IntroTop(){
             {/* 요약 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isSummarizeVisible}
-                title="2. SUMMARIZE"
+                title="SUMMARIZE"
                 description={"AI를 통한 실시간<br/>기사 요약"}
                 imgSrc={summarizeImg}
             />
@@ -112,7 +112,7 @@ export default function IntroTop(){
             {/* 질문 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isAskVisible}
-                title="3. QUESTION"
+                title="QUESTION"
                 description={"AI를 통해 뉴스 기사에 대한<br/>상세한 답변 제공"}
                 imgSrc={askImg}
             />
@@ -120,7 +120,7 @@ export default function IntroTop(){
             {/* 스크랩 소개 애니메이션 */}
             <IntroTopAnimation
                 isVisible={isScrapVisible}
-                title="4. SCRAP"
+                title="SCRAP"
                 description={"스크랩을 통해 관심있는<br/>뉴스 기사를 저장"}
                 imgSrc={scrapImg}
             />
