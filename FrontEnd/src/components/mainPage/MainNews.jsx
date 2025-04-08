@@ -42,7 +42,7 @@ export default function MainNews(){
         fetchBasicNews();
     }, [basicPage]);
 
-
+    console.log("메인?");
 
     return(
         <div className={styled['MainNews--container']}>

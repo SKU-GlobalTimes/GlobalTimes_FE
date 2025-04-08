@@ -4,9 +4,9 @@ import { Search } from "lucide-react";
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-export default function SearchContainer(props) { 
+export default function SearchContainer( ) { 
     const navigate = useNavigate();
-    const { searchTerm, setSearchTerm} = props;
+    const [ searchTerm, setSearchTerm ] = useState(null);
     const [value, setValue] = useState(searchTerm || ''); 
     
     function handleInputChange(event){

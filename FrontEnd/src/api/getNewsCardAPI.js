@@ -35,6 +35,7 @@ export async function getHot(page, size) {
 
 // mainPage - Latest News Card //
 export async function getLatest(page, size) {
+    console.log("여기가 문젠가!!!!!!!!!!!");
     try {
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/articles/latest?page=${page}&size=${size}`;
         const response = await axios.get(baseUrl);
