@@ -10,7 +10,6 @@ import { getSearch } from '../api/getNewsCardAPI';
 export default function SearchPage() {
     const { keyword } = useParams();
     const [searchTerm, setSearchTerm] = useState(keyword);
-    //const [isSearch, setIsSearch] = useState(false);
     
     const [searchResults, setSearchResults] = useState(null);
     const [translatedWord, setTranslatedWord] = useState("");
