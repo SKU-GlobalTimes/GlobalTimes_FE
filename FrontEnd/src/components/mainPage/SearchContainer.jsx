@@ -2,6 +2,7 @@ import styled from './SearchContainer.module.css'
 import PropTypes from 'prop-types';
 import { Search } from "lucide-react";
 import { useState } from 'react';
+import TranslatedText from '../../api/TranslatedText';
 
 export default function SearchContainer(props) { 
 
@@ -28,7 +29,7 @@ export default function SearchContainer(props) {
                     <input 
                         className={styled['searchContainer--Input']}
                         value={value}
-                        placeholder={'뉴스 검색'}
+                        placeholder={"search"}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                     ></input>
@@ -38,7 +39,7 @@ export default function SearchContainer(props) {
                     className={styled['searchContainer--searchButton']}
                     onClick={onSearch}
                     disabled={!value.trim()}
-                >검색</button>
+                > <TranslatedText text="검색"/></button>
             </div>
             
         </div>

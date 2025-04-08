@@ -1,6 +1,7 @@
 import styled from './NewsCard.module.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
+import TranslatedText from '../../api/TranslatedText';
 
 export default function BasicNewsCard({id, press, title, summary, image, year, month, day }) {
     const navigate = useNavigate();
@@ -14,9 +15,11 @@ export default function BasicNewsCard({id, press, title, summary, image, year, m
             <div className={styled['basicNewsCard--contents']}>
                 <div className={styled['basicNewsCard--contents__letterContainer']}>
                     <p className={styled['basicNewsCard--contents__press']}>{press}</p>
-                    <p className={styled['basicNewsCard--contents__title']}>{title}</p>
+                    <p className={styled['basicNewsCard--contents__title']}>
+                        <TranslatedText text={title}/>
+                    </p>
                     <p className={styled['basicNewsCard--contents__preview']}>
-                        {summary}
+                        <TranslatedText text={summary}/>
                     </p>
                 </div>
                 

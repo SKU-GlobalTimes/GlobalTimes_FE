@@ -15,6 +15,7 @@ export default function MainPage() {
     
     const [searchResults, setSearchResults] = useState(null);
     const [translatedWord, setTranslatedWord] = useState("");
+    const [originalWord, setOriginalWord] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -37,8 +38,9 @@ export default function MainPage() {
         if (!searchTerm.trim()) return; // 빈 값이면 검색 안 함
         setIsLoading(true); // 로딩 시작
 
-        const { results, translatedText } = await getSearch(searchTerm);
+        const { results, originalText, translatedText } = await getSearch(searchTerm);
         setSearchResults(results || []);
+        setOriginalWord(originalText || "");
         setTranslatedWord(translatedText || "");
 
         setIsLoading(false); // 로딩 끝
@@ -59,6 +61,7 @@ export default function MainPage() {
                 <SearchNews 
                     searchTerm={searchTerm} 
                     searchResults={searchResults} 
+                    originalText={originalWord}
                     translatedText={translatedWord}
                 />
             ) : (

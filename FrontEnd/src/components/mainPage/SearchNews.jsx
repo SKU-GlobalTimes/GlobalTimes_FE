@@ -2,15 +2,18 @@ import PropTypes from 'prop-types';
 import styled from './News.module.css';
 import SearchNewsCard from '../newsCard/SearchNewsCard';
 
+import TranslatedText from '../../api/TranslatedText';
 
-export default function SearchNews({ searchResults = [], translatedText = "" }) {
 
+export default function SearchNews({ searchResults = [], originalText="", translatedText = "" }) {
 
     return(
         <div className={styled['SearchNews--container']}>
             <div className={styled['SearchNews--Newscontainer']}>
                 <div className={styled['SearchNews--titleContainer']}>
-                    <h1 className={styled['SearchNews--title']}>검색 결과</h1>
+                    <h1 className={styled['SearchNews--title']}>
+                        <TranslatedText text="검색 결과"/>
+                    </h1>
                 </div>
 
                 <div className={styled['SearchNews--News']}>
@@ -19,7 +22,7 @@ export default function SearchNews({ searchResults = [], translatedText = "" }) 
                             key={news.id} id={news.id} press={news.sourceName} 
                             title={news.title} summary={news.description} image={news.urlToImage} 
                             year={news.year} month={news.month} day={news.day}  
-                            translatedText={translatedText}
+                            originalText={originalText} translatedText={translatedText}
                         />
                     ))}
                 </div>
@@ -44,6 +47,7 @@ SearchNews.propTypes = {
             day: PropTypes.string.isRequired,
         })
     ).isRequired,
+    originalText: PropTypes.string.isRequired,
     translatedText: PropTypes.string.isRequired
 };
 
