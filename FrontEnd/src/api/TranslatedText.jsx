@@ -50,7 +50,7 @@ const TranslatedText = ({ text }) => {
       };
   
       translate();
-    }, [language]);
+    }, [language, text]);
     
     return <>{translated}</>;
   };
