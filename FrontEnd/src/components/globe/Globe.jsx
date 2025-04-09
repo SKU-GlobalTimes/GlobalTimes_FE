@@ -79,6 +79,14 @@ const GlobeComponent = () => {
         }
       });
 
+    const handleResize = () => {
+      globe.width([globeRef.current.offsetWidth]);
+      globe.height([globeRef.current.offsetHeight]);
+    };
+  
+    window.addEventListener("resize", handleResize);
+    handleResize(); // 초기 사이즈 설정
+
     // 모달 외부 클릭 시 닫기
     const handleClickOutside = (event) => {
       if (newsModalRef.current && newsModalRef.current.contains(event.target)) {
@@ -97,6 +105,7 @@ const GlobeComponent = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
+      window.removeEventListener("resize", handleResize);
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
@@ -114,7 +123,7 @@ const GlobeComponent = () => {
   return (
     <div>
       {/* 지구본 표시 */}
-      <div ref={globeRef} style={{ width: "100%", height: "500px" }} />
+      <div ref={globeRef} style={{ width: "100vw", height: "100vh" }} />
 
       {selectedCountry && trendData && (
         <div ref={trendModalRef}>
