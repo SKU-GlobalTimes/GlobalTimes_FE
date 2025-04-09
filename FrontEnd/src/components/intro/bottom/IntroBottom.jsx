@@ -9,7 +9,12 @@ import TranslatedText from "../../../api/TranslatedText";
 
 // img
 import teamImg from "../../../assets/teamImg.png";
-import ourWorksImg from "../../../assets/ourWorksImg.png";
+import teamImage1 from "../../../assets/team7.jpg";
+import teamImage2 from "../../../assets/team8.jpg";
+import teamImage3 from "../../../assets/team9.jpg";
+import teamImage4 from "../../../assets/team10.jpg";
+import teamImage5 from "../../../assets/team11.jpg";
+import teamImage6 from "../../../assets/team12.jpg";
 
 export default function IntroBottom(){
     useEffect(() => {
@@ -41,12 +46,12 @@ export default function IntroBottom(){
 
             {/* 코딩 이미지 */}
             <div className={styles['gridContainer']} data-aos="fade-down" data-aos-offset="100">
-                <img src={ourWorksImg} alt=""/>
-                <img src={ourWorksImg} alt=""/>
-                <img src={ourWorksImg} alt="" />
-                <img src={ourWorksImg} alt=""/>
-                <img src={ourWorksImg} alt=""/>
-                <img src={ourWorksImg} alt=""/>
+                <img src={teamImage1} alt=""/>
+                <img src={teamImage2} alt=""/>
+                <img src={teamImage3} alt="" />
+                <img src={teamImage4} alt=""/>
+                <img src={teamImage5} alt=""/>
+                <img src={teamImage6} alt=""/>
             </div>
         </div>
     )
