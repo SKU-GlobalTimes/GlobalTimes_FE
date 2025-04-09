@@ -102,7 +102,7 @@
     grid-template-columns: repeat(3, 1fr); /* 3열 */
     grid-template-rows: repeat(2, 1fr);    /* 2행 */
     gap: 5%; /* 이미지 간격 */
-    width: fit-content;
+    width: 90%;
 
     & img{
         width: 100%;
