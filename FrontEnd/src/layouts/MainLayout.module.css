@@ -3,6 +3,7 @@
     position: relative;
     min-height: 100vh;
     min-width: 100vw;
+    padding-top: 60px;
   }
 
   /* 소개 페이지에만 배경 이미지 설정 */

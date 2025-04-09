@@ -2,7 +2,7 @@
 .introPage--container{
     /* 레이아웃 */
     width: 100%;
-    height: 1700px;
+    height: 2200px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -102,13 +102,15 @@
     grid-template-columns: repeat(3, 1fr); /* 3열 */
     grid-template-rows: repeat(2, 1fr);    /* 2행 */
     gap: 5%; /* 이미지 간격 */
-    width: fit-content;
+    width: 90%;
 
     & img{
         width: 100%;
         aspect-ratio: 1/1; /* 정사각형 유지 */
         object-fit: cover;
         border-radius: 8px;
+        box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+
     }
   }
   

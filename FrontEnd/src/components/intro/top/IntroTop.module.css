@@ -53,7 +53,7 @@
 .introPage--service {
     /* 레이아웃 */
     position: fixed;
-    top: 80px;
+    top: 130px;
     width: 100%;
     z-index: 2;
     display: flex;
@@ -82,7 +82,7 @@
 .introPage--main {
     /* 레이아웃 */
     position: fixed;
-    top: 250px;
+    top: 300px;
     left: 0px;
     width: 95%;
     height: 100%;
@@ -141,6 +141,8 @@
             width: 85%;
             min-width: 300px;
             object-fit: cover;
+
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
         }
     }
   }

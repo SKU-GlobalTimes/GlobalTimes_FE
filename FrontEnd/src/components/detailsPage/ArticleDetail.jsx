@@ -1,11 +1,12 @@
 import styles from "./ArticleDetail.module.css";
 import { FaBookmark } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { MutatingDots } from "react-loader-spinner";
 
-//번역 컴포넌트 추가
+//컴포넌트 변경
 import TranslatedText from "../../api/TranslatedText.jsx";
 
-export default function ArticleDetail({ id, newsDetail, content }) {
+export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
   const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
     newsDetail;
@@ -41,7 +42,7 @@ export default function ArticleDetail({ id, newsDetail, content }) {
           <TranslatedText text={new Date(publishedAt).toLocaleString()}/>
         </p>
         <div className={styles.stats}>
-          <span><TranslatedText text="조회수"/> {viewCount}</span>
+          <span><TranslatedText text="조회수"/>{viewCount}</span>
           <button 
             className={styles.scrap}
             onClick={clickScrapBTN}
@@ -57,7 +58,21 @@ export default function ArticleDetail({ id, newsDetail, content }) {
         {sourceName} - {author}
       </p>
       <img src={urlToImage} alt="기사 이미지" className={styles.image} />
-      <p className={styles.content}><TranslatedText text={content}/></p>
+      {/* 기사 요약내용 */}
+      {isLoading ? (
+         <MutatingDots 
+           height={100} 
+           width={100} 
+           color="#4fa94d" 
+           secondaryColor="#ccc"
+           radius={12.5}
+           ariaLabel="mutating-dots-loading"
+           visible={true}
+         />
+         ) : (
+           <p className={styles.content}><TranslatedText text={content}/></p>
+         )
+       }
     </div>
   );
 }
