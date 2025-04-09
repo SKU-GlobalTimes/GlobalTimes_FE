@@ -23,6 +23,7 @@ export default function DetailsPage() {
         if (detailRes?.isSuccess) {
           setNewsDetail(detailRes.data.newsDetail);
           setRecentNewsList(detailRes.data.recentNewsList);
+          console.log(detailRes.data.newsDetail);
         }
 
         // 뉴스 요약 요청
