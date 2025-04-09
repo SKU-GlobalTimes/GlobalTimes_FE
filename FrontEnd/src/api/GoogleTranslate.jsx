@@ -20,7 +20,7 @@ const GoogleTranslate = () => {
     window.googleTranslateElementInit = () => {
       new window.google.translate.TranslateElement(
         {
-          pageLanguage: "ko",
+          pageLanguage: "auto",
           includedLanguages:
             "ko,en,ja,zh-CN,zh-TW,fr,de,es,ru,vi,th,id,hi,ar,ta,te,bn,ur,ml,km,my,ne,lo,mn,ps,si,tg,uz,kk",
           autoDisplay: true,
