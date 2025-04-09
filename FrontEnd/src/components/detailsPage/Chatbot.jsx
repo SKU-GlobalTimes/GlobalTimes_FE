@@ -3,6 +3,11 @@ import styles from "./Chatbot.module.css";
 import { Send } from "lucide-react";
 import { getNewsDetailsAsk } from "../../api/detailsAPI.js";
 
+//번역 함수 (text반환)
+import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
+//전역 현재 사용자 언어
+import { useLanguage } from "../../util/LanguageContext.jsx";
+
 export default function Chatbot({ articleId }) {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState([
@@ -10,9 +15,21 @@ export default function Chatbot({ articleId }) {
     ]);
     const chatRef = useRef(null);
 
+    // 전역 현재 사용자 언어
+    const { language } = useLanguage();
+
+    // placeholder 변수
+    const [placeholder, setPlaceholder] = useState("질문을 입력하세요...");
+
     useEffect(() => {
-        setMessages([{ type: "bot", text: "안녕하세요! 무엇을 도와드릴까요?" }]);
-    }, [articleId]);
+        const getTranslation = async () => {
+            const translatedText = await fetchTranslatedText("안녕하세요! 무엇을 도와드릴까요?", language)
+            const translatedPlaceholder = await fetchTranslatedText("질문을 입력하세요...", language);
+            setMessages([{ type: "bot", text: translatedText }]);
+            setPlaceholder(translatedPlaceholder);
+        }
+        getTranslation();
+    }, [articleId, language]);
     
 
     const handleSend = () => {
@@ -59,7 +76,7 @@ export default function Chatbot({ articleId }) {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="질문을 입력하세요..."
+                    placeholder={placeholder}
                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 />
                 <button onClick={handleSend}>

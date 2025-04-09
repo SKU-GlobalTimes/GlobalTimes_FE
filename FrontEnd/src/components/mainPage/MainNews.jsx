@@ -4,6 +4,9 @@ import BasicNewsCard from '../newsCard/BasicNewsCard';
 import Pagenation from './Pagenation';
 import { useState, useEffect } from 'react';
 
+//번역 컴포넌트
+import TranslatedText from '../../api/TranslatedText';
+
 import { getHot, getLatest } from '../../api/getNewsCardAPI';
 
 export default function MainNews(){
@@ -42,13 +45,11 @@ export default function MainNews(){
         fetchBasicNews();
     }, [basicPage]);
 
-
-
     return(
         <div className={styled['MainNews--container']}>
             <div className={styled['MainNews--Newscontainer']}>
                 <div className={styled['MainNews--titleContainer']}>
-                    <h1 className={styled['MainNews--title']}>Hot News</h1>
+                    <h1 className={styled['MainNews--title']}><TranslatedText text="Popular News"/></h1>
                 </div>
 
                 <div className={styled['MainNews--News']}>
@@ -68,7 +69,7 @@ export default function MainNews(){
 
             <div className={styled['MainNews--Newscontainer']}>
                 <div className={styled['MainNews--titleContainer']}>
-                    <h1 className={styled['MainNews--title']}>Latest News</h1>
+                    <h1 className={styled['MainNews--title']}><TranslatedText text="Latest News"/></h1>
                 </div>
 
                 <div className={styled['MainNews--News__latest']}>

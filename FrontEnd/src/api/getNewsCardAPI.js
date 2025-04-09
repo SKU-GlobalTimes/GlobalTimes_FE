@@ -69,9 +69,9 @@ export async function getSearch(input) {
     try {
         const baseUrl = `${import.meta.env.VITE_APP_API}/api/search?text=${input}`;
         const response = await axios.get(baseUrl);
-        console.log("translatedText: "+response.data.data.translatedText); // 'translatedText' <- 이게 굵게 해줄 단어
 
         if (response.data.isSuccess === true) {
+            const originalText = response.data.data.originalText;
             const translatedText = response.data.data.translatedText;
             // 날짜를 분리해서 새로운 객체 생성
             const formattedResults = response.data.data.searchArticles.map(article => {
@@ -83,9 +83,11 @@ export async function getSearch(input) {
                     day: date.getDate().toString().padStart(2, '0'), // 두 자리로 맞춤
                 };
             });
+            console.log("원래 텍스트" + originalText);
 
             return {
                 results: formattedResults,
+                originalText: originalText,
                 translatedText: translatedText
             };
         }

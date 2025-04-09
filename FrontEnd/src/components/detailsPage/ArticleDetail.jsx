@@ -2,6 +2,7 @@ import styles from "./ArticleDetail.module.css";
 import { FaBookmark } from "react-icons/fa";
 import { useState } from "react";
 import { MutatingDots } from "react-loader-spinner";
+import TranslatedText from "../../api/TranslatedText";
 
 export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
   const articleId = Number(id);
@@ -31,18 +32,18 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
 
   return (
     <div className={styles.articleDetail}>
-      <h1>{title}</h1>
+      <h1> <TranslatedText text={title}/></h1>
       <div className={styles.infoContainer}>
         <p className={styles.timeText}>
-          {new Date(publishedAt).toLocaleString()}
+          <TranslatedText text={new Date(publishedAt).toLocaleString()}/>
         </p>
         <div className={styles.stats}>
-          <span>조회수 {viewCount}</span>
+          <span><TranslatedText text="조회수"/> {viewCount}</span>
           <button 
             className={styles.scrap}
             onClick={clickScrapBTN}
-            >
-            스크랩 <FaBookmark 
+            > <TranslatedText text="스크랩"/>
+            <FaBookmark 
                 className={`${styles.icon} ${isScrapped ? styles.active : ""}`} 
               />
           </button>
@@ -65,7 +66,7 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
           visible={true}
         />
         ) : (
-          <p className={styles.content}>{content}</p>
+          <p className={styles.content}><TranslatedText text={content}/></p>
         )
       }
     </div>

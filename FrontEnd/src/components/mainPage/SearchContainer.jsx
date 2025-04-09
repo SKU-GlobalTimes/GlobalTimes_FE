@@ -2,10 +2,11 @@ import styled from './SearchContainer.module.css'
 import PropTypes from 'prop-types';
 import { Search } from "lucide-react";
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
-export default function SearchContainer(props) { 
-
-    const { searchTerm, setSearchTerm, onSearch} = props;
+export default function SearchContainer( ) { 
+    const navigate = useNavigate();
+    const [ searchTerm, setSearchTerm ] = useState(null);
     const [value, setValue] = useState(searchTerm || ''); 
     
     function handleInputChange(event){
@@ -15,8 +16,14 @@ export default function SearchContainer(props) {
 
     function handleKeyDown(event) {
         if (event.key === "Enter" && value.trim()) {
-            onSearch(); 
+            const keyword = searchTerm;
+            navigate(`/search/${keyword}`);
         }
+    }
+
+    function handleClickSearch(){
+        const keyword = searchTerm;
+        navigate(`/search/${keyword}`);
     }
 
 
@@ -28,7 +35,7 @@ export default function SearchContainer(props) {
                     <input 
                         className={styled['searchContainer--Input']}
                         value={value}
-                        placeholder={'뉴스 검색'}
+                        placeholder={'Search news'}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                     ></input>
@@ -36,9 +43,9 @@ export default function SearchContainer(props) {
                 <button 
                     id="searchButton"
                     className={styled['searchContainer--searchButton']}
-                    onClick={onSearch}
+                    onClick={handleClickSearch}
                     disabled={!value.trim()}
-                >검색</button>
+                >Search</button>
             </div>
             
         </div>
@@ -48,7 +55,6 @@ export default function SearchContainer(props) {
 SearchContainer.propTypes = {
     searchTerm: PropTypes.string.isRequired,   // searchTerm은 string이어야 함
     setSearchTerm: PropTypes.func.isRequired,  // setSearchTerm은 함수여야 함
-    onSearch: PropTypes.func.isRequired,
 };
 
 
