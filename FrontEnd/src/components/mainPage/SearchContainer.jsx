@@ -4,25 +4,25 @@ import { Search } from "lucide-react";
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-export default function SearchContainer( ) { 
+export default function SearchContainer({searchTerm, setSearchTerm} ) { 
     const navigate = useNavigate();
-    const [ searchTerm, setSearchTerm ] = useState(null);
+    const [ inputSearchTerm, setInputSearchTerm ] = useState(searchTerm);
     const [value, setValue] = useState(searchTerm || ''); 
     
     function handleInputChange(event){
-        setSearchTerm(event.target.value);
+        setInputSearchTerm(event.target.value);
         setValue(event.target.value);
     }
 
     function handleKeyDown(event) {
         if (event.key === "Enter" && value.trim()) {
-            const keyword = searchTerm;
+            const keyword = inputSearchTerm;
             navigate(`/search/${keyword}`);
         }
     }
 
     function handleClickSearch(){
-        const keyword = searchTerm;
+        const keyword = inputSearchTerm;
         navigate(`/search/${keyword}`);
     }
 
