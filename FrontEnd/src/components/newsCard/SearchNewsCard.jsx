@@ -40,9 +40,9 @@ export default function SearchNewsCard({ id, press, title, summary, image, year,
     }, [language, id])
 
     function highlightText(text, keyword, originalKeyword) {
-        console.log("keyword"+keyword);
-        console.log("keyword"+keyword);
-        console.log("ookeyword"+originalKeyword);
+        // console.log("keyword"+keyword);
+        // console.log("keyword"+keyword);
+        // console.log("ookeyword"+originalKeyword);
 
         const target = keyword || originalKeyword;
         if (!target) return text;

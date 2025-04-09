@@ -65,6 +65,8 @@ export default function Header() {
           <option value="en">English</option>
           <option value="ja">日本語</option>
           <option value="zh-CN">中文</option>
+          <option value="vi">Tiếng Việt</option>
+          <option value="ru">Русский</option> 
         </select>
       </div>
     </div>
