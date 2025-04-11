@@ -5,7 +5,7 @@ import SearchNewsCard from '../newsCard/SearchNewsCard';
 import TranslatedText from '../../api/TranslatedText';
 
 
-export default function SearchNews({ searchResults = [], originalText="", translatedText = "" }) {
+export default function SearchNews({ searchResults = [], originalText="", translatedText = "", searchTerm }) {
 
     return(
         <div className={styled['SearchNews--container']}>
@@ -14,6 +14,7 @@ export default function SearchNews({ searchResults = [], originalText="", transl
                     <h1 className={styled['SearchNews--title']}>
                         <TranslatedText text="검색 결과"/>
                     </h1>
+                    <p>searchTerm={searchTerm} / originalText={originalText} / translatedText={translatedText} </p>
                 </div>
 
                 <div className={styled['SearchNews--News']}>
@@ -48,7 +49,8 @@ SearchNews.propTypes = {
         })
     ).isRequired,
     originalText: PropTypes.string.isRequired,
-    translatedText: PropTypes.string.isRequired
+    translatedText: PropTypes.string.isRequired,
+    searchTerm: PropTypes.string.isRequired,
 };
 
 

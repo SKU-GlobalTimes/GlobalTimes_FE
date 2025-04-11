@@ -90,6 +90,7 @@ SearchNewsCard.propTypes = {
     year: PropTypes.string.isRequired,
     month: PropTypes.string.isRequired,
     day: PropTypes.string.isRequired,
+    originalText: PropTypes.string.isRequired,
     translatedText: PropTypes.string.isRequired,
 };
 

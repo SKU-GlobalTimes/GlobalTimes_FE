@@ -1,29 +1,38 @@
 import styled from './SearchContainer.module.css'
 import PropTypes from 'prop-types';
 import { Search } from "lucide-react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
-export default function SearchContainer({searchTerm, setSearchTerm} ) { 
+export default function SearchContainer({searchTerm} ) { 
     const navigate = useNavigate();
     const [ inputSearchTerm, setInputSearchTerm ] = useState(searchTerm);
     const [value, setValue] = useState(searchTerm || ''); 
+
+    useEffect(() => {
+        setInputSearchTerm(searchTerm);
+        setValue(searchTerm);
+    }, [searchTerm]);
     
+    function handleSearch() {
+        const keyword = inputSearchTerm.trim();
+        if (!keyword) return;
+        navigate(`/search/${keyword}`);
+    }
+
     function handleInputChange(event){
         setInputSearchTerm(event.target.value);
         setValue(event.target.value);
     }
 
     function handleKeyDown(event) {
-        if (event.key === "Enter" && value.trim()) {
-            const keyword = inputSearchTerm;
-            navigate(`/search/${keyword}`);
+        if (event.key === "Enter") {
+            handleSearch();
         }
     }
 
     function handleClickSearch(){
-        const keyword = inputSearchTerm;
-        navigate(`/search/${keyword}`);
+        handleSearch();
     }
 
 
@@ -54,7 +63,6 @@ export default function SearchContainer({searchTerm, setSearchTerm} ) {
 
 SearchContainer.propTypes = {
     searchTerm: PropTypes.string.isRequired,   // searchTerm은 string이어야 함
-    setSearchTerm: PropTypes.func.isRequired,  // setSearchTerm은 함수여야 함
 };
 
 

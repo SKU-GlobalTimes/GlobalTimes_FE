@@ -16,11 +16,11 @@ export default function SearchPage() {
     const [originalWord, setOriginalWord] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSearch = async () => {
-        if (!searchTerm.trim()) return; // 빈 값이면 검색 안 함
+    const handleSearch = async (term) => {
+        if (!term.trim()) return; // 빈 값이면 검색 안 함
         setIsLoading(true); // 로딩 시작
 
-        const { results, originalText, translatedText } = await getSearch(searchTerm);
+        const { results, originalText, translatedText } = await getSearch(term);
         setSearchResults(results || []);
         setOriginalWord(originalText || "");
         setTranslatedWord(translatedText || "");
@@ -31,7 +31,7 @@ export default function SearchPage() {
     useEffect(() => {
         if (keyword) {
             setSearchTerm(keyword);
-            handleSearch();
+            handleSearch(keyword);
         }
     }, [keyword]);
 
@@ -39,8 +39,7 @@ export default function SearchPage() {
     return(
         <div className={styled['mainPage--container']}>
             <SearchContainer 
-                searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-                onSearch={handleSearch} 
+                searchTerm={searchTerm || ""}
             />
             {isLoading ? ( 
                 <BlankNews message="검색 중입니다..." />  
