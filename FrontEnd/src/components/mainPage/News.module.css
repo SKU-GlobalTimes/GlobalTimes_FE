@@ -79,7 +79,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: max-content;
+    min-height: 70vh;
     gap: 40px;
     width: 100vw;
     padding: 0px 0px 60px 0px;
@@ -106,7 +106,7 @@
     grid-template-columns: repeat(2, 1fr); /* 3열 그리드 설정 */
     gap: 5px;
     justify-content: center; /* 카드들을 가로로 중앙 정렬 */
-    min-height: 50vh; /* 프로젝트가 없을 때도 공간 확보 */
+    
 }
 
 @media (max-width: 768px) {

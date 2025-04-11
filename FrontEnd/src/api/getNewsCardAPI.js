@@ -83,7 +83,7 @@ export async function getSearch(input) {
                     day: date.getDate().toString().padStart(2, '0'), // 두 자리로 맞춤
                 };
             });
-            console.log("원래 텍스트" + originalText);
+            // console.log("원래 텍스트 " + originalText);
 
             return {
                 results: formattedResults,

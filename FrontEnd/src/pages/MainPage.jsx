@@ -6,7 +6,7 @@ export default function MainPage() {
 
     return(
         <div className={styled['mainPage--container']}>
-            <SearchContainer />
+            <SearchContainer searchTerm="" />
             <MainNews />             
         </div>
     )
