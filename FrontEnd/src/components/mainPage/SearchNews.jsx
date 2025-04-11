@@ -5,7 +5,7 @@ import SearchNewsCard from '../newsCard/SearchNewsCard';
 import TranslatedText from '../../api/TranslatedText';
 
 
-export default function SearchNews({ searchResults = [], originalText="", translatedText = "" }) {
+export default function SearchNews({ searchResults = [], originalText="", translatedText = "", searchTerm }) {
 
     return(
         <div className={styled['SearchNews--container']}>
@@ -48,7 +48,8 @@ SearchNews.propTypes = {
         })
     ).isRequired,
     originalText: PropTypes.string.isRequired,
-    translatedText: PropTypes.string.isRequired
+    translatedText: PropTypes.string.isRequired,
+    searchTerm: PropTypes.string.isRequired,
 };
 
 
