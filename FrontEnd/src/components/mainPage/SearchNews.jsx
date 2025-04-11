@@ -14,7 +14,6 @@ export default function SearchNews({ searchResults = [], originalText="", transl
                     <h1 className={styled['SearchNews--title']}>
                         <TranslatedText text="검색 결과"/>
                     </h1>
-                    <p>searchTerm={searchTerm} / originalText={originalText} / translatedText={translatedText} </p>
                 </div>
 
                 <div className={styled['SearchNews--News']}>
