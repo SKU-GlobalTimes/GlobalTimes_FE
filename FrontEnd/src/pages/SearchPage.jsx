@@ -4,11 +4,12 @@ import SearchNews from '../components/mainPage/SearchNews';
 import BlankNews from '../components/mainPage/BlankNews';
 
 import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { getSearch } from '../api/getNewsCardAPI';
 
 export default function SearchPage() {
     const { keyword } = useParams();
+    const location = useLocation();
     const [searchTerm, setSearchTerm] = useState(keyword);
     
     const [searchResults, setSearchResults] = useState(null);
@@ -33,7 +34,7 @@ export default function SearchPage() {
             setSearchTerm(keyword);
             handleSearch(keyword);
         }
-    }, [keyword]);
+    }, [location.key]);
 
 
     return(
