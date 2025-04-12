@@ -8,7 +8,7 @@ import TranslatedText from "../../api/TranslatedText.jsx";
 
 export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
   const articleId = Number(id);
-  const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
+  const { title, author, sourceName, publishedAt, viewCount, urlToImage, url } =
     newsDetail;
 
     const [isScrapped, setIsScrapped] = useState(false);
@@ -36,7 +36,16 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
 
   return (
     <div className={styles.articleDetail}>
-      <h1><TranslatedText text={title}/></h1>
+      <h1>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.titleLink}
+        >
+          <TranslatedText text={title} />
+        </a>
+      </h1>
       <div className={styles.infoContainer}>
         <p className={styles.timeText}>
           <TranslatedText text={new Date(publishedAt).toLocaleString()}/>
