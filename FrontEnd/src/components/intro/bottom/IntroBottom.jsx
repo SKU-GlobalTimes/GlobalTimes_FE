@@ -8,7 +8,7 @@ import TranslatedText from "../../../api/TranslatedText";
 
 
 // img
-import teamImg from "../../../assets/teamImg.png";
+import teamImg from "../../../assets/ourWorksImg.jpg";
 import teamImage1 from "../../../assets/team7.jpg";
 import teamImage2 from "../../../assets/team8.jpg";
 import teamImage3 from "../../../assets/team9.jpg";
