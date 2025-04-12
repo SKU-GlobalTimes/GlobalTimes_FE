@@ -126,14 +126,12 @@
 }
 
 .languageToggle select option {
-  background: white;
   color: black;
   border-radius: 0;
 }
 
 .blackText .languageToggle select option {
-  background: black;
-  color: white;
+  color: black;
   border-radius: 0;
 }
 
