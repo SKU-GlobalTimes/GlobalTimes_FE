@@ -1,84 +1,86 @@
 .articleDetail {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .articleDetail h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: black;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: black;
 }
 
 .meta {
-    font-size: 18px;
-    color: #333;
-    font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 10px;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-.timeText{
-    font-size: 14px;
-    color: gray;
+.timeText {
+  font-size: 14px;
+  color: gray;
 }
 
 .image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 15px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
 .content {
-    font-size: 17px;
-    font-weight: 500;
-    line-height: 1.6;
-    color: #333;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #333;
 }
 
 .stats {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: #555;
-  }
-  
-  .scrap {
-    outline: none;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #555;
-    background-color: transparent;
-  }
-  .scrap:focus {
-    outline: none;
-  }
-  
-  .icon {
-    color: transparent;
-    stroke: #555;
-    stroke-width: 50;
-    font-size: 13px;
-    fill: transparent;
-    transition: all 0.2s ease;
-  }
-
-  .active {
-    fill: rgb(255, 185, 33);
-    stroke: none;
-  }
-  
-
-.infoContainer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #555;
 }
 
-  
+.scrap {
+  outline: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #555;
+  background-color: transparent;
+}
+.scrap:focus {
+  outline: none;
+}
+
+.icon {
+  color: transparent;
+  stroke: #555;
+  stroke-width: 50;
+  font-size: 13px;
+  fill: transparent;
+  transition: all 0.2s ease;
+}
+
+.active {
+  fill: rgb(255, 185, 33);
+  stroke: none;
+}
+
+.infoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.articleDetail a {
+  text-decoration: none;
+  color: black;
+}
