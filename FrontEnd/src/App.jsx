@@ -1,14 +1,17 @@
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './router/Routers';
 import { LanguageProvider } from './util/LanguageContext.jsx';
+import { AuthProvider } from './util/AuthContext.jsx';
 
 function App() {
   return (
-    <LanguageProvider>
-      <BrowserRouter>
-        <Routes />
-      </BrowserRouter>
-    </LanguageProvider>
+    <AuthProvider>
+      <LanguageProvider>
+        <BrowserRouter>
+          <Routes />
+        </BrowserRouter>
+      </LanguageProvider>
+    </AuthProvider>
   )
 }
 

@@ -175,3 +175,30 @@
 .logoContainer{
   cursor: pointer;
 }
+
+.authContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nickname {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.authButton {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: currentColor;
+  padding: 5px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.authButton:hover {
+  opacity: 0.7;
+}
