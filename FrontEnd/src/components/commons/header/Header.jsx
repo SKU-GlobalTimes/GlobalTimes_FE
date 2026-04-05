@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Header.module.css";
 import Logo from "../../../assets/logo/logo.png";
 import { useLanguage } from "../../../util/LanguageContext.jsx";
+import { useAuth } from "../../../util/AuthContext.jsx";
 import TranslatedText from "../../../api/TranslatedText.jsx";
 
 //import GoogleTranslate from "../../../api/GoogleTranslate";
@@ -12,6 +13,11 @@ export default function Header() {
 
   // 전역으로 언어를 선택하는 함수
   const { language, setLanguage } = useLanguage();
+  const { isLoggedIn, user, logout } = useAuth();
+
+  const handleLogin = () => {
+    window.location.href = "/oauth2/authorization/google";
+  };
 
   // 현재 경로가 "/"이면 흰색 테마 적용
   const isHome = location.pathname === "/" || location.pathname === "/intro";
@@ -52,6 +58,22 @@ export default function Header() {
         >
           <TranslatedText text="서비스 소개" />
         </p>
+        {/* 로그인/로그아웃 */}
+        <div className={styles.authContainer}>
+          {isLoggedIn ? (
+            <>
+              <span className={styles.nickname}>{user?.nickname ?? ""}</span>
+              <button onClick={logout} className={styles.authButton}>
+                <TranslatedText text="로그아웃" />
+              </button>
+            </>
+          ) : (
+            <button onClick={handleLogin} className={styles.authButton}>
+              <TranslatedText text="로그인" />
+            </button>
+          )}
+        </div>
+
         <div
           className={`${styles.languageToggle} ${
             isHome ? styles.whiteText : styles.blackText
