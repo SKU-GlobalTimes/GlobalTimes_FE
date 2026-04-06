@@ -11,6 +11,12 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
+        configure: (proxy) => {
+          // SSE 스트리밍 요청 시 프록시 버퍼링 비활성화
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.setHeader('Accept-Encoding', 'identity');
+          });
+        },
       },
       '/oauth2': {
         target: 'http://localhost:8080',
