@@ -101,10 +101,6 @@
   border-color: #f0c040;
 }
 
-.languageToggle select option {
-  background: #1a1a1a;
-  color: white;
-}
 
 .languageToggle::after {
   content: "▾";
