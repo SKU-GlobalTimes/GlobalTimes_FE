@@ -33,10 +33,15 @@ export default function Sidebar({ recentNewsList }) {
             className={styles.articleItem}
             onClick={() => navigate(`/detail/${article.id}`)}
           >
-            <img
-              src={article.urlToImage}
-              alt="썸네일"
+            <div
               className={styles.thumbnail}
+              style={{
+                backgroundImage: article.urlToImage
+                  ? `url(${article.urlToImage})`
+                  : undefined,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
             />
             <div>
               <p className={styles.articleSource}>

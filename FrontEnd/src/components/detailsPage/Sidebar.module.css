@@ -56,8 +56,12 @@
 .thumbnail {
   width: 70px;
   height: 70px;
+  min-width: 70px;
   margin-right: 20px;
   border-radius: 12px;
+  background-image: linear-gradient(135deg, #c8c8c8 0%, #a0a0a0 50%, #b8b8b8 100%);
+  background-size: cover;
+  background-position: center;
 }
 
 .articleSource {
