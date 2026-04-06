@@ -47,31 +47,177 @@
     color: #555;
   }
   
+  /* ── 스크랩 버튼 ── */
   .scrap {
-    outline: none;
-    border: none;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 7px;
+    padding: 7px 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 20px;
+    background: transparent;
     color: #555;
-    background-color: transparent;
-  }
-  .scrap:focus {
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
     outline: none;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
   }
-  
-  .icon {
-    color: transparent;
-    stroke: #555;
-    stroke-width: 50;
+
+  .scrap:hover {
+    border-color: #f0c040;
+    color: #b8860b;
+    background: rgba(240, 192, 64, 0.08);
+  }
+
+  .scrapActive {
+    border-color: #f0c040;
+    color: #b8860b;
+    background: rgba(240, 192, 64, 0.12);
+  }
+
+  .scrapLabel {
     font-size: 13px;
+  }
+
+  .icon {
+    stroke: #888;
+    stroke-width: 40;
+    font-size: 15px;
     fill: transparent;
     transition: all 0.2s ease;
   }
 
   .active {
-    fill: rgb(255, 185, 33);
+    fill: #f0c040;
     stroke: none;
+  }
+
+  /* ── 스크랩 확인 모달 ── */
+  .modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    animation: fadeIn 0.18s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .modal {
+    background: #fff;
+    border-radius: 18px;
+    padding: 32px 28px 24px;
+    width: 340px;
+    max-width: 90vw;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: slideUp 0.2s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .modalIcon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(240, 192, 64, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modalIconDefault {
+    font-size: 22px;
+    color: #ccc;
+  }
+
+  .modalIconActive {
+    font-size: 22px;
+    color: #f0c040;
+  }
+
+  .modalMessage {
+    text-align: center;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .modalPress {
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+  }
+
+  .modalTitle {
+    font-weight: 700;
+    color: #111;
+    font-size: 15px;
+  }
+
+  .modalButtons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .modalCancel {
+    flex: 1;
+    padding: 10px 0;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    background: transparent;
+    color: #888;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .modalCancel:hover {
+    border-color: #aaa;
+    color: #555;
+  }
+
+  .modalConfirm {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    border-radius: 10px;
+    background: #f0c040;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+
+  .modalConfirm:hover {
+    background: #d4a820;
+    transform: translateY(-1px);
+  }
+
+  .modalConfirmRemove {
+    background: #ff6b6b;
+  }
+
+  .modalConfirmRemove:hover {
+    background: #e05555;
   }
   
 

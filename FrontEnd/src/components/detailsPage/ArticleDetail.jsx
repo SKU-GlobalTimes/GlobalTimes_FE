@@ -5,37 +5,90 @@ import { MutatingDots } from "react-loader-spinner";
 import ReactMarkdown from "react-markdown";
 
 import TranslatedText from "../../api/TranslatedText.jsx";
+import { useAuth } from "../../util/AuthContext.jsx";
+import { toggleScrap, getScrapStatus } from "../../api/scrapAPI.js";
 
 export default function ArticleDetail({ id, newsDetail, content, isLoading, isSummaryLoading }) {
   const articleId = Number(id);
-  const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
-    newsDetail;
+  const { title, author, sourceName, publishedAt, viewCount, urlToImage } = newsDetail;
+  const { token } = useAuth();
 
-    const [isScrapped, setIsScrapped] = useState(false);
+  const [isScrapped, setIsScrapped] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-    useEffect(() => {
-      const storedScrapIds = JSON.parse(localStorage.getItem("scrapIds")) || [];
-      setIsScrapped(storedScrapIds.includes(articleId));
-    }, [articleId]);
+  useEffect(() => {
+    const initScrapStatus = async () => {
+      if (token) {
+        const status = await getScrapStatus(articleId);
+        setIsScrapped(status);
+      } else {
+        const storedScrapIds = JSON.parse(localStorage.getItem("scrapIds")) || [];
+        setIsScrapped(storedScrapIds.includes(articleId));
+      }
+    };
+    initScrapStatus();
+  }, [articleId, token]);
 
+  // 버튼 클릭 → 모달 열기
   function clickScrapBTN() {
-    const storedScrapIds = JSON.parse(localStorage.getItem('scrapIds')) || [];
+    setShowModal(true);
+  }
 
-    if (!storedScrapIds.includes(articleId)) {
+  // 모달에서 확인 → 실제 스크랩 토글
+  async function handleConfirmScrap() {
+    setShowModal(false);
+    if (token) {
+      const result = await toggleScrap(articleId);
+      if (result !== null) setIsScrapped(result);
+    } else {
+      const storedScrapIds = JSON.parse(localStorage.getItem("scrapIds")) || [];
+      if (!storedScrapIds.includes(articleId)) {
         storedScrapIds.push(articleId);
-        localStorage.setItem('scrapIds', JSON.stringify(storedScrapIds)); // 키 수정
+        localStorage.setItem("scrapIds", JSON.stringify(storedScrapIds));
         setIsScrapped(true);
-    }
-    else{
-        // articleId가 배열에 있는 경우 제거
-        const updatedScrapIds = storedScrapIds.filter(id => id !== articleId);
-        localStorage.setItem('scrapIds', JSON.stringify(updatedScrapIds));
+      } else {
+        const updatedScrapIds = storedScrapIds.filter((id) => id !== articleId);
+        localStorage.setItem("scrapIds", JSON.stringify(updatedScrapIds));
         setIsScrapped(false);
+      }
     }
   }
 
+  // 제목 말줄임 (모달용)
+  const shortTitle = title && title.length > 22 ? title.slice(0, 22) + "..." : title;
+
   return (
     <div className={styles.articleDetail}>
+
+      {/* 스크랩 확인 모달 */}
+      {showModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalIcon}>
+              <FaBookmark className={isScrapped ? styles.modalIconActive : styles.modalIconDefault} />
+            </div>
+            <p className={styles.modalMessage}>
+              <span className={styles.modalPress}>{sourceName}</span>
+              <br />
+              <span className={styles.modalTitle}>「{shortTitle}」</span>
+              <br />
+              <TranslatedText text={isScrapped ? "스크랩을 취소하시겠습니까?" : "기사를 스크랩하시겠습니까?"} />
+            </p>
+            <div className={styles.modalButtons}>
+              <button className={styles.modalCancel} onClick={() => setShowModal(false)}>
+                <TranslatedText text="아니오" />
+              </button>
+              <button
+                className={`${styles.modalConfirm} ${isScrapped ? styles.modalConfirmRemove : ""}`}
+                onClick={handleConfirmScrap}
+              >
+                <TranslatedText text={isScrapped ? "취소하기" : "스크랩"} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <h1><TranslatedText text={title}/></h1>
       <div className={styles.infoContainer}>
         <p className={styles.timeText}>
@@ -43,14 +96,14 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
         </p>
         <div className={styles.stats}>
           <span><TranslatedText text="조회수"/>{viewCount}</span>
-          <button 
-            className={styles.scrap}
+          <button
+            className={`${styles.scrap} ${isScrapped ? styles.scrapActive : ""}`}
             onClick={clickScrapBTN}
-            >
-            <TranslatedText text="스크랩"/>
-            <FaBookmark 
-                className={`${styles.icon} ${isScrapped ? styles.active : ""}`} 
-              />
+          >
+            <FaBookmark className={`${styles.icon} ${isScrapped ? styles.active : ""}`} />
+            <span className={styles.scrapLabel}>
+              <TranslatedText text={isScrapped ? "스크랩됨" : "스크랩"} />
+            </span>
           </button>
         </div>
       </div>
