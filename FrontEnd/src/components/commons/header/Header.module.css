@@ -73,47 +73,49 @@
 
 .languageToggle {
   position: relative;
-  border-radius: 20px;
 }
 
 .languageToggle select {
-  width: 150px;
+  width: 130px;
   appearance: none;
   background: transparent;
-  border: 1px solid currentColor;
-  padding: 5px 30px 5px 10px;
-  font-size: 16px;
-  font-weight: bold;
+  border: 1.5px solid rgba(200, 200, 200, 0.5);
+  padding: 5px 28px 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 20px;
   outline: none;
   box-shadow: none;
+  color: currentColor;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  letter-spacing: 0.01em;
+}
+
+.languageToggle select:hover {
+  border-color: #f0c040;
+}
+
+.languageToggle select:focus {
+  border-color: #f0c040;
 }
 
 .languageToggle select option {
-  background: white;
-  color: black;
-  border-radius: 0;
-}
-
-.blackText .languageToggle select option {
-  background: black;
+  background: #1a1a1a;
   color: white;
-  border-radius: 0;
 }
 
 .languageToggle::after {
-  content: "▼";
+  content: "▾";
   position: absolute;
-  right: 10px;
+  right: 11px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+  font-size: 13px;
   color: currentColor;
-}
-
-.blackText .languageToggle::after {
-  color: black;
+  opacity: 0.7;
 }
 
 .active {
