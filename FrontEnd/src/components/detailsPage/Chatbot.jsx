@@ -3,6 +3,7 @@ import styles from "./Chatbot.module.css";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { getNewsDetailsAsk } from "../../api/detailsAPI.js";
+import { getChatsByArticle } from "../../api/chatAPI.js";
 
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
@@ -10,10 +11,9 @@ import { useAuth } from "../../util/AuthContext.jsx";
 
 export default function Chatbot({ articleId }) {
     const [input, setInput] = useState("");
-    const [messages, setMessages] = useState([
-        { type: "bot", text: "안녕하세요! 무엇을 도와드릴까요?" }
-    ]);
+    const [messages, setMessages] = useState([]);
     const [isStreaming, setIsStreaming] = useState(false);
+    const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
     const chatRef = useRef(null);
     const closeEventSourceRef = useRef(null);
 
@@ -22,15 +22,38 @@ export default function Chatbot({ articleId }) {
 
     const [placeholder, setPlaceholder] = useState("질문을 입력하세요...");
 
+    // 인사말 번역 + 로그인 시 이전 대화 내역 불러오기
     useEffect(() => {
-        const getTranslation = async () => {
-            const translatedText = await fetchTranslatedText("안녕하세요! 무엇을 도와드릴까요?", language);
+        const init = async () => {
+            const translatedGreeting = await fetchTranslatedText("안녕하세요! 무엇을 도와드릴까요?", language);
             const translatedPlaceholder = await fetchTranslatedText("질문을 입력하세요...", language);
-            setMessages([{ type: "bot", text: translatedText }]);
             setPlaceholder(translatedPlaceholder);
+
+            if (token && articleId) {
+                const history = await getChatsByArticle(articleId);
+                if (history.length > 0) {
+                    // 이전 대화 내역을 messages로 변환
+                    const historyMessages = [];
+                    history.forEach((chat) => {
+                        historyMessages.push({ type: "user", text: chat.question });
+                        historyMessages.push({ type: "bot", text: chat.answer });
+                    });
+                    setMessages([
+                        { type: "bot", text: translatedGreeting },
+                        { type: "divider", text: "── 이전 대화 내역 ──" },
+                        ...historyMessages,
+                        { type: "divider", text: "── 새 대화 ──" },
+                    ]);
+                } else {
+                    setMessages([{ type: "bot", text: translatedGreeting }]);
+                }
+            } else {
+                setMessages([{ type: "bot", text: translatedGreeting }]);
+            }
+            setIsHistoryLoaded(true);
         };
-        getTranslation();
-    }, [articleId, language]);
+        init();
+    }, [articleId, language, token]);
 
     // 언마운트 시 SSE 연결 종료
     useEffect(() => {
@@ -94,14 +117,19 @@ export default function Chatbot({ articleId }) {
                 </div>
             )}
             <div className={styles.chatBody} ref={chatRef}>
-                {messages.map((msg, index) => (
-                    <div key={index} className={msg.type === "bot" ? styles.botMessage : styles.userMessage}>
-                        {msg.type === "bot"
-                            ? <div className={styles.markdown}><ReactMarkdown>{msg.text}</ReactMarkdown></div>
-                            : msg.text
-                        }
-                    </div>
-                ))}
+                {messages.map((msg, index) => {
+                    if (msg.type === "divider") {
+                        return <div key={index} className={styles.divider}>{msg.text}</div>;
+                    }
+                    return (
+                        <div key={index} className={msg.type === "bot" ? styles.botMessage : styles.userMessage}>
+                            {msg.type === "bot"
+                                ? <div className={styles.markdown}><ReactMarkdown>{msg.text}</ReactMarkdown></div>
+                                : msg.text
+                            }
+                        </div>
+                    );
+                })}
                 {isStreaming && messages[messages.length - 1]?.text === "" && (
                     <div className={styles.botMessage}>
                         <span className={styles.typingIndicator}>
