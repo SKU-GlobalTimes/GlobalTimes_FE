@@ -3,16 +3,33 @@ import PropTypes from 'prop-types';
 import { Search } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
+import { useLanguage } from "../../util/LanguageContext.jsx";
 
 export default function SearchContainer({searchTerm} ) { 
     const navigate = useNavigate();
+    const { language } = useLanguage();
     const [ inputSearchTerm, setInputSearchTerm ] = useState(searchTerm);
-    const [value, setValue] = useState(searchTerm || ''); 
+    const [value, setValue] = useState(searchTerm || '');
+    const [placeholder, setPlaceholder] = useState("Search news");
+    const [searchLabel, setSearchLabel] = useState("Search");
 
     useEffect(() => {
         setInputSearchTerm(searchTerm);
         setValue(searchTerm);
     }, [searchTerm]);
+
+    useEffect(() => {
+        const translate = async () => {
+            const [p, s] = await Promise.all([
+                fetchTranslatedText("뉴스 검색", language),
+                fetchTranslatedText("검색", language),
+            ]);
+            setPlaceholder(p);
+            setSearchLabel(s);
+        };
+        translate();
+    }, [language]);
     
     function handleSearch() {
         const keyword = inputSearchTerm.trim();
@@ -44,7 +61,7 @@ export default function SearchContainer({searchTerm} ) {
                     <input 
                         className={styled['searchContainer--Input']}
                         value={value}
-                        placeholder={'Search news'}
+                        placeholder={placeholder}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                     ></input>
@@ -54,7 +71,7 @@ export default function SearchContainer({searchTerm} ) {
                     className={styled['searchContainer--searchButton']}
                     onClick={handleClickSearch}
                     disabled={!value.trim()}
-                >Search</button>
+                >{searchLabel}</button>
             </div>
             
         </div>
