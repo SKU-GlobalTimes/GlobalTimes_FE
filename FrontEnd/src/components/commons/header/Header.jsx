@@ -65,13 +65,15 @@ export default function Header() {
           <div className={styles.authContainer}>
             {isLoggedIn ? (
               <>
-                <span className={styles.nickname}>{user?.nickname ?? ""}</span>
-                <button onClick={logout} className={styles.authButton}>
+                <span className={styles.nickname}>
+                  {user?.nickname ?? ""} 🌐
+                </span>
+                <button onClick={logout} className={`${styles.authButton} ${styles.logoutButton}`}>
                   <TranslatedText text="로그아웃" />
                 </button>
               </>
             ) : (
-              <button onClick={handleLogin} className={styles.authButton}>
+              <button onClick={handleLogin} className={`${styles.authButton} ${styles.loginButton}`}>
                 <TranslatedText text="로그인" />
               </button>
             )}
@@ -194,13 +196,15 @@ export default function Header() {
         <div className={styles.mobileMenuAuth}>
           {isLoggedIn ? (
             <>
-              <span className={styles.mobileNickname}>{user?.nickname ?? ""}</span>
-              <button onClick={() => { logout(); setMenuOpen(false); }} className={styles.authButton}>
+              <span className={styles.mobileNickname}>
+                {user?.nickname ?? ""} 🌐
+              </span>
+              <button onClick={() => { logout(); setMenuOpen(false); }} className={`${styles.authButton} ${styles.logoutButton}`}>
                 <TranslatedText text="로그아웃" />
               </button>
             </>
           ) : (
-            <button onClick={handleLogin} className={styles.authButton}>
+            <button onClick={handleLogin} className={`${styles.authButton} ${styles.loginButton}`}>
               <TranslatedText text="로그인" />
             </button>
           )}
