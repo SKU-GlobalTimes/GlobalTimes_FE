@@ -31,7 +31,7 @@ export default function BasicNewsCard({id, press, title, summary, image, year, m
                 <div className={styled['basicNewsCard--imageBorder']}>
                     <div 
                         className={styled['basicNewsCard--image']}
-                        style={{ backgroundImage: `url(${image})` }} 
+                        style={image ? { backgroundImage: `url(${image})` } : {}} 
                     ></div>
                 </div>
                 

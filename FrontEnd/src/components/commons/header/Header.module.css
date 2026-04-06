@@ -2,13 +2,13 @@
   position: fixed;
   top: 0px;
   width: 100%;
-  z-index: 2;
+  z-index: 102;
 }
 
 .header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   padding: 5px 40px;
   position: relative;
@@ -22,9 +22,10 @@
   cursor: pointer;
   position: relative;
   display: inline-block;
-  padding-bottom: 3px;
+  padding: 6px 14px;
   font-weight: bold;
-  transition: color 0.3s ease-in-out, font-weight 0.3s ease-in-out;
+  border-radius: 8px;
+  transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
 }
 
 .whiteBackground {
@@ -48,31 +49,17 @@
   color: black;
 }
 
+/* 호버 시 골드 컬러 + 살짝 위로 + 반투명 배경 */
 .whiteText p:hover {
-  color: rgba(255, 255, 255, 0.8);
+  color: #f0c040;
+  background-color: rgba(240, 192, 64, 0.12);
+  transform: translateY(-2px);
 }
 
 .blackText p:hover {
-  color: rgba(51, 51, 51, 0.8);
-}
-
-.header p::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  margin-bottom: -4px;
-  width: 100%;
-  height: 3px;
-  background-color: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.3s ease-in-out;
-}
-
-.header p:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
+  color: #b8860b;
+  background-color: rgba(184, 134, 11, 0.1);
+  transform: translateY(-2px);
 }
 
 .whiteText {
@@ -83,32 +70,10 @@
   color: black;
 }
 
-.header::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 95%;
-  height: 1.5px;
-  background-color: currentColor;
-  transform: translateX(-50%);
-}
-
-.whiteText .header::after {
-  background-color: white;
-}
-
-.blackText .header::after {
-  background-color: black;
-}
 
 .languageToggle {
   position: relative;
-  margin-left: 100px;
-  margin-right: 20px;
-
   border-radius: 20px;
-
 }
 
 .languageToggle select {
@@ -153,18 +118,9 @@
 
 .active {
   font-weight: bold;
-  position: relative;
-}
-
-.active::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  width: 100%;
-  height: 3px;
-  background-color: currentColor;
-  transform: translateX(-50%);
+  color: #f0c040 !important;
+  background-color: rgba(240, 192, 64, 0.15) !important;
+  border-radius: 8px;
 }
 
 .image{
@@ -174,6 +130,8 @@
 
 .logoContainer{
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .authContainer {
@@ -201,4 +159,190 @@
 
 .authButton:hover {
   opacity: 0.7;
+}
+
+/* 데스크탑 네비게이션 - 정중앙 */
+.desktopNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 우측 영역 - 우측 정렬 */
+.desktopRight {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* 햄버거 버튼 - 기본 숨김 */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 101;
+  position: relative;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+/* 햄버거 → X 애니메이션 */
+.hamburgerOpen span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburgerOpen span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.hamburgerOpen span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* 모바일 사이드 메뉴 (우측에서 슬라이드) */
+.mobileMenu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 260px;
+  flex-direction: column;
+  background-color: rgba(30, 30, 30, 0.97);
+  color: white;
+  z-index: 100;
+  padding-top: 70px;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.mobileMenuOpen {
+  transform: translateX(0);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 오버레이 (메뉴 외 영역 클릭 시 닫힘용) */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  will-change: opacity;
+}
+
+.overlayVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+.mobileMenuItem {
+  padding: 16px 28px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s ease;
+}
+
+.mobileMenuItem:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.mobileMenuActive {
+  color: #f0c040;
+  font-weight: 900;
+}
+
+.mobileMenuAuth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.mobileNickname {
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+}
+
+.mobileMenuLang {
+  padding: 16px 28px;
+}
+
+.mobileMenuLang select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+}
+
+.mobileMenuLang select option {
+  background: #1e1e1e;
+  color: white;
+}
+
+/* 반응형: 768px 이하에서 햄버거 표시, 데스크탑 요소 숨김 */
+@media (max-width: 768px) {
+  .desktopNav {
+    display: none;
+  }
+
+  .desktopRight {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+    color: inherit;
+  }
+
+  .mobileMenu {
+    display: flex;
+  }
+
+  .overlay {
+    display: block;
+    pointer-events: none;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 16px;
+  }
+
+  .image {
+    width: 140px;
+    height: 32px;
+  }
 }

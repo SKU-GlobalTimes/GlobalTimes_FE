@@ -4,10 +4,10 @@
     flex-direction: column;
     border: 1px solid rgb(231, 231, 231);
     border-radius: 5px;
-    width: 24vw;
-    height: 32vh;;
-    position: relative; /* 위치 지정 */
-    overflow: hidden; /* 자식 요소가 컨테이너 밖으로 나가지 않게 제한 */
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    position: relative;
+    overflow: hidden;
     cursor: pointer;
 }
 
@@ -71,10 +71,10 @@
 }
 
 .hotNewsCard--image{
-    width: 22.3avw;
+    width: 100%;
     height: 70%;
     border-radius: 5px 5px 0 0;
-    background-image: url('/economy.png');
+    background-image: linear-gradient(135deg, #d0d0d0 0%, #e8e8e8 50%, #c8c8c8 100%);
     background-size: cover;
     background-position: center center;
     transition: filter 0.3s ease;
@@ -96,13 +96,12 @@
 .basicNewsCard--container{
     display: flex;
     flex-direction: row;
-
     background-color: white;
     border: 1px solid rgb(238, 238, 238);
     border-radius: 3px;
-    width: 18vw;
-    height: 14vh;;
-    position: relative; /* 위치 지정 */
+    width: 100%;
+    height: 110px;
+    position: relative;
     overflow: hidden;
     transition: background-color 0.3s ease, filter 0.3s ease;
     cursor: pointer;
@@ -111,7 +110,8 @@
 
 
 .basicNewsCard--contents{
-    width: 9.5vw;
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -165,8 +165,9 @@
 }
 
 .basicNewsCard--imageContainer{
-    width: 7vw;
-    height: 98%;
+    width: 100px;
+    flex-shrink: 0;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -187,10 +188,10 @@
     height: 100%;
     width: 100%;
     border-radius: 5px;
-    background-image: url('/food.png');
+    background-image: linear-gradient(135deg, #d0d0d0 0%, #e8e8e8 50%, #c8c8c8 100%);
     background-size: cover;
     background-position: center center;
-    transition: transform 0.3s ease-in-out;  /* 부드러운 확대 효과 */
+    transition: transform 0.3s ease-in-out;
 }
 
 /* 호버 시 배경 이미지 확대 */
@@ -209,8 +210,8 @@
     background-color: white;
     border: 1px solid rgb(238, 238, 238);
     border-radius: 3px;
-    width: 37vw;
-    height: 18vh;
+    width: 100%;
+    height: 140px;
     overflow: hidden;
     transition: background-color 0.3s ease, filter 0.3s ease;
     cursor: pointer;
@@ -223,7 +224,8 @@
 
 
 .searchNewsCard--contents{
-    width: 21.5vw;
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -268,8 +270,9 @@
 }
 
 .searchNewsCard--imageContainer{
-    width: 13vw;
-    height: 98%;
+    width: 160px;
+    flex-shrink: 0;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -279,8 +282,8 @@
 .searchNewsCard--image{
     height: 80%;
     width: 90%;
-    border-radius: 15px;
-    background-image: url('/america.png');
+    border-radius: 10px;
+    background-image: linear-gradient(135deg, #d0d0d0 0%, #e8e8e8 50%, #c8c8c8 100%);
     background-size: cover;
     background-position: center center;
 }
@@ -324,10 +327,10 @@
     flex-direction: column;
     border: 1px solid rgb(231, 231, 231);
     border-radius: 5px;
-    width: 24vw;
-    height: 32vh;;
-    position: relative; /* 위치 지정 */
-    overflow: hidden; /* 자식 요소가 컨테이너 밖으로 나가지 않게 제한 */
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    position: relative;
+    overflow: hidden;
     cursor: pointer;
 }
 
@@ -391,10 +394,10 @@
 }
 
 .ScrapNewsCard--image{
-    width: 22.3avw;
+    width: 100%;
     height: 70%;
     border-radius: 5px 5px 0 0;
-    background-image: url('/economy.png');
+    background-image: linear-gradient(135deg, #d0d0d0 0%, #e8e8e8 50%, #c8c8c8 100%);
     background-size: cover;
     background-position: center center;
     transition: filter 0.3s ease;

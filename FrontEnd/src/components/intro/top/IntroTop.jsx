@@ -21,27 +21,29 @@ import summarizeImg from "../../../assets/summarizeImg.png";
 
 
 export default function IntroTop(){
-    // 전역 현재 사용자 언어
     const { language } = useLanguage();
 
-    //상단 위치
     const { ref: topRef, inView: topInView } = useInView({
         threshold: 0.8,
     });
 
-    //사용자의 스크롤 y축 값
     const { scrollY } = useScroll();
 
-    // OurService 고정 및 visible여부
-    const [isVisible, setIsVisible] = useState(false);
-    // 번역 visible여부
-    const [isTranslateVisible, setIsTranslateVisible] = useState(false);
-    // 요약 visible여부
-    const [isSummarizeVisible, setIsSummarizeVisible] = useState(false);
-    // 질문 visible여부
-    const [isAskVisible, setIsAskVisible] = useState(false);
-    // 스크랩 visible여부
-    const [isScrapVisible, setIsScrapVisible] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const [visibility, setVisibility] = useState({
+        service: false,
+        translate: false,
+        summarize: false,
+        ask: false,
+        scrap: false,
+    });
 
     // 서비스 소개 변수
     const [serviceText1, setServiceText1] = useState("사용자 언어에 맞는<br/>실시간 번역");
@@ -75,26 +77,30 @@ export default function IntroTop(){
     }, [language])
 
     useEffect(() => {
-        const unsubscribe = scrollY.on("change", () => {
-            const y = scrollY.get();
-            console.log(y);
+        let rafId = null;
 
-            //our service
-            setIsVisible(y >= pinStart && y <= pinEnd);
-            //translate
-            setIsTranslateVisible(y >= pinTranslateStart && y <= pinTranslateStart+500);
-            //summarize
-            setIsSummarizeVisible(y >= pinSummarizeStart && y <= pinSummarizeStart+500);
-            //ask
-            setIsAskVisible(y >= pinAskStart && y <= pinAskStart+500);
-            //scrap
-            setIsScrapVisible(y >= pinScrapStart && y <= pinScrapStart+500);
+        const unsubscribe = scrollY.on("change", (y) => {
+            if (rafId) return;
+            rafId = requestAnimationFrame(() => {
+                setVisibility({
+                    service:   y >= pinStart          && y <= pinEnd,
+                    translate: y >= pinTranslateStart && y <= pinTranslateStart + 500,
+                    summarize: y >= pinSummarizeStart && y <= pinSummarizeStart + 500,
+                    ask:       y >= pinAskStart       && y <= pinAskStart       + 500,
+                    scrap:     y >= pinScrapStart     && y <= pinScrapStart     + 500,
+                });
+                rafId = null;
+            });
         });
-        return () => unsubscribe();
-      }, [scrollY]);
+
+        return () => {
+            unsubscribe();
+            if (rafId) cancelAnimationFrame(rafId);
+        };
+    }, [scrollY]);
 
     return(
-        <div className={styles['introPage--container']}>
+        <div className={`${styles['introPage--container']} ${isMobile ? styles['introPage--containerMobile'] : ''}`}>
             {/* 설명 페이지 상단 */}
             <motion.div
                 ref={topRef}
@@ -111,47 +117,49 @@ export default function IntroTop(){
 
 
             {/* 설명 페이지 서비스 소개 */}
-            {/* Our Service 고정 섹션 */}
-            <motion.div
-                className={styles["introPage--service"]}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-                <p>Our Service</p>
-            </motion.div>
+            {isMobile ? (
+                <div className={styles["introPage--serviceMobile"]}>
+                    <p>Our Service</p>
+                </div>
+            ) : (
+                <motion.div
+                    className={styles["introPage--service"]}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={visibility.service ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                >
+                    <p>Our Service</p>
+                </motion.div>
+            )}
 
             {/* 내용 */}
-            {/* 번역 소개 애니메이션 */}
             <IntroTopAnimation
-                isVisible={isTranslateVisible}
+                isVisible={visibility.translate}
                 title="TRANSLATE"
                 description={serviceText1}
                 imgSrc={translateImg}
+                isMobile={isMobile}
             />
-
-            {/* 요약 소개 애니메이션 */}
             <IntroTopAnimation
-                isVisible={isSummarizeVisible}
+                isVisible={visibility.summarize}
                 title="SUMMARIZE"
                 description={serviceText2}
                 imgSrc={summarizeImg}
+                isMobile={isMobile}
             />
-
-            {/* 질문 소개 애니메이션 */}
             <IntroTopAnimation
-                isVisible={isAskVisible}
+                isVisible={visibility.ask}
                 title="QUESTION"
                 description={serviceText3}
                 imgSrc={askImg}
+                isMobile={isMobile}
             />
-
-            {/* 스크랩 소개 애니메이션 */}
             <IntroTopAnimation
-                isVisible={isScrapVisible}
+                isVisible={visibility.scrap}
                 title="SCRAP"
                 description={serviceText4}
                 imgSrc={scrapImg}
+                isMobile={isMobile}
             />
         </div>
     );

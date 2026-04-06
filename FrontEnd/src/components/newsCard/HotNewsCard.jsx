@@ -14,7 +14,7 @@ export default function HotNewsCard({ id, press, title, summary, image, year, mo
         <div className={styled['hotNewsCard--container']} onClick={handleClickNewsCard}>
             <div 
                 className={styled['hotNewsCard--image']}
-                style={{ backgroundImage: `url(${image})` }} 
+                style={image ? { backgroundImage: `url(${image})` } : {}} 
             ></div>
             <div className={styled['hotNewsCard--contents']}>
                 <div className={styled['hotNewsCard--contents__letterContainer']}>

@@ -13,7 +13,6 @@
 
 /* top영역 We Are~ */
 .introPage--top{
-    /* 레이아웃 */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -22,30 +21,39 @@
     margin-bottom: 500px;
 
     & p{
-        /* 레이아웃 */
         display: flex;
         justify-content: center;
         width: 160px;
-
-        /* 스타일 */
         font-size: 35px;
         font-weight: 500;
-
-        /* 밑줄 */
         border-bottom: 2px solid;
         padding-bottom: 4px;
     }
 
     & span{
-        /* 레이아웃 */
         display: flex;
         text-align: center;
         width: auto;
         margin-top: 30px;
-
-        /* 스타일 */
         font-size: 25px;
         font-weight: 400;
+    }
+}
+
+@media (max-width: 768px) {
+    .introPage--top {
+        margin-bottom: 60px;
+        padding: 0 20px;
+
+        & p {
+            font-size: 26px;
+        }
+
+        & span {
+            font-size: 17px;
+            text-align: center;
+            line-height: 1.7;
+        }
     }
 }
 
@@ -78,9 +86,74 @@
   }
 
 
+/* 모바일 전용 컨테이너 */
+.introPage--containerMobile {
+    height: auto !important;
+}
+
+/* 모바일 전용 Our Service 정적 헤딩 */
+.introPage--serviceMobile {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    & p {
+        font-size: 32px;
+        font-weight: 500;
+        color: white;
+        border-bottom: 2px solid white;
+        padding-bottom: 4px;
+    }
+}
+
+/* 모바일 전용 서비스 카드 */
+.introPage--mainMobile {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 48px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+
+    & .contentDiv {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+
+        & p {
+            font-size: 32px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        & span {
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+    }
+
+    & .imgDiv {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        & img {
+            width: 100%;
+            max-width: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3);
+        }
+    }
+}
+
 /* 서비스 소개 메인 내용 */
 .introPage--main {
-    /* 레이아웃 */
     position: fixed;
     top: 300px;
     left: 0px;
@@ -93,6 +166,8 @@
     opacity: 0;
     pointer-events: none;
     gap: 10%;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
 
     & .contentDiv{
         flex: 5; /* 전체 영역의 50% */

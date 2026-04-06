@@ -1,7 +1,6 @@
 
 /* Main News */
 .MainNews--container{
-    
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,9 +11,22 @@
 }
 
 .MainNews--Newscontainer{
-    width: 75vw;
+    width: min(75vw, 1200px);
     height: max-content;
     margin: 50px 0;
+}
+
+@media (max-width: 900px) {
+    .MainNews--Newscontainer {
+        width: 90vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .MainNews--Newscontainer {
+        width: 95vw;
+        margin: 24px 0;
+    }
 }
 
 .MainNews--titleContainer{
@@ -23,45 +35,55 @@
 }
 
 .MainNews--title{
-    font-size: 2vw;
+    font-size: clamp(18px, 2vw, 28px);
     margin:0;
 }
 
-
-
 .MainNews--News {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3열 그리드 설정 */
-    gap: 10px;
-    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
-    align-items: center; /* 세로 정렬 */
-    min-height: 50vh; /* 프로젝트가 없을 때도 공간 확보 */
-    padding: 0px 10px;
-  }
-  
-  @media (max-width: 768px) {
-    /* 화면 가로 크기가 768px 이하일 때 */
-    .MainNews--News {
-      grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
-    }
-  }
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    align-items: start;
+    padding: 0px 4px;
+}
 
-  .MainNews--News__latest {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 3열 그리드 설정 */
-    gap: 10px;
-    justify-content: center; /* 카드들을 가로로 중앙 정렬 */
-    align-items: center; /* 세로 정렬 */
-    min-height: 32vh; /* 프로젝트가 없을 때도 공간 확보 */
-    padding: 0px 10px;
-  }
-  
-  @media (max-width: 768px) {
-    /* 화면 가로 크기가 768px 이하일 때 */
-    .MainNews--News__latest {
-      grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+@media (max-width: 900px) {
+    .MainNews--News {
+        grid-template-columns: repeat(2, 1fr);
     }
-  }
+}
+
+@media (max-width: 480px) {
+    .MainNews--News {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.MainNews--News__latest {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    align-items: start;
+    padding: 0px 4px;
+}
+
+@media (max-width: 1024px) {
+    .MainNews--News__latest {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .MainNews--News__latest {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .MainNews--News__latest {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
 
 .MainNews--pages{
     width: 100%;
