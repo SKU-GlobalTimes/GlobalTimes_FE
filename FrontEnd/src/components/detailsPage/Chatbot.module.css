@@ -20,6 +20,14 @@
     border-bottom: 1px solid #ddd;
 }
 
+.divider {
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    margin: 8px 0;
+    user-select: none;
+}
+
 .loginNotice {
     background: #fffbea;
     border-bottom: 1px solid #f0e0a0;

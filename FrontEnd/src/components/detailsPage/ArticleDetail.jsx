@@ -2,8 +2,8 @@ import styles from "./ArticleDetail.module.css";
 import { FaBookmark } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { MutatingDots } from "react-loader-spinner";
+import ReactMarkdown from "react-markdown";
 
-//컴포넌트 변경
 import TranslatedText from "../../api/TranslatedText.jsx";
 
 export default function ArticleDetail({ id, newsDetail, content, isLoading, isSummaryLoading }) {
@@ -70,7 +70,9 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
            visible={true}
          />
          ) : content ? (
-           <p className={styles.content}><TranslatedText text={content}/></p>
+           <div className={styles.content}>
+             <ReactMarkdown>{content}</ReactMarkdown>
+           </div>
          ) : (
            <p className={styles.content}>요약 정보를 불러올 수 없습니다.</p>
          )
