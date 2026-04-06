@@ -6,7 +6,7 @@ import { MutatingDots } from "react-loader-spinner";
 //컴포넌트 변경
 import TranslatedText from "../../api/TranslatedText.jsx";
 
-export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
+export default function ArticleDetail({ id, newsDetail, content, isLoading, isSummaryLoading }) {
   const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
     newsDetail;
@@ -58,8 +58,8 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
         {sourceName} - {author}
       </p>
       <img src={urlToImage} alt="기사 이미지" className={styles.image} />
-      {/* 기사 요약내용 */}
-      {isLoading ? (
+      {/* 기사 요약내용 - 상세 정보와 독립적으로 로딩 */}
+      {isSummaryLoading ? (
          <MutatingDots 
            height={100} 
            width={100} 
@@ -69,8 +69,10 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading }) {
            ariaLabel="mutating-dots-loading"
            visible={true}
          />
-         ) : (
+         ) : content ? (
            <p className={styles.content}><TranslatedText text={content}/></p>
+         ) : (
+           <p className={styles.content}>요약 정보를 불러올 수 없습니다.</p>
          )
        }
     </div>

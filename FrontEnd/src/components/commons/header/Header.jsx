@@ -1,17 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 import styles from "./Header.module.css";
 import Logo from "../../../assets/logo/logo.png";
 import { useLanguage } from "../../../util/LanguageContext.jsx";
 import { useAuth } from "../../../util/AuthContext.jsx";
 import TranslatedText from "../../../api/TranslatedText.jsx";
 
-//import GoogleTranslate from "../../../api/GoogleTranslate";
-
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // 전역으로 언어를 선택하는 함수
   const { language, setLanguage } = useLanguage();
   const { isLoggedIn, user, logout } = useAuth();
 
@@ -19,12 +18,18 @@ export default function Header() {
     window.location.href = "/oauth2/authorization/google";
   };
 
-  // 현재 경로가 "/"이면 흰색 테마 적용
   const isHome = location.pathname === "/" || location.pathname === "/intro";
 
-  function handleMainPageClick() {
-    navigate("/main");
-  }
+  const navItems = [
+    { label: "메인페이지", path: "/main" },
+    { label: "마이스크랩", path: "/scrap" },
+    { label: "서비스 소개", path: "/intro" },
+  ];
+
+  const handleNav = (path) => {
+    navigate(path);
+    setMenuOpen(false);
+  };
 
   return (
     <div className={styles.headerContainer}>
@@ -33,6 +38,7 @@ export default function Header() {
           isHome ? styles.whiteText : styles.blackText
         } ${isHome ? styles.blackBackground : styles.whiteBackground}`}
       >
+        {/* 로고 */}
         <div className={styles.logoContainer}>
           <img
             src={Logo}
@@ -40,50 +46,38 @@ export default function Header() {
             onClick={() => navigate("/")}
           />
         </div>
-        <p
-          onClick={handleMainPageClick}
-          className={location.pathname === "/main" ? styles.active : ""}
-        >
-          <TranslatedText text="메인페이지" />
-        </p>
-        <p
-          onClick={() => navigate("/scrap")}
-          className={location.pathname === "/scrap" ? styles.active : ""}
-        >
-          <TranslatedText text="마이스크랩" />
-        </p>
-        <p
-          onClick={() => navigate("/intro")}
-          className={location.pathname === "/intro" ? styles.active : ""}
-        >
-          <TranslatedText text="서비스 소개" />
-        </p>
-        {/* 로그인/로그아웃 */}
-        <div className={styles.authContainer}>
-          {isLoggedIn ? (
-            <>
-              <span className={styles.nickname}>{user?.nickname ?? ""}</span>
-              <button onClick={logout} className={styles.authButton}>
-                <TranslatedText text="로그아웃" />
-              </button>
-            </>
-          ) : (
-            <button onClick={handleLogin} className={styles.authButton}>
-              <TranslatedText text="로그인" />
-            </button>
-          )}
-        </div>
 
-        <div
-          className={`${styles.languageToggle} ${
-            isHome ? styles.whiteText : styles.blackText
-          }`}
-        >
-          {/* 언어선택 */}
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-          >
+        {/* 데스크탑 네비게이션 */}
+        <nav className={styles.desktopNav}>
+          {navItems.map(({ label, path }) => (
+            <p
+              key={path}
+              onClick={() => handleNav(path)}
+              className={location.pathname === path ? styles.active : ""}
+            >
+              <TranslatedText text={label} />
+            </p>
+          ))}
+        </nav>
+
+        {/* 데스크탑 우측 영역 */}
+        <div className={styles.desktopRight}>
+          <div className={styles.authContainer}>
+            {isLoggedIn ? (
+              <>
+                <span className={styles.nickname}>{user?.nickname ?? ""}</span>
+                <button onClick={logout} className={styles.authButton}>
+                  <TranslatedText text="로그아웃" />
+                </button>
+              </>
+            ) : (
+              <button onClick={handleLogin} className={styles.authButton}>
+                <TranslatedText text="로그인" />
+              </button>
+            )}
+          </div>
+          <div className={`${styles.languageToggle} ${isHome ? styles.whiteText : styles.blackText}`}>
+            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
             <option value="ko">한국어</option>
             <option value="en">English</option>
             <option value="ja">
@@ -164,6 +158,64 @@ export default function Header() {
             <option value="de">
               Deutsch (<TranslatedText text="독일어" />)
             </option>
+          </select>
+          </div>
+        </div>
+
+        {/* 햄버거 버튼 (모바일) */}
+        <button
+          className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ""}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="메뉴 열기"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
+
+      {/* 오버레이 (메뉴 외 영역 클릭 시 닫힘) */}
+      <div
+        className={`${styles.overlay} ${menuOpen ? styles.overlayVisible : ""}`}
+        onClick={() => setMenuOpen(false)}
+      />
+
+      {/* 모바일 사이드 메뉴 (우측 슬라이드) */}
+      <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""}`}>
+        {navItems.map(({ label, path }) => (
+          <p
+            key={path}
+            onClick={() => handleNav(path)}
+            className={`${styles.mobileMenuItem} ${location.pathname === path ? styles.mobileMenuActive : ""}`}
+          >
+            <TranslatedText text={label} />
+          </p>
+        ))}
+        <div className={styles.mobileMenuAuth}>
+          {isLoggedIn ? (
+            <>
+              <span className={styles.mobileNickname}>{user?.nickname ?? ""}</span>
+              <button onClick={() => { logout(); setMenuOpen(false); }} className={styles.authButton}>
+                <TranslatedText text="로그아웃" />
+              </button>
+            </>
+          ) : (
+            <button onClick={handleLogin} className={styles.authButton}>
+              <TranslatedText text="로그인" />
+            </button>
+          )}
+        </div>
+        <div className={styles.mobileMenuLang}>
+          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+            <option value="zh-CN">中文 (간체)</option>
+            <option value="zh-TW">繁體中文 (번체)</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+            <option value="ru">Русский</option>
           </select>
         </div>
       </div>

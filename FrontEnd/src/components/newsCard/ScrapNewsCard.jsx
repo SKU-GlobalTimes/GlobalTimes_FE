@@ -32,7 +32,7 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
         <div className={styled['ScrapNewsCard--container']} onClick={handleClickNewsCard}>
             <div 
                 className={styled['ScrapNewsCard--image']}
-                style={{ backgroundImage: `url(${image})` }} 
+                style={image ? { backgroundImage: `url(${image})` } : {}} 
             ></div>
             <div className={styled['ScrapNewsCard--contents']}>
                 <div className={styled['ScrapNewsCard--contents__letterContainer']}>
