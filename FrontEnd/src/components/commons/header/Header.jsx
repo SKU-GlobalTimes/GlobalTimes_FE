@@ -66,7 +66,7 @@ export default function Header() {
             {isLoggedIn ? (
               <>
                 <span className={styles.nickname}>
-                  {user?.nickname ?? ""} 🌐
+                  {user?.nickname ?? ""} 💡
                 </span>
                 <button onClick={logout} className={`${styles.authButton} ${styles.logoutButton}`}>
                   <TranslatedText text="로그아웃" />
@@ -197,7 +197,7 @@ export default function Header() {
           {isLoggedIn ? (
             <>
               <span className={styles.mobileNickname}>
-                {user?.nickname ?? ""} 🌐
+                {user?.nickname ?? ""} 💡
               </span>
               <button onClick={() => { logout(); setMenuOpen(false); }} className={`${styles.authButton} ${styles.logoutButton}`}>
                 <TranslatedText text="로그아웃" />
