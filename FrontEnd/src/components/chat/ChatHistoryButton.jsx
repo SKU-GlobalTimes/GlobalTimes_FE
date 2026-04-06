@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { useAuth } from "../../util/AuthContext.jsx";
 import { getChatList } from "../../api/chatAPI.js";
 import styles from "./ChatHistoryButton.module.css";
@@ -92,7 +93,9 @@ export default function ChatHistoryButton() {
                                 <div className={styles.chatInfo}>
                                     <p className={styles.articleTitle}>{item.articleTitle}</p>
                                     <p className={styles.lastQuestion}>Q: {item.lastQuestion}</p>
-                                    <p className={styles.preview}>{item.lastAnswerPreview}</p>
+                                    <div className={styles.preview}>
+                                        <ReactMarkdown>{item.lastAnswerPreview}</ReactMarkdown>
+                                    </div>
                                     <p className={styles.time}>
                                         {new Date(item.lastChatAt).toLocaleString("ko-KR")}
                                     </p>
