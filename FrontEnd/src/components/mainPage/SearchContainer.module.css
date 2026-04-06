@@ -55,17 +55,95 @@
     color: #f0c040;
 }
 
+.input-wrapper {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
 .searchContainer--Input{
-    margin-left: 10px;
+    padding-left: 10px;
     font-size: 18px;
     border: none;
     outline: none;
-    width: 95%;
+    width: 100%;
     height: 80%;
+    background: transparent;
+    position: relative;
+    z-index: 1;
 }
-.searchContainer--Input::placeholder{
+
+.animated-placeholder {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    z-index: 0;
+}
+
+.placeholder-text {
     color: #565656;
     font-weight: bold;
+    font-size: 18px;
+}
+
+/* 이모지: 기본은 울고있는 상태, 컨테이너 호버 시 행복한 상태로 전환 */
+.emoji-sad,
+.emoji-happy {
+    font-size: 16px;
+}
+
+.emoji-happy {
+    display: none;
+}
+
+.searchContainer--searchInputContainer:hover .emoji-sad {
+    display: none;
+}
+
+.searchContainer--searchInputContainer:hover .emoji-happy {
+    display: inline;
+}
+
+/* 검색 버튼 내 점 애니메이션 그룹 */
+
+.btn-dots {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.btn-dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    flex-shrink: 0;
+    animation: dotBounce 1.5s infinite ease-in-out;
+}
+
+.searchContainer--searchButton:disabled .btn-dot {
+    background-color: rgba(100, 100, 100, 0.4);
+}
+
+@keyframes dotBounce {
+    0%, 55%, 100% {
+        transform: translateY(0);
+        opacity: 0.3;
+    }
+    27% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
 }
 
 .searchContainer--searchButton{
@@ -80,6 +158,10 @@
     outline: none;
     box-shadow: 3px 3px 5px #a7a7a7;
     transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .searchContainer--searchButton:hover {
