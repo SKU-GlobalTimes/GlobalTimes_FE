@@ -9,32 +9,32 @@ const BASE_THETA = 0.3;
 
 // BE에서 실제 트렌드를 수집하는 26개 지원 국가
 const COUNTRY_MARKERS = {
-  KR: { lat: 35.9,  lng: 127.8,  name: "South Korea" },
-  JP: { lat: 36.2,  lng: 138.3,  name: "Japan" },
-  HK: { lat: 22.4,  lng: 114.1,  name: "Hong Kong" },
-  TW: { lat: 23.7,  lng: 121.0,  name: "Taiwan" },
-  SG: { lat: 1.4,   lng: 103.8,  name: "Singapore" },
-  MY: { lat: 4.2,   lng: 108.0,  name: "Malaysia" },
-  ID: { lat: -0.8,  lng: 113.9,  name: "Indonesia" },
-  IN: { lat: 20.6,  lng: 79.1,   name: "India" },
-  AU: { lat: -25.3, lng: 133.8,  name: "Australia" },
-  US: { lat: 37.1,  lng: -95.7,  name: "United States" },
-  CA: { lat: 56.1,  lng: -106.3, name: "Canada" },
-  MX: { lat: 23.6,  lng: -102.6, name: "Mexico" },
-  BR: { lat: -14.2, lng: -51.9,  name: "Brazil" },
-  CO: { lat: 4.6,   lng: -74.1,  name: "Colombia" },
+  KR: { lat: 35.9,  lng: 127.8,  name: "South Korea"    },
+  JP: { lat: 36.2,  lng: 138.3,  name: "Japan"          },
+  HK: { lat: 22.4,  lng: 114.1,  name: "Hong Kong"      },
+  TW: { lat: 23.7,  lng: 121.0,  name: "Taiwan"         },
+  SG: { lat: 1.4,   lng: 103.8,  name: "Singapore"      },
+  MY: { lat: 4.2,   lng: 108.0,  name: "Malaysia"       },
+  ID: { lat: -0.8,  lng: 113.9,  name: "Indonesia"      },
+  IN: { lat: 20.6,  lng: 79.1,   name: "India"          },
+  AU: { lat: -25.3, lng: 133.8,  name: "Australia"      },
+  US: { lat: 37.1,  lng: -95.7,  name: "United States"  },
+  CA: { lat: 56.1,  lng: -106.3, name: "Canada"         },
+  MX: { lat: 23.6,  lng: -102.6, name: "Mexico"         },
+  BR: { lat: -14.2, lng: -51.9,  name: "Brazil"         },
+  CO: { lat: 4.6,   lng: -74.1,  name: "Colombia"       },
   GB: { lat: 55.4,  lng: -3.4,   name: "United Kingdom" },
-  FR: { lat: 46.2,  lng: 2.2,    name: "France" },
-  DE: { lat: 51.2,  lng: 10.5,   name: "Germany" },
-  IT: { lat: 41.9,  lng: 12.6,   name: "Italy" },
-  ES: { lat: 40.5,  lng: -3.7,   name: "Spain" },
-  NL: { lat: 52.1,  lng: 5.3,    name: "Netherlands" },
-  AT: { lat: 47.5,  lng: 14.6,   name: "Austria" },
-  DK: { lat: 56.3,  lng: 9.5,    name: "Denmark" },
-  GR: { lat: 39.1,  lng: 21.8,   name: "Greece" },
-  RU: { lat: 61.5,  lng: 105.3,  name: "Russia" },
-  TR: { lat: 38.9,  lng: 35.2,   name: "Turkey" },
-  EG: { lat: 26.8,  lng: 30.8,   name: "Egypt" },
+  FR: { lat: 46.2,  lng: 2.2,    name: "France"         },
+  DE: { lat: 51.2,  lng: 10.5,   name: "Germany"        },
+  IT: { lat: 41.9,  lng: 12.6,   name: "Italy"          },
+  ES: { lat: 40.5,  lng: -3.7,   name: "Spain"          },
+  NL: { lat: 52.1,  lng: 5.3,    name: "Netherlands"    },
+  AT: { lat: 47.5,  lng: 14.6,   name: "Austria"        },
+  DK: { lat: 56.3,  lng: 9.5,    name: "Denmark"        },
+  GR: { lat: 39.1,  lng: 21.8,   name: "Greece"         },
+  RU: { lat: 61.5,  lng: 105.3,  name: "Russia"         },
+  TR: { lat: 38.9,  lng: 35.2,   name: "Turkey"         },
+  EG: { lat: 26.8,  lng: 30.8,   name: "Egypt"          },
 };
 
 /**
@@ -68,6 +68,15 @@ const GlobeComponent = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [trendData, setTrendData] = useState(null);
   const [selectedNews, setSelectedNews] = useState(null);
+  const [now, setNow] = useState(new Date());
+
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const city = timezone.split("/").pop().replace(/_/g, " ");
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -80,11 +89,13 @@ const GlobeComponent = () => {
     const { w, h } = getSize();
 
     // cobe 마커에 id 부여 → CSS 앵커 포지셔닝용 --cobe-{id} 변수 생성
-    const cobeMarkers = Object.entries(COUNTRY_MARKERS).map(([code, { lat, lng }]) => ({
-      location: [lat, lng],
-      size: 0.03,
-      id: code.toLowerCase(),
-    }));
+    const cobeMarkers = Object.entries(COUNTRY_MARKERS).map(
+      ([code, { lat, lng }]) => ({
+        location: [lat, lng],
+        size: 0.03,
+        id: code.toLowerCase(),
+      }),
+    );
 
     const globe = createGlobe(canvas, {
       devicePixelRatio: 2,
@@ -92,14 +103,14 @@ const GlobeComponent = () => {
       height: h * 2,
       phi: 0,
       theta: BASE_THETA,
-      dark: 0,
-      diffuse: 1.2,
-      mapSamples: 8000,
-      mapBrightness: 6,
-      mapBaseBrightness: 0,
-      baseColor: [1, 1, 1],
-      markerColor: [0.08, 0.08, 0.12],
-      glowColor: [0.8, 0.85, 1.0],
+      dark: 1,
+      diffuse: 1.5,
+      mapSamples: 12000,
+      mapBrightness: 3.5,
+      mapBaseBrightness: 0.05,
+      baseColor: [0.12, 0.18, 0.38],
+      markerColor: [0.98, 0.82, 0.2],
+      glowColor: [0.6, 0.65, 1.0],
       markers: cobeMarkers,
     });
 
@@ -153,9 +164,14 @@ const GlobeComponent = () => {
         const r = el.getBoundingClientRect();
         if (r.width === 0) continue;
         if (
-          e.clientX >= r.left - 12 && e.clientX <= r.right + 12 &&
-          e.clientY >= r.top - 12  && e.clientY <= r.bottom + 12
-        ) { near = true; break; }
+          e.clientX >= r.left - 12 &&
+          e.clientX <= r.right + 12 &&
+          e.clientY >= r.top - 12 &&
+          e.clientY <= r.bottom + 12
+        ) {
+          near = true;
+          break;
+        }
       }
       canvas.style.cursor = near ? "pointer" : "default";
     };
@@ -176,7 +192,10 @@ const GlobeComponent = () => {
           const cx = r.left + r.width / 2;
           const cy = r.top + r.height / 2;
           const d = Math.hypot(e.clientX - cx, e.clientY - cy);
-          if (d < THRESHOLD && d < minDist) { minDist = d; bestCode = code; }
+          if (d < THRESHOLD && d < minDist) {
+            minDist = d;
+            bestCode = code;
+          }
         }
         if (bestCode) {
           setSelectedCountry(bestCode);
@@ -247,8 +266,11 @@ const GlobeComponent = () => {
       {Object.entries(COUNTRY_MARKERS).map(([code, { name }]) => (
         <div
           key={code}
-          ref={(el) => { labelElsRef.current[code] = el; }}
+          ref={(el) => {
+            labelElsRef.current[code] = el;
+          }}
           className={styles.markerLabel}
+          data-name={name}
           style={{
             positionAnchor: `--cobe-${code.toLowerCase()}`,
             opacity: `var(--cobe-visible-${code.toLowerCase()}, 0)`,
@@ -256,9 +278,33 @@ const GlobeComponent = () => {
           onMouseDown={(e) => e.stopPropagation()}
           onClick={() => setSelectedCountry(code)}
         >
-          {name}
+          <img
+            src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+            srcSet={`https://flagcdn.com/w40/${code.toLowerCase()}.png 2x`}
+            alt={name}
+            className={styles.flagImg}
+            draggable={false}
+          />
+          <span className={styles.flagName}>{name}</span>
         </div>
       ))}
+
+      {/* 좌측 하단 실시간 로컬 시계 */}
+      <div className={styles.clockWidget}>
+        <div className={styles.clockCity}>{city}</div>
+        <div className={styles.clockTime}>
+          {now.toLocaleTimeString("en-GB", { hour12: false })}
+        </div>
+        <div className={styles.clockDate}>
+          {now.toLocaleDateString("en-GB", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </div>
+        <div className={styles.clockTz}>{timezone}</div>
+      </div>
 
       {selectedCountry && trendData && (
         <div ref={trendModalRef}>
@@ -267,14 +313,20 @@ const GlobeComponent = () => {
             trends={trendData.data}
             timestamp={trendData.timestamp}
             onSelect={(news) => setSelectedNews(news)}
-            onClose={() => { setSelectedCountry(null); setTrendData(null); }}
+            onClose={() => {
+              setSelectedCountry(null);
+              setTrendData(null);
+            }}
           />
         </div>
       )}
 
       {selectedNews && (
         <div ref={newsModalRef}>
-          <NewsModal news={selectedNews} onClose={() => setSelectedNews(null)} />
+          <NewsModal
+            news={selectedNews}
+            onClose={() => setSelectedNews(null)}
+          />
         </div>
       )}
     </div>
