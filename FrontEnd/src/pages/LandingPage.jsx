@@ -1,10 +1,10 @@
-import GlobeComponent from '../components/globe/Globe';
+import GlobeComponent from "../components/globe/Globe";
+import styles from "./LandingPage.module.css";
 
 export default function LandingPage() {
-
-    return(
-        <div style={{width: "100vw", height: "85vh"}}>
-        <GlobeComponent />
-      </div>
-    )
+  return (
+    <div className={styles.wrap}>
+      <GlobeComponent />
+    </div>
+  );
 }
