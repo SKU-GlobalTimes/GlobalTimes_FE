@@ -6,6 +6,11 @@
     padding-top: 60px;
   }
 
+  /* 랜딩: 고정 헤더가 지구본 위에 겹치므로 상단 패딩 제거 (흰 띠 방지) */
+  .layout.landing-page {
+    padding-top: 0;
+  }
+
   /* 소개 페이지에만 배경 이미지 설정 */
   .layout.intro-page {
     background-image: url('../assets/intro_background.png');

@@ -18,6 +18,7 @@ export default function MainLayout() {
     <div 
       className={classNames(styles.layout, {
         [styles['intro-page']]: isIntroPage,
+        [styles['landing-page']]: isLandingPage,
       })}
     >
       <Header />

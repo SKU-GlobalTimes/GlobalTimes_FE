@@ -30,7 +30,8 @@ const setCache = (text, lang, result) => {
 
 const TranslatedText = ({ text }) => {
     const { language } = useLanguage();
-    const [translated, setTranslated] = useState("");
+    /* 첫 페인트부터 원문 표시 → 빈 칸 방지, 이후 번역으로 갱신 */
+    const [translated, setTranslated] = useState(() => text ?? "");
 
     useEffect(() => {
         const translate = async () => {
