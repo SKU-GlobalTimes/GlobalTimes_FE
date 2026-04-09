@@ -1,13 +1,30 @@
 import axios from "axios";
 
-export async function getTrend(code) {
+function isAbortError(error) {
+  return (
+    error?.code === "ERR_CANCELED" ||
+    error?.name === "CanceledError" ||
+    error?.name === "AbortError"
+  );
+}
+
+/** @param {string} code 국가 코드
+ *  @param {{ signal?: AbortSignal }} [options] 연속 클릭 시 이전 요청 취소용 */
+export async function getTrend(code, options = {}) {
+  const { signal } = options;
   try {
     const baseUrl = `${import.meta.env.VITE_APP_API}/api/trend?code=${code}`;
-    const response = await axios.get(baseUrl);
+    const response = await axios.get(baseUrl, { signal });
     return response.data;
   } catch (error) {
+    if (isAbortError(error)) throw error;
     console.error("트렌드 데이터를 불러오는 데 실패했습니다:", error);
-    return [];
+    return {
+      isSuccess: false,
+      data: [],
+      timestamp: new Date().toISOString(),
+      message: "",
+    };
   }
 }
 
