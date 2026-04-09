@@ -64,6 +64,8 @@ const GlobeComponent = () => {
   const thetaRef = useRef(BASE_THETA);
   const trendModalRef = useRef(null);
   const newsModalRef = useRef(null);
+  /** 연속 국가 클릭 시 마지막 요청만 반영 (레이스 방지) */
+  const trendFetchGenRef = useRef(0);
 
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [trendData, setTrendData] = useState(null);
@@ -247,12 +249,35 @@ const GlobeComponent = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedCountry) {
-      setTrendData(null);
-      getTrend(selectedCountry)
-        .then((data) => setTrendData(data))
-        .catch(() => setTrendData([]));
-    }
+    if (!selectedCountry) return;
+
+    const gen = ++trendFetchGenRef.current;
+    setTrendData(null);
+    const controller = new AbortController();
+
+    getTrend(selectedCountry, { signal: controller.signal })
+      .then((data) => {
+        if (gen !== trendFetchGenRef.current) return;
+        setTrendData(data);
+      })
+      .catch((err) => {
+        if (
+          err?.code === "ERR_CANCELED" ||
+          err?.name === "CanceledError" ||
+          err?.name === "AbortError"
+        ) {
+          return;
+        }
+        if (gen !== trendFetchGenRef.current) return;
+        setTrendData({
+          isSuccess: false,
+          data: [],
+          timestamp: new Date().toISOString(),
+          message: "",
+        });
+      });
+
+    return () => controller.abort();
   }, [selectedCountry]);
 
   return (
