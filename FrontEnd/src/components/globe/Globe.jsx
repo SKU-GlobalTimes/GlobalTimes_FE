@@ -9,52 +9,33 @@ const BASE_THETA = 0.3;
 
 // BE에서 실제 트렌드를 수집하는 26개 지원 국가
 const COUNTRY_MARKERS = {
-  KR: { lat: 35.9,  lng: 127.8,  name: "South Korea"    },
-  JP: { lat: 36.2,  lng: 138.3,  name: "Japan"          },
-  HK: { lat: 22.4,  lng: 114.1,  name: "Hong Kong"      },
-  TW: { lat: 23.7,  lng: 121.0,  name: "Taiwan"         },
-  SG: { lat: 1.4,   lng: 103.8,  name: "Singapore"      },
-  MY: { lat: 4.2,   lng: 108.0,  name: "Malaysia"       },
-  ID: { lat: -0.8,  lng: 113.9,  name: "Indonesia"      },
-  IN: { lat: 20.6,  lng: 79.1,   name: "India"          },
-  AU: { lat: -25.3, lng: 133.8,  name: "Australia"      },
-  US: { lat: 37.1,  lng: -95.7,  name: "United States"  },
-  CA: { lat: 56.1,  lng: -106.3, name: "Canada"         },
-  MX: { lat: 23.6,  lng: -102.6, name: "Mexico"         },
-  BR: { lat: -14.2, lng: -51.9,  name: "Brazil"         },
-  CO: { lat: 4.6,   lng: -74.1,  name: "Colombia"       },
-  GB: { lat: 55.4,  lng: -3.4,   name: "United Kingdom" },
-  FR: { lat: 46.2,  lng: 2.2,    name: "France"         },
-  DE: { lat: 51.2,  lng: 10.5,   name: "Germany"        },
-  IT: { lat: 41.9,  lng: 12.6,   name: "Italy"          },
-  ES: { lat: 40.5,  lng: -3.7,   name: "Spain"          },
-  NL: { lat: 52.1,  lng: 5.3,    name: "Netherlands"    },
-  AT: { lat: 47.5,  lng: 14.6,   name: "Austria"        },
-  DK: { lat: 56.3,  lng: 9.5,    name: "Denmark"        },
-  GR: { lat: 39.1,  lng: 21.8,   name: "Greece"         },
-  RU: { lat: 61.5,  lng: 105.3,  name: "Russia"         },
-  TR: { lat: 38.9,  lng: 35.2,   name: "Turkey"         },
-  EG: { lat: 26.8,  lng: 30.8,   name: "Egypt"          },
+  KR: { lat: 35.9, lng: 127.8, name: "South Korea" },
+  JP: { lat: 36.2, lng: 138.3, name: "Japan" },
+  HK: { lat: 22.4, lng: 114.1, name: "Hong Kong" },
+  TW: { lat: 23.7, lng: 121.0, name: "Taiwan" },
+  SG: { lat: 1.4, lng: 103.8, name: "Singapore" },
+  MY: { lat: 4.2, lng: 108.0, name: "Malaysia" },
+  ID: { lat: -0.8, lng: 113.9, name: "Indonesia" },
+  IN: { lat: 20.6, lng: 79.1, name: "India" },
+  AU: { lat: -25.3, lng: 133.8, name: "Australia" },
+  US: { lat: 37.1, lng: -95.7, name: "United States" },
+  CA: { lat: 56.1, lng: -106.3, name: "Canada" },
+  MX: { lat: 23.6, lng: -102.6, name: "Mexico" },
+  BR: { lat: -14.2, lng: -51.9, name: "Brazil" },
+  CO: { lat: 4.6, lng: -74.1, name: "Colombia" },
+  GB: { lat: 55.4, lng: -3.4, name: "United Kingdom" },
+  FR: { lat: 46.2, lng: 2.2, name: "France" },
+  DE: { lat: 51.2, lng: 10.5, name: "Germany" },
+  IT: { lat: 41.9, lng: 12.6, name: "Italy" },
+  ES: { lat: 40.5, lng: -3.7, name: "Spain" },
+  NL: { lat: 52.1, lng: 5.3, name: "Netherlands" },
+  AT: { lat: 47.5, lng: 14.6, name: "Austria" },
+  DK: { lat: 56.3, lng: 9.5, name: "Denmark" },
+  GR: { lat: 39.1, lng: 21.8, name: "Greece" },
+  RU: { lat: 61.5, lng: 105.3, name: "Russia" },
+  TR: { lat: 38.9, lng: 35.2, name: "Turkey" },
+  EG: { lat: 26.8, lng: 30.8, name: "Egypt" },
 };
-
-/**
- * 클릭/호버 감지 전용 투영 함수.
- * CSS 앵커 포지셔닝이 라벨 위치를 담당하므로 여기선 좌표 계산만 사용.
- */
-function projectMarker(lat, lng, phi, theta, canvasW, canvasH) {
-  const latR = (lat * Math.PI) / 180;
-  const lngR = (lng * Math.PI) / 180;
-  const x0 = Math.cos(latR) * Math.sin(lngR);
-  const y0 = Math.sin(latR);
-  const z0 = Math.cos(latR) * Math.cos(lngR);
-  const x1 = x0 * Math.cos(phi) + z0 * Math.sin(phi);
-  const z1 = -x0 * Math.sin(phi) + z0 * Math.cos(phi);
-  const y2 = y0 * Math.cos(theta) - z1 * Math.sin(theta);
-  const z2 = y0 * Math.sin(theta) + z1 * Math.cos(theta);
-  if (z2 < 0.05) return null;
-  const r = Math.min(canvasW, canvasH) / 2;
-  return { x: canvasW / 2 + x1 * r, y: canvasH / 2 - y2 * r, z: z2 };
-}
 
 const GlobeComponent = () => {
   const canvasRef = useRef(null);
@@ -250,10 +231,13 @@ const GlobeComponent = () => {
 
   useEffect(() => {
     if (!selectedCountry) return;
+    // 국가가 없다 : 마커 선택 x , 모달창을 닫은 경우 전부 포함 : 분기 해당
 
     const gen = ++trendFetchGenRef.current;
-    setTrendData(null);
-    const controller = new AbortController();
+    setTrendData(null); // 이전 요청 취소를 위해 데이터 초기화
+    // 선택된 국가가 변경되었는데도 Trend Data 는 아직 이전 요청의 결과일 수 있기 때문임.
+
+    const controller = new AbortController(); // 요청 취소를 위해 AbortController 생성
 
     getTrend(selectedCountry, { signal: controller.signal })
       .then((data) => {
@@ -262,6 +246,7 @@ const GlobeComponent = () => {
       })
       .catch((err) => {
         if (
+          // Optional Chaining 공부해보기
           err?.code === "ERR_CANCELED" ||
           err?.name === "CanceledError" ||
           err?.name === "AbortError"
