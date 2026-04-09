@@ -21,6 +21,13 @@ export default function Header() {
 
   const isHome = location.pathname === "/" || location.pathname === "/intro";
 
+  const logoTooltipLabel =
+    language === "en"
+      ? "Live trends check"
+      : language === "ja"
+        ? "リアルタイムトレンド 確認"
+        : "실시간 트렌드 확인하기";
+
   const navItems = [
     { label: "메인페이지", path: "/main" },
     { label: "마이스크랩", path: "/scrap" },
@@ -39,13 +46,42 @@ export default function Header() {
           isHome ? styles.whiteText : styles.blackText
         } ${isHome ? styles.blackBackground : styles.whiteBackground}`}
       >
-        {/* 로고 */}
-        <div className={styles.logoContainer}>
-          <img
-            src={Logo}
-            className={styles.image}
-            onClick={() => navigate("/")}
-          />
+        {/* 로고 — 클릭 시 랜딩(실시간 트렌드) */}
+        <div
+          className={styles.logoContainer}
+          onClick={() => navigate("/")}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate("/");
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="홈 · 실시간 트렌드로 이동"
+        >
+          <img src={Logo} className={styles.image} alt="" draggable={false} />
+          <span
+            className={`${styles.logoTooltip} ${isHome ? styles.logoTooltipOnDark : styles.logoTooltipOnLight}`}
+          >
+            <svg
+              className={styles.logoTooltipCaret}
+              viewBox="0 0 22 12"
+              width="22"
+              height="12"
+              aria-hidden
+            >
+              <polygon points="11,1 21,11 1,11" className={styles.logoTooltipCaretFill} />
+              <path
+                d="M1 11 L11 1 L21 11"
+                fill="none"
+                strokeWidth="1"
+                strokeLinejoin="miter"
+                className={styles.logoTooltipCaretStroke}
+              />
+            </svg>
+            <span className={styles.logoTooltipText}>{logoTooltipLabel}</span>
+          </span>
         </div>
 
         {/* 데스크탑 네비게이션 */}
@@ -69,12 +105,18 @@ export default function Header() {
                 <span className={styles.nickname}>
                   {user?.nickname ?? ""} 💡
                 </span>
-                <button onClick={logout} className={`${styles.authButton} ${styles.logoutButton}`}>
+                <button
+                  onClick={logout}
+                  className={`${styles.authButton} ${styles.logoutButton}`}
+                >
                   <TranslatedText text="로그아웃" />
                 </button>
               </>
             ) : (
-              <button onClick={handleLogin} className={`${styles.authButton} ${styles.loginButton}`}>
+              <button
+                onClick={handleLogin}
+                className={`${styles.authButton} ${styles.loginButton}`}
+              >
                 <TranslatedText text="로그인" />
               </button>
             )}
@@ -105,7 +147,9 @@ export default function Header() {
       />
 
       {/* 모바일 사이드 메뉴 (우측 슬라이드) */}
-      <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""}`}>
+      <div
+        className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""}`}
+      >
         {navItems.map(({ label, path }) => (
           <p
             key={path}
@@ -121,12 +165,21 @@ export default function Header() {
               <span className={styles.mobileNickname}>
                 {user?.nickname ?? ""} 💡
               </span>
-              <button onClick={() => { logout(); setMenuOpen(false); }} className={`${styles.authButton} ${styles.logoutButton}`}>
+              <button
+                onClick={() => {
+                  logout();
+                  setMenuOpen(false);
+                }}
+                className={`${styles.authButton} ${styles.logoutButton}`}
+              >
                 <TranslatedText text="로그아웃" />
               </button>
             </>
           ) : (
-            <button onClick={handleLogin} className={`${styles.authButton} ${styles.loginButton}`}>
+            <button
+              onClick={handleLogin}
+              className={`${styles.authButton} ${styles.loginButton}`}
+            >
               <TranslatedText text="로그인" />
             </button>
           )}
