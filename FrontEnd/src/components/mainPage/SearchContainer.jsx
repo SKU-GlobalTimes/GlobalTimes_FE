@@ -1,7 +1,7 @@
 import styled from "./SearchContainer.module.css";
 import PropTypes from "prop-types";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
@@ -9,6 +9,20 @@ import {
   EXPLORE_COUNTRY_OPTIONS,
   EXPLORE_CATEGORY_OPTIONS,
 } from "./exploreOptions";
+
+const EXPLORE_UI_KEYS = {
+  hint: "키워드는 위 입력 후 검색 버튼을 누르세요. 여기서는 국가·카테고리·날짜로 목록만 좁힙니다.",
+  labelCountry: "국가",
+  labelCategory: "카테고리",
+  labelDate: "날짜 (하루)",
+  btnApply: "이 조건으로 보기",
+  btnReset: "조건 초기화",
+  all: "전체",
+  triggerTitle: "조건으로 좁히기",
+  triggerAria:
+    "탐색 조건 열기. 국가, 카테고리, 날짜로 목록을 좁힐 수 있습니다.",
+  dialogAria: "탐색 조건",
+};
 
 export default function SearchContainer({
   searchTerm,
@@ -30,7 +44,11 @@ export default function SearchContainer({
   const [exCategory, setExCategory] = useState("");
   const [exDate, setExDate] = useState("");
 
+  const [exUi, setExUi] = useState(() => ({ ...EXPLORE_UI_KEYS }));
+
   const hasExploreFilters = Boolean(exCountry || exCategory || exDate);
+
+  const showExplore = enableExplore && onExploreApply;
 
   useEffect(() => {
     setInputSearchTerm(searchTerm);
@@ -48,6 +66,26 @@ export default function SearchContainer({
     };
     translate();
   }, [language]);
+
+  useEffect(() => {
+    if (!showExplore) return;
+    let cancelled = false;
+    (async () => {
+      const entries = Object.entries(EXPLORE_UI_KEYS);
+      const translated = await Promise.all(
+        entries.map(([, ko]) => fetchTranslatedText(ko, language)),
+      );
+      if (cancelled) return;
+      const next = {};
+      entries.forEach(([key], i) => {
+        next[key] = translated[i];
+      });
+      setExUi(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [language, showExplore]);
 
   useEffect(() => {
     if (!exploreOpen) return;
@@ -104,7 +142,25 @@ export default function SearchContainer({
     setExDate("");
   }
 
-  const showExplore = enableExplore && onExploreApply;
+  const countryOptions = useMemo(
+    () =>
+      EXPLORE_COUNTRY_OPTIONS.map((o) =>
+        o.value === ""
+          ? { ...o, label: exUi.all }
+          : o,
+      ),
+    [exUi.all],
+  );
+
+  const categoryOptions = useMemo(
+    () =>
+      EXPLORE_CATEGORY_OPTIONS.map((o) =>
+        o.value === ""
+          ? { ...o, label: exUi.all }
+          : o,
+      ),
+    [exUi.all],
+  );
 
   return (
     <div className={styled["searchContainer--container"]}>
@@ -142,8 +198,8 @@ export default function SearchContainer({
                 onClick={() => setExploreOpen((o) => !o)}
                 aria-expanded={exploreOpen}
                 aria-controls="explore-popover"
-                aria-label="탐색 조건 열기 · 국가·카테고리·날짜로 좁히기"
-                title="조건으로 좁히기"
+                aria-label={exUi.triggerAria}
+                title={exUi.triggerTitle}
               >
                 <SlidersHorizontal size={20} strokeWidth={2.25} aria-hidden />
                 {hasExploreFilters && (
@@ -182,21 +238,18 @@ export default function SearchContainer({
             className={styled["searchExplore__popover"]}
             id="explore-popover"
             role="dialog"
-            aria-label="탐색 조건"
+            aria-label={exUi.dialogAria}
           >
-            <p className={styled["searchExplore__hint"]}>
-              키워드는 위 입력 후 검색 버튼 · 여기서는{" "}
-              <strong>국가·카테고리·날짜</strong>로 목록만 좁힙니다.
-            </p>
+            <p className={styled["searchExplore__hint"]}>{exUi.hint}</p>
             <div className={styled["searchExplore__grid"]}>
               <div className={styled["searchExplore__field"]}>
-                <label htmlFor="explore-country">국가</label>
+                <label htmlFor="explore-country">{exUi.labelCountry}</label>
                 <select
                   id="explore-country"
                   value={exCountry}
                   onChange={(e) => setExCountry(e.target.value)}
                 >
-                  {EXPLORE_COUNTRY_OPTIONS.map((o) => (
+                  {countryOptions.map((o) => (
                     <option key={o.value || "all"} value={o.value}>
                       {o.label}
                     </option>
@@ -204,13 +257,13 @@ export default function SearchContainer({
                 </select>
               </div>
               <div className={styled["searchExplore__field"]}>
-                <label htmlFor="explore-category">카테고리</label>
+                <label htmlFor="explore-category">{exUi.labelCategory}</label>
                 <select
                   id="explore-category"
                   value={exCategory}
                   onChange={(e) => setExCategory(e.target.value)}
                 >
-                  {EXPLORE_CATEGORY_OPTIONS.map((o) => (
+                  {categoryOptions.map((o) => (
                     <option key={o.value || "all-c"} value={o.value}>
                       {o.label}
                     </option>
@@ -218,7 +271,7 @@ export default function SearchContainer({
                 </select>
               </div>
               <div className={styled["searchExplore__field"]}>
-                <label htmlFor="explore-date">날짜 (하루)</label>
+                <label htmlFor="explore-date">{exUi.labelDate}</label>
                 <input
                   id="explore-date"
                   type="date"
@@ -233,14 +286,14 @@ export default function SearchContainer({
                 className={styled["searchExplore__apply"]}
                 onClick={handleExploreApplyClick}
               >
-                이 조건으로 보기
+                {exUi.btnApply}
               </button>
               <button
                 type="button"
                 className={styled["searchExplore__reset"]}
                 onClick={handleExploreReset}
               >
-                조건 초기화
+                {exUi.btnReset}
               </button>
             </div>
           </div>
