@@ -9,13 +9,16 @@
 }
 
 .searchContainer--searchBar{
-    width: 60vw;
-    height: 6vh;
+    width: 100%;
+    max-width: min(720px, calc(100vw - 32px));
+    min-height: 48px;
+    height: auto;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    align-items: stretch;
+    gap: 12px;
     margin-bottom: 20px;
-    
+    box-sizing: border-box;
 }
 
 .searchContainer--searchInputContainer{
@@ -23,13 +26,13 @@
     flex-direction: row;
     align-items: center;
     background-color: white;
-    width: 88%;
-    height: 100%;
+    flex: 1 1 0%;
+    min-width: 0;
+    min-height: 48px;
     padding: 0px 15px;
     border: 2px solid #565656;
     border-radius: 11px;
     box-shadow: 3px 3px 5px #a7a7a7;
-    margin-right: 20px;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -65,10 +68,11 @@
 
 .searchContainer--Input{
     padding-left: 10px;
-    font-size: 18px;
+    font-size: clamp(14px, 2.5vw, 18px);
     border: none;
     outline: none;
     width: 100%;
+    min-width: 0;
     height: 80%;
     background: transparent;
     position: relative;
@@ -78,6 +82,7 @@
 .animated-placeholder {
     position: absolute;
     left: 10px;
+    right: 4px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -87,6 +92,8 @@
     user-select: none;
     white-space: nowrap;
     z-index: 0;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .placeholder-text {
@@ -147,10 +154,12 @@
 }
 
 .searchContainer--searchButton{
-    font-size: 0.8vw;
+    font-size: clamp(12px, 1.8vw, 15px);
     font-weight: bold;
-    width: 9%;
-    height: 100%;
+    flex: 0 0 auto;
+    min-width: 5.75rem;
+    padding: 0 14px;
+    align-self: stretch;
     color: white;
     background-color: rgb(44, 44, 44);
     border: none;
@@ -162,6 +171,7 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
+    white-space: nowrap;
 }
 
 .searchContainer--searchButton:hover {
