@@ -63,64 +63,72 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
   }
 
 
+  const canPrev = currentPage > 1;
+  const canNext = currentPage < totalPages;
+
   return (
-    <div className={styled['pagenationContainer']}>
-
-  {/* ≪ 처음 페이지 */}
-  {currentPage > 1 && (
-    <button
-      className={styled.pagenationButton}
-      onClick={firstClick}
-    >
-      ≪
-    </button>
-  )}
-
-  {/* < 이전 페이지 */}
-  {currentPage > 1 && (
-    <button
-      className={styled.pagenationButton}
-      onClick={prevClick}
-    >
-      &lt;
-    </button>
-  )}
-
-  {/* 페이지 번호 및 ... */}
-  {getPageNumbers().map((pageNumber, index) =>
-    pageNumber === '...' ? (
-      <span key={`ellipsis-${index}`} className={styled.ellipsis}>...</span>
-    ) : (
+    <div className={styled.pagenationContainer}>
       <button
-        key={pageNumber}
-        className={`${styled.pagenationButton} ${pageNumber === currentPage ? styled.activePage : ''}`}
-        onClick={() => onPageChange(pageNumber)}
+        type="button"
+        className={styled.pagenationButton}
+        onClick={firstClick}
+        disabled={!canPrev}
+        aria-label="첫 페이지"
+        title="첫 페이지"
       >
-        {pageNumber}
+        ≪
       </button>
-    )
-  )}
+      <button
+        type="button"
+        className={styled.pagenationButton}
+        onClick={prevClick}
+        disabled={!canPrev}
+        aria-label="이전 페이지"
+        title="이전 페이지"
+      >
+        &lt;
+      </button>
 
-  {/* > 다음 페이지 */}
-  {currentPage < totalPages && (
-    <button
-      className={styled.pagenationButton}
-      onClick={nextClick}
-    >
-      &gt;
-    </button>
-  )}
+      {getPageNumbers().map((pageNumber, index) =>
+        pageNumber === '...' ? (
+          <span key={`ellipsis-${index}`} className={styled.ellipsis}>
+            ...
+          </span>
+        ) : (
+          <button
+            type="button"
+            key={pageNumber}
+            className={`${styled.pagenationButton} ${pageNumber === currentPage ? styled.activePage : ''}`}
+            onClick={() => onPageChange(pageNumber)}
+            aria-label={`페이지 ${pageNumber}`}
+            aria-current={pageNumber === currentPage ? 'page' : undefined}
+          >
+            {pageNumber}
+          </button>
+        )
+      )}
 
-  {/* ≫ 마지막 페이지 */}
-  {currentPage < totalPages && (
-    <button
-      className={styled.pagenationButton}
-      onClick={lastClick}
-    >
-      ≫
-    </button>
-  )}
-</div>
+      <button
+        type="button"
+        className={styled.pagenationButton}
+        onClick={nextClick}
+        disabled={!canNext}
+        aria-label="다음 페이지"
+        title="다음 페이지"
+      >
+        &gt;
+      </button>
+      <button
+        type="button"
+        className={styled.pagenationButton}
+        onClick={lastClick}
+        disabled={!canNext}
+        aria-label="마지막 페이지"
+        title="마지막 페이지"
+      >
+        ≫
+      </button>
+    </div>
   );
 }
 

@@ -53,6 +53,16 @@ function CursorPagination({
       >
         &gt;
       </button>
+      <button
+        type="button"
+        className={styled.pagenationButton}
+        disabled
+        aria-label="마지막 페이지"
+        title="마지막 페이지로 바로 이동할 수 없습니다_cursor 기반"
+        tabIndex={-1}
+      >
+        ≫
+      </button>
     </div>
   );
 }
