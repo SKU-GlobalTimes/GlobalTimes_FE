@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLanguage } from "../util/LanguageContext";
 import axios from "axios";
+import { DEFAULT_UI_LANGUAGE } from "../constants/uiLanguage.js";
 
 // HTML 엔티티 디코딩 함수
 const decodeHTMLEntities = (text) => {
@@ -42,6 +43,11 @@ const TranslatedText = ({ text }) => {
                 .replace(/\u2018/g, "'")
                 .replace(/\u2026/g, "...")
                 .replace(/[\u201C\u201D]/g, '"');
+
+            if (language === DEFAULT_UI_LANGUAGE) {
+                setTranslated(cleanedText);
+                return;
+            }
 
             // 캐시 히트 시 API 호출 없이 반환
             const cached = getCache(cleanedText, language);

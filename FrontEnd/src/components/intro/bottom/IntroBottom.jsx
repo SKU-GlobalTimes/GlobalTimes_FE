@@ -5,7 +5,7 @@ import styles from "./IntroBottom.module.css";
 
 //번역 컴포넌트
 import TranslatedText from "../../../api/TranslatedText";
-
+import { useTranslatedLabel } from "../../../hooks/useTranslatedLabel.js";
 
 // img
 import teamImg from "../../../assets/ourWorksImg.jpg";
@@ -17,6 +17,8 @@ import teamImage5 from "../../../assets/team11.jpg";
 import teamImage6 from "../../../assets/team12.jpg";
 
 export default function IntroBottom(){
+    const teamPhotoAlt = useTranslatedLabel("팀 사진...");
+
     useEffect(() => {
         AOS.init({
           duration: 800, // 애니메이션 지속 시간
@@ -35,7 +37,7 @@ export default function IntroBottom(){
                     <span> <TranslatedText text="프론트엔드 개발자와 백엔드 개발자로 이루어진 저희 팀은, 각 분야 팀원들끼리 많은 소통을 통해 프로젝트를 더욱 꼼꼼하고 효율적으로 진행해오고 있습니다."/></span>
                 </div>
                 <div className={styles["imgDiv"]} data-aos="fade-left" data-aos-offset="250">
-                    <img src={teamImg} alt="팀 사진..."/>
+                    <img src={teamImg} alt={teamPhotoAlt}/>
                 </div>
             </div>
 

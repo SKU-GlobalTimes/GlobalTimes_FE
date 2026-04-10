@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import styles from "./IntroTop.module.css";
+import { useTranslatedLabel } from "../../../hooks/useTranslatedLabel.js";
 
 export default function IntroAnimation({ isVisible, title, description, imgSrc, isMobile }) {
+    const loadingAlt = useTranslatedLabel("로딩중...");
 
     if (isMobile) {
         return (
@@ -11,7 +13,7 @@ export default function IntroAnimation({ isVisible, title, description, imgSrc, 
                     <span dangerouslySetInnerHTML={{ __html: description }} />
                 </div>
                 <div className={styles["imgDiv"]}>
-                    <img src={imgSrc} alt="로딩중..." />
+                    <img src={imgSrc} alt={loadingAlt} />
                 </div>
             </div>
         );
@@ -32,7 +34,7 @@ export default function IntroAnimation({ isVisible, title, description, imgSrc, 
           <span dangerouslySetInnerHTML={{ __html: description }} />
         </div>
         <div className={styles["imgDiv"]}>
-          <img src={imgSrc} alt="로딩중..." />
+          <img src={imgSrc} alt={loadingAlt} />
         </div>
       </motion.div>
     );

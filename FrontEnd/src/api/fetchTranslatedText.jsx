@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { DEFAULT_UI_LANGUAGE } from "../constants/uiLanguage.js";
 
 // HTML 엔티티 디코딩 함수
 const decodeHTMLEntities = (text) => {
@@ -9,6 +9,9 @@ const decodeHTMLEntities = (text) => {
 };
 
 export const fetchTranslatedText = async (text, language) => {
+    if (text == null || text === "") return text ?? "";
+    if (language === DEFAULT_UI_LANGUAGE) return text;
+
     const cleanedText = text
       .replace(/’/g, "'")
       .replace(/…/g, "...")

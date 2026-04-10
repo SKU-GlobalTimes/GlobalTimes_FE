@@ -3,6 +3,7 @@ import BasicNewsCard from "../newsCard/BasicNewsCard";
 import CursorPagination from "./CursorPagination";
 import TranslatedText from "../../api/TranslatedText";
 import PropTypes from "prop-types";
+import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
 
 export default function ExploreResultsSection({
   loading,
@@ -15,8 +16,10 @@ export default function ExploreResultsSection({
   onNext,
   onDismiss,
 }) {
+  const exploreSectionAria = useTranslatedLabel("탐색 결과");
+
   return (
-    <section className={styled["ExploreSection"]} aria-label="탐색 결과">
+    <section className={styled["ExploreSection"]} aria-label={exploreSectionAria}>
       <div className={styled["ExploreSection__head"]}>
         <div className={styled["ExploreSection__titles"]}>
           <h2 className={styled["ExploreSection__title"]}>

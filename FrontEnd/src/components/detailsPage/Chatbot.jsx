@@ -8,6 +8,7 @@ import { getChatsByArticle } from "../../api/chatAPI.js";
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { useAuth } from "../../util/AuthContext.jsx";
+import TranslatedText from "../../api/TranslatedText.jsx";
 
 export default function Chatbot({ articleId }) {
     const [input, setInput] = useState("");
@@ -40,9 +41,9 @@ export default function Chatbot({ articleId }) {
                     });
                     setMessages([
                         { type: "bot", text: translatedGreeting },
-                        { type: "divider", text: "── 이전 대화 내역 ──" },
+                        { type: "divider", kind: "history" },
                         ...historyMessages,
-                        { type: "divider", text: "── 새 대화 ──" },
+                        { type: "divider", kind: "new" },
                     ]);
                 } else {
                     setMessages([{ type: "bot", text: translatedGreeting }]);
@@ -93,7 +94,11 @@ export default function Chatbot({ articleId }) {
                 setMessages((prev) => {
                     const updated = [...prev];
                     if (updated[updated.length - 1].text === "") {
-                        updated[updated.length - 1] = { type: "bot", text: "응답을 가져오는 데 실패했습니다." };
+                        updated[updated.length - 1] = {
+                            type: "bot",
+                            text: "",
+                            fetchError: true,
+                        };
                     }
                     return updated;
                 });
@@ -113,13 +118,31 @@ export default function Chatbot({ articleId }) {
             <div className={styles.chatHeader}>Global AI</div>
             {!token && (
                 <div className={styles.loginNotice}>
-                    💡 로그인하면 대화 내역이 저장되고 문맥이 이어집니다.
+                    <span aria-hidden>💡 </span>
+                    <TranslatedText text="로그인하면 대화 내역이 저장되고 문맥이 이어집니다." />
                 </div>
             )}
             <div className={styles.chatBody} ref={chatRef}>
                 {messages.map((msg, index) => {
                     if (msg.type === "divider") {
-                        return <div key={index} className={styles.divider}>{msg.text}</div>;
+                        return (
+                            <div key={index} className={styles.divider}>
+                                <TranslatedText
+                                    text={
+                                        msg.kind === "history"
+                                            ? "── 이전 대화 내역 ──"
+                                            : "── 새 대화 ──"
+                                    }
+                                />
+                            </div>
+                        );
+                    }
+                    if (msg.type === "bot" && msg.fetchError) {
+                        return (
+                            <div key={index} className={styles.botMessage}>
+                                <TranslatedText text="응답을 가져오는 데 실패했습니다." />
+                            </div>
+                        );
                     }
                     return (
                         <div key={index} className={msg.type === "bot" ? styles.botMessage : styles.userMessage}>
@@ -130,7 +153,9 @@ export default function Chatbot({ articleId }) {
                         </div>
                     );
                 })}
-                {isStreaming && messages[messages.length - 1]?.text === "" && (
+                {isStreaming &&
+                    messages[messages.length - 1]?.text === "" &&
+                    !messages[messages.length - 1]?.fetchError && (
                     <div className={styles.botMessage}>
                         <span className={styles.typingIndicator}>
                             <span /><span /><span />
