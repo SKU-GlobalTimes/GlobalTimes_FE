@@ -17,7 +17,7 @@
     flex-direction: row;
     align-items: stretch;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     box-sizing: border-box;
 }
 
@@ -192,43 +192,78 @@
     box-shadow: none;
 }
 
-/* 탐색(Explore) — 검색줄과 같은 너비에서 패널 */
-.searchExplore__row {
+/* 탐색(Explore) — 검색줄과 한 덩어리 + 팝오버 */
+.searchExplore__wrap {
+    position: relative;
     width: 100%;
     max-width: min(720px, calc(100vw - 32px));
-    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
-.searchExplore__toggle {
-    display: inline-flex;
+.searchExplore__trigger {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #333;
-    background: #f4f4f4;
-    border: 1px solid #d0d0d0;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-left: 4px;
+    padding: 0;
+    border: none;
     border-radius: 8px;
+    background: transparent;
+    color: #565656;
     cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.searchExplore__toggle:hover {
-    background: #ececec;
+.searchExplore__trigger:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #333;
 }
 
-.searchExplore__toggle[aria-expanded="true"] {
-    border-color: rgb(255, 191, 53);
-    background: #fff8e6;
+.searchExplore__trigger--open {
+    background: rgba(240, 192, 64, 0.18);
+    color: #b8860b;
 }
 
-.searchExplore__panel {
-    margin-top: 12px;
-    padding: 14px 16px;
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
+.searchExplore__trigger--active:not(.searchExplore__trigger--open) {
+    color: #c9a227;
+}
+
+.searchExplore__triggerDot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(255, 191, 53);
+    border: 1.5px solid #fff;
+}
+
+.searchExplore__popover {
+    margin-top: 10px;
+    padding: 14px 16px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(240, 192, 64, 0.12);
+    animation: searchExplorePopoverIn 0.18s ease-out;
+}
+
+@keyframes searchExplorePopoverIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .searchExplore__hint {

@@ -1,7 +1,7 @@
 import styled from "./SearchContainer.module.css";
 import PropTypes from "prop-types";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
@@ -17,6 +17,8 @@ export default function SearchContainer({
 }) {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const exploreWrapRef = useRef(null);
+
   const [inputSearchTerm, setInputSearchTerm] = useState(searchTerm);
   const [value, setValue] = useState(searchTerm || "");
   const [placeholder, setPlaceholder] = useState("검색어를 입력해주세요 ");
@@ -27,6 +29,8 @@ export default function SearchContainer({
   const [exCountry, setExCountry] = useState("");
   const [exCategory, setExCategory] = useState("");
   const [exDate, setExDate] = useState("");
+
+  const hasExploreFilters = Boolean(exCountry || exCategory || exDate);
 
   useEffect(() => {
     setInputSearchTerm(searchTerm);
@@ -44,6 +48,20 @@ export default function SearchContainer({
     };
     translate();
   }, [language]);
+
+  useEffect(() => {
+    if (!exploreOpen) return;
+    function handlePointerDown(event) {
+      if (
+        exploreWrapRef.current &&
+        !exploreWrapRef.current.contains(event.target)
+      ) {
+        setExploreOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, [exploreOpen]);
 
   function handleSearch() {
     const keyword = inputSearchTerm.trim();
@@ -77,6 +95,7 @@ export default function SearchContainer({
   async function handleExploreApplyClick() {
     if (!onExploreApply) return;
     await onExploreApply(buildExploreFilters());
+    setExploreOpen(false);
   }
 
   function handleExploreReset() {
@@ -85,134 +104,148 @@ export default function SearchContainer({
     setExDate("");
   }
 
+  const showExplore = enableExplore && onExploreApply;
+
   return (
     <div className={styled["searchContainer--container"]}>
-      <div className={styled["searchContainer--searchBar"]}>
-        <div className={styled["searchContainer--searchInputContainer"]}>
-          <Search className={styled["input-icon"]} size={20} />
-          <div className={styled["input-wrapper"]}>
-            <input
-              className={styled["searchContainer--Input"]}
-              value={value}
-              placeholder=""
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-            {!value && !isFocused && (
-              <div className={styled["animated-placeholder"]}>
-                <span className={styled["placeholder-text"]}>
-                  {placeholder}
-                </span>
-                <span className={styled["emoji-sad"]}>😢</span>
-                <span className={styled["emoji-happy"]}>🥰</span>
-              </div>
+      <div
+        className={styled["searchExplore__wrap"]}
+        ref={exploreWrapRef}
+      >
+        <div className={styled["searchContainer--searchBar"]}>
+          <div className={styled["searchContainer--searchInputContainer"]}>
+            <Search className={styled["input-icon"]} size={20} />
+            <div className={styled["input-wrapper"]}>
+              <input
+                className={styled["searchContainer--Input"]}
+                value={value}
+                placeholder=""
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+              {!value && !isFocused && (
+                <div className={styled["animated-placeholder"]}>
+                  <span className={styled["placeholder-text"]}>
+                    {placeholder}
+                  </span>
+                  <span className={styled["emoji-sad"]}>😢</span>
+                  <span className={styled["emoji-happy"]}>🥰</span>
+                </div>
+              )}
+            </div>
+            {showExplore && (
+              <button
+                type="button"
+                className={`${styled["searchExplore__trigger"]} ${exploreOpen ? styled["searchExplore__trigger--open"] : ""} ${hasExploreFilters ? styled["searchExplore__trigger--active"] : ""}`}
+                onClick={() => setExploreOpen((o) => !o)}
+                aria-expanded={exploreOpen}
+                aria-controls="explore-popover"
+                aria-label="탐색 조건 열기 · 국가·카테고리·날짜로 좁히기"
+                title="조건으로 좁히기"
+              >
+                <SlidersHorizontal size={20} strokeWidth={2.25} aria-hidden />
+                {hasExploreFilters && (
+                  <span className={styled["searchExplore__triggerDot"]} aria-hidden />
+                )}
+              </button>
             )}
           </div>
-        </div>
-        <button
-          id="searchButton"
-          type="button"
-          className={styled["searchContainer--searchButton"]}
-          onClick={handleClickSearch}
-          disabled={!value.trim()}
-        >
-          <span>{searchLabel}</span>
-          <span className={styled["btn-dots"]}>
-            <span
-              className={styled["btn-dot"]}
-              style={{ animationDelay: "0ms" }}
-            />
-            <span
-              className={styled["btn-dot"]}
-              style={{ animationDelay: "200ms" }}
-            />
-            <span
-              className={styled["btn-dot"]}
-              style={{ animationDelay: "400ms" }}
-            />
-          </span>
-        </button>
-      </div>
-
-      {enableExplore && onExploreApply && (
-        <div className={styled["searchExplore__row"]}>
           <button
+            id="searchButton"
             type="button"
-            className={styled["searchExplore__toggle"]}
-            onClick={() => setExploreOpen((o) => !o)}
-            aria-expanded={exploreOpen}
+            className={styled["searchContainer--searchButton"]}
+            onClick={handleClickSearch}
+            disabled={!value.trim()}
           >
-            <SlidersHorizontal size={16} aria-hidden />
-            탐색 조건
+            <span>{searchLabel}</span>
+            <span className={styled["btn-dots"]}>
+              <span
+                className={styled["btn-dot"]}
+                style={{ animationDelay: "0ms" }}
+              />
+              <span
+                className={styled["btn-dot"]}
+                style={{ animationDelay: "200ms" }}
+              />
+              <span
+                className={styled["btn-dot"]}
+                style={{ animationDelay: "400ms" }}
+              />
+            </span>
           </button>
+        </div>
 
-          {exploreOpen && (
-            <div className={styled["searchExplore__panel"]}>
-              <p className={styled["searchExplore__hint"]}>
-                키워드 검색은 위 입력창에서 실행됩니다. 여기서는 국가·카테고리·날짜로
-                목록을 좁혀 볼 수 있습니다.
-              </p>
-              <div className={styled["searchExplore__grid"]}>
-                <div className={styled["searchExplore__field"]}>
-                  <label htmlFor="explore-country">국가</label>
-                  <select
-                    id="explore-country"
-                    value={exCountry}
-                    onChange={(e) => setExCountry(e.target.value)}
-                  >
-                    {EXPLORE_COUNTRY_OPTIONS.map((o) => (
-                      <option key={o.value || "all"} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className={styled["searchExplore__field"]}>
-                  <label htmlFor="explore-category">카테고리</label>
-                  <select
-                    id="explore-category"
-                    value={exCategory}
-                    onChange={(e) => setExCategory(e.target.value)}
-                  >
-                    {EXPLORE_CATEGORY_OPTIONS.map((o) => (
-                      <option key={o.value || "all-c"} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className={styled["searchExplore__field"]}>
-                  <label htmlFor="explore-date">날짜 (하루)</label>
-                  <input
-                    id="explore-date"
-                    type="date"
-                    value={exDate}
-                    onChange={(e) => setExDate(e.target.value)}
-                  />
-                </div>
+        {showExplore && exploreOpen && (
+          <div
+            className={styled["searchExplore__popover"]}
+            id="explore-popover"
+            role="dialog"
+            aria-label="탐색 조건"
+          >
+            <p className={styled["searchExplore__hint"]}>
+              키워드는 위 입력 후 검색 버튼 · 여기서는{" "}
+              <strong>국가·카테고리·날짜</strong>로 목록만 좁힙니다.
+            </p>
+            <div className={styled["searchExplore__grid"]}>
+              <div className={styled["searchExplore__field"]}>
+                <label htmlFor="explore-country">국가</label>
+                <select
+                  id="explore-country"
+                  value={exCountry}
+                  onChange={(e) => setExCountry(e.target.value)}
+                >
+                  {EXPLORE_COUNTRY_OPTIONS.map((o) => (
+                    <option key={o.value || "all"} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className={styled["searchExplore__actions"]}>
-                <button
-                  type="button"
-                  className={styled["searchExplore__apply"]}
-                  onClick={handleExploreApplyClick}
+              <div className={styled["searchExplore__field"]}>
+                <label htmlFor="explore-category">카테고리</label>
+                <select
+                  id="explore-category"
+                  value={exCategory}
+                  onChange={(e) => setExCategory(e.target.value)}
                 >
-                  이 조건으로 보기
-                </button>
-                <button
-                  type="button"
-                  className={styled["searchExplore__reset"]}
-                  onClick={handleExploreReset}
-                >
-                  조건 초기화
-                </button>
+                  {EXPLORE_CATEGORY_OPTIONS.map((o) => (
+                    <option key={o.value || "all-c"} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styled["searchExplore__field"]}>
+                <label htmlFor="explore-date">날짜 (하루)</label>
+                <input
+                  id="explore-date"
+                  type="date"
+                  value={exDate}
+                  onChange={(e) => setExDate(e.target.value)}
+                />
               </div>
             </div>
-          )}
-        </div>
-      )}
+            <div className={styled["searchExplore__actions"]}>
+              <button
+                type="button"
+                className={styled["searchExplore__apply"]}
+                onClick={handleExploreApplyClick}
+              >
+                이 조건으로 보기
+              </button>
+              <button
+                type="button"
+                className={styled["searchExplore__reset"]}
+                onClick={handleExploreReset}
+              >
+                조건 초기화
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
