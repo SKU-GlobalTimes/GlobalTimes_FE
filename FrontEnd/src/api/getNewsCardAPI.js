@@ -1,5 +1,14 @@
 import axios from "axios";
 
+function formatArticleDates(article) {
+  const date = new Date(article.publishedAt);
+  return {
+    ...article,
+    year: date.getFullYear().toString(),
+    month: (date.getMonth() + 1).toString().padStart(2, "0"),
+    day: date.getDate().toString().padStart(2, "0"),
+  };
+}
 
 // mainPage - Hot News Card //
 // response.data.data.content[0].title
@@ -9,17 +18,7 @@ export async function getHot(page, size) {
         const response = await axios.get(baseUrl);
         
         if (response.data.isSuccess === true) {
-            // 날짜를 분리해서 새로운 객체 생성
-            const formattedResults = response.data.data.content.map(article => {
-                const date = new Date(article.publishedAt); // 문자열을 Date 객체로 변환
-                return {
-                    ...article,
-                    year: date.getFullYear().toString(),
-                    month: (date.getMonth() + 1).toString().padStart(2, '0'), // 두 자리로 맞춤
-                    day: date.getDate().toString().padStart(2, '0'), // 두 자리로 맞춤
-                };
-            });
-
+            const formattedResults = response.data.data.content.map(formatArticleDates);
             return formattedResults;
         }
         else {
@@ -33,32 +32,28 @@ export async function getHot(page, size) {
 }
 
 
-// mainPage - Latest News Card //
-export async function getLatest(page, size) {
+// mainPage - Latest News Card (cursor 기반 최신순, /api/articles/latest offset 대체)
+/** @returns {{ articles: object[], nextCursor: string|null, hasNext: boolean }} */
+export async function getLatestCursor(cursor, size) {
     try {
-        const baseUrl = `${import.meta.env.VITE_APP_API}/api/articles/latest?page=${page}&size=${size}`;
+        const params = new URLSearchParams({ size: String(size) });
+        if (cursor) params.set("cursor", cursor);
+        const baseUrl = `${import.meta.env.VITE_APP_API}/api/articles/cursor?${params}`;
         const response = await axios.get(baseUrl);
-        
-        if (response.data.isSuccess === true) {
-            // 날짜를 분리해서 새로운 객체 생성
-            const formattedResults = response.data.data.content.map(article => {
-                const date = new Date(article.publishedAt); // 문자열을 Date 객체로 변환
-                return {
-                    ...article,
-                    year: date.getFullYear().toString(),
-                    month: (date.getMonth() + 1).toString().padStart(2, '0'), // 두 자리로 맞춤
-                    day: date.getDate().toString().padStart(2, '0'), // 두 자리로 맞춤
-                };
-            });
 
-            return formattedResults;
+        if (response.data.isSuccess === true && response.data.data) {
+            const { articles, nextCursor, hasNext } = response.data.data;
+            const formattedResults = (articles || []).map(formatArticleDates);
+            return {
+                articles: formattedResults,
+                nextCursor: nextCursor ?? null,
+                hasNext: Boolean(hasNext),
+            };
         }
-        else {
-            return [];
-        }
+        return { articles: [], nextCursor: null, hasNext: false };
     } catch (error) {
         console.error("최근 뉴스 데이터를 불러오는 데 실패했습니다:", error);
-        return [];
+        return { articles: [], nextCursor: null, hasNext: false };
     }
 }
 

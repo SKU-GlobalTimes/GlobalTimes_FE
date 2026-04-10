@@ -1,11 +1,14 @@
 .pagenationContainer {
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   margin-top: 4vh;
   gap: 0.1rem;
   position: relative;
+  min-height: 44px;
+  row-gap: 6px;
 }
 
 .pagenationButton {
@@ -49,4 +52,39 @@
   margin: 0 6px;
   font-size: 16px;
   color: #aaa;
+}
+
+/* 커서 페이지네이션: 버튼 항상 자리 유지 + 비활성 */
+.pagenationButton:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.pagenationButton:disabled:hover {
+  background-color: white;
+}
+
+.cursorPageIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 8px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  background-color: rgb(255, 191, 53);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 5.5rem;
+  justify-content: center;
+}
+
+.cursorPagePrefix {
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.cursorPageNumber {
+  font-size: 13px;
+  letter-spacing: 0.02em;
 }

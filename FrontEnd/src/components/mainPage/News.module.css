@@ -34,9 +34,23 @@
     margin-bottom: 20px;
 }
 
+.MainNews--titleBlock {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
 .MainNews--title{
     font-size: clamp(18px, 2vw, 28px);
-    margin:0;
+    margin: 0 0 6px 0;
+}
+
+.MainNews--subtitle {
+    margin: 0;
+    font-size: clamp(12px, 1.35vw, 14px);
+    font-weight: 500;
+    color: #6b6b6b;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
 }
 
 .MainNews--News {
