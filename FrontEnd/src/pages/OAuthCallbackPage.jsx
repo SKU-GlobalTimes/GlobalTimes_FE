@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../util/AuthContext";
+import TranslatedText from "../api/TranslatedText.jsx";
 
 export default function OAuthCallbackPage() {
   const navigate = useNavigate();
@@ -21,7 +22,9 @@ export default function OAuthCallbackPage() {
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <p>로그인 처리 중...</p>
+      <p>
+        <TranslatedText text="로그인 처리 중..." />
+      </p>
     </div>
   );
 }

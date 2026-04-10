@@ -6,6 +6,7 @@ import { useLanguage } from "../../../util/LanguageContext.jsx";
 import { useAuth } from "../../../util/AuthContext.jsx";
 import TranslatedText from "../../../api/TranslatedText.jsx";
 import LanguageSelect from "./LanguageSelect.jsx";
+import { useTranslatedLabel } from "../../../hooks/useTranslatedLabel.js";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -21,12 +22,9 @@ export default function Header() {
 
   const isHome = location.pathname === "/" || location.pathname === "/intro";
 
-  const logoTooltipLabel =
-    language === "en"
-      ? "Live trends check"
-      : language === "ja"
-        ? "リアルタイムトレンド 確認"
-        : "실시간 트렌드 확인하기";
+  const logoTooltipLabel = useTranslatedLabel("실시간 트렌드 확인하기");
+  const logoAriaLabel = useTranslatedLabel("홈 · 실시간 트렌드로 이동");
+  const menuOpenAriaLabel = useTranslatedLabel("메뉴 열기");
 
   const navItems = [
     { label: "메인페이지", path: "/main" },
@@ -58,7 +56,7 @@ export default function Header() {
           }}
           role="button"
           tabIndex={0}
-          aria-label="홈 · 실시간 트렌드로 이동"
+          aria-label={logoAriaLabel}
         >
           <img src={Logo} className={styles.image} alt="" draggable={false} />
           <span
@@ -132,7 +130,7 @@ export default function Header() {
         <button
           className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="메뉴 열기"
+          aria-label={menuOpenAriaLabel}
         >
           <span />
           <span />

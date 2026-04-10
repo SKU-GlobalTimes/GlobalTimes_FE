@@ -4,6 +4,7 @@ import styled from "./NewsCard.module.css";
 import { useNavigate } from "react-router-dom";
 import TranslatedText from '../../api/TranslatedText';
 import { useAuth } from '../../util/AuthContext';
+import { useTranslatedLabel } from '../../hooks/useTranslatedLabel.js';
 import { toggleScrap as toggleScrapAPI } from '../../api/scrapAPI';
 import { FaBookmark, FaTimes } from 'react-icons/fa';
 
@@ -12,6 +13,7 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
     const { token } = useAuth();
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
+    const removeBtnTitle = useTranslatedLabel("스크랩 취소");
 
     const shortTitle = title && title.length > 20 ? title.slice(0, 20) + "..." : title;
 
@@ -94,7 +96,7 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
                 <button
                     className={styled['ScrapNewsCard--removeBtn']}
                     onClick={handleRemoveClick}
-                    title="스크랩 취소"
+                    title={removeBtnTitle}
                 >
                     <FaTimes />
                 </button>
