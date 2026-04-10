@@ -1,12 +1,20 @@
 import styled from "./SearchContainer.module.css";
 import PropTypes from "prop-types";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
+import {
+  EXPLORE_COUNTRY_OPTIONS,
+  EXPLORE_CATEGORY_OPTIONS,
+} from "./exploreOptions";
 
-export default function SearchContainer({ searchTerm }) {
+export default function SearchContainer({
+  searchTerm,
+  enableExplore = false,
+  onExploreApply,
+}) {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const [inputSearchTerm, setInputSearchTerm] = useState(searchTerm);
@@ -14,6 +22,11 @@ export default function SearchContainer({ searchTerm }) {
   const [placeholder, setPlaceholder] = useState("검색어를 입력해주세요 ");
   const [searchLabel, setSearchLabel] = useState("Search");
   const [isFocused, setIsFocused] = useState(false);
+
+  const [exploreOpen, setExploreOpen] = useState(false);
+  const [exCountry, setExCountry] = useState("");
+  const [exCategory, setExCategory] = useState("");
+  const [exDate, setExDate] = useState("");
 
   useEffect(() => {
     setInputSearchTerm(searchTerm);
@@ -53,6 +66,25 @@ export default function SearchContainer({ searchTerm }) {
     handleSearch();
   }
 
+  function buildExploreFilters() {
+    return {
+      ...(exCountry ? { country: exCountry } : {}),
+      ...(exCategory ? { category: exCategory } : {}),
+      ...(exDate ? { date: exDate } : {}),
+    };
+  }
+
+  async function handleExploreApplyClick() {
+    if (!onExploreApply) return;
+    await onExploreApply(buildExploreFilters());
+  }
+
+  function handleExploreReset() {
+    setExCountry("");
+    setExCategory("");
+    setExDate("");
+  }
+
   return (
     <div className={styled["searchContainer--container"]}>
       <div className={styled["searchContainer--searchBar"]}>
@@ -81,6 +113,7 @@ export default function SearchContainer({ searchTerm }) {
         </div>
         <button
           id="searchButton"
+          type="button"
           className={styled["searchContainer--searchButton"]}
           onClick={handleClickSearch}
           disabled={!value.trim()}
@@ -102,10 +135,90 @@ export default function SearchContainer({ searchTerm }) {
           </span>
         </button>
       </div>
+
+      {enableExplore && onExploreApply && (
+        <div className={styled["searchExplore__row"]}>
+          <button
+            type="button"
+            className={styled["searchExplore__toggle"]}
+            onClick={() => setExploreOpen((o) => !o)}
+            aria-expanded={exploreOpen}
+          >
+            <SlidersHorizontal size={16} aria-hidden />
+            탐색 조건
+          </button>
+
+          {exploreOpen && (
+            <div className={styled["searchExplore__panel"]}>
+              <p className={styled["searchExplore__hint"]}>
+                키워드 검색은 위 입력창에서 실행됩니다. 여기서는 국가·카테고리·날짜로
+                목록을 좁혀 볼 수 있습니다.
+              </p>
+              <div className={styled["searchExplore__grid"]}>
+                <div className={styled["searchExplore__field"]}>
+                  <label htmlFor="explore-country">국가</label>
+                  <select
+                    id="explore-country"
+                    value={exCountry}
+                    onChange={(e) => setExCountry(e.target.value)}
+                  >
+                    {EXPLORE_COUNTRY_OPTIONS.map((o) => (
+                      <option key={o.value || "all"} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styled["searchExplore__field"]}>
+                  <label htmlFor="explore-category">카테고리</label>
+                  <select
+                    id="explore-category"
+                    value={exCategory}
+                    onChange={(e) => setExCategory(e.target.value)}
+                  >
+                    {EXPLORE_CATEGORY_OPTIONS.map((o) => (
+                      <option key={o.value || "all-c"} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styled["searchExplore__field"]}>
+                  <label htmlFor="explore-date">날짜 (하루)</label>
+                  <input
+                    id="explore-date"
+                    type="date"
+                    value={exDate}
+                    onChange={(e) => setExDate(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className={styled["searchExplore__actions"]}>
+                <button
+                  type="button"
+                  className={styled["searchExplore__apply"]}
+                  onClick={handleExploreApplyClick}
+                >
+                  이 조건으로 보기
+                </button>
+                <button
+                  type="button"
+                  className={styled["searchExplore__reset"]}
+                  onClick={handleExploreReset}
+                >
+                  조건 초기화
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 SearchContainer.propTypes = {
-  searchTerm: PropTypes.string.isRequired, // searchTerm은 string이어야 함
+  searchTerm: PropTypes.string.isRequired,
+  enableExplore: PropTypes.bool,
+  onExploreApply: PropTypes.func,
 };

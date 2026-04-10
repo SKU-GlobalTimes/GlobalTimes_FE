@@ -57,6 +57,39 @@ export async function getLatestCursor(cursor, size) {
     }
 }
 
+/** 국가·카테고리·날짜 필터 + 커서 (/api/articles/explore). 키워드 검색과는 별개 API. */
+export async function getExploreArticles({
+  country,
+  category,
+  date,
+  cursor,
+  size = 12,
+}) {
+  try {
+    const params = new URLSearchParams({ size: String(size) });
+    if (country) params.set("country", country);
+    if (category) params.set("category", category);
+    if (date) params.set("date", date);
+    if (cursor) params.set("cursor", cursor);
+    const baseUrl = `${import.meta.env.VITE_APP_API}/api/articles/explore?${params}`;
+    const response = await axios.get(baseUrl);
+
+    if (response.data.isSuccess === true && response.data.data) {
+      const { articles, nextCursor, hasNext } = response.data.data;
+      const formattedResults = (articles || []).map(formatArticleDates);
+      return {
+        articles: formattedResults,
+        nextCursor: nextCursor ?? null,
+        hasNext: Boolean(hasNext),
+      };
+    }
+    return { articles: [], nextCursor: null, hasNext: false };
+  } catch (error) {
+    console.error("탐색 기사를 불러오는 데 실패했습니다:", error);
+    return { articles: [], nextCursor: null, hasNext: false };
+  }
+}
+
 
 // mainPage - Search News Card //
 // response.data.data.originalText
