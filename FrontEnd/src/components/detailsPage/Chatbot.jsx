@@ -26,8 +26,10 @@ export default function Chatbot({ articleId }) {
 
   const [placeholder, setPlaceholder] = useState("질문을 입력하세요...");
 
-  // 인사말 번역 + 로그인·비로그인 이전 대화 내역
+  // 인사말 번역 + 로그인·비로그인 이전 대화 내역 (비로그인: Redis + anonymousSession)
   useEffect(() => {
+    let cancelled = false;
+
     const init = async () => {
       const translatedGreeting = await fetchTranslatedText(
         "안녕하세요! 무엇을 도와드릴까요?",
@@ -37,53 +39,55 @@ export default function Chatbot({ articleId }) {
         "질문을 입력하세요...",
         language,
       );
+      if (cancelled) return;
       setPlaceholder(translatedPlaceholder);
+
+      const buildFromHistory = (history, greeting) => {
+        if (!history?.length) {
+          return [{ type: "bot", text: greeting }];
+        }
+        const historyMessages = [];
+        history.forEach((chat) => {
+          const q = chat?.question ?? "";
+          const a = chat?.answer ?? "";
+          if (!q && !a) return;
+          historyMessages.push({ type: "user", text: q });
+          historyMessages.push({ type: "bot", text: a });
+        });
+        if (historyMessages.length === 0) {
+          return [{ type: "bot", text: greeting }];
+        }
+        return [
+          { type: "bot", text: greeting },
+          { type: "divider", kind: "history" },
+          ...historyMessages,
+          { type: "divider", kind: "new" },
+        ];
+      };
 
       if (token && articleId) {
         const history = await getChatsByArticle(articleId);
-        if (history.length > 0) {
-          const historyMessages = [];
-          history.forEach((chat) => {
-            historyMessages.push({ type: "user", text: chat.question });
-            historyMessages.push({ type: "bot", text: chat.answer });
-          });
-          setMessages([
-            { type: "bot", text: translatedGreeting },
-            { type: "divider", kind: "history" },
-            ...historyMessages,
-            { type: "divider", kind: "new" },
-          ]);
-        } else {
-          setMessages([{ type: "bot", text: translatedGreeting }]);
-        }
+        if (cancelled) return;
+        setMessages(buildFromHistory(history, translatedGreeting));
       } else if (articleId) {
         const sessionId = getOrCreateAnonymousSessionId();
         const history = sessionId
           ? await getAnonymousChatsByArticle(articleId, sessionId)
           : [];
-        if (history.length > 0) {
-          const historyMessages = [];
-          history.forEach((chat) => {
-            historyMessages.push({ type: "user", text: chat.question });
-            historyMessages.push({ type: "bot", text: chat.answer });
-          });
-          setMessages([
-            { type: "bot", text: translatedGreeting },
-            { type: "divider", kind: "history" },
-            ...historyMessages,
-            { type: "divider", kind: "new" },
-          ]);
-        } else {
-          setMessages([{ type: "bot", text: translatedGreeting }]);
-        }
+        if (cancelled) return;
+        setMessages(buildFromHistory(history, translatedGreeting));
       } else {
+        if (cancelled) return;
         setMessages([{ type: "bot", text: translatedGreeting }]);
       }
     };
+
     init();
+    return () => {
+      cancelled = true;
+    };
   }, [articleId, language, token]);
 
-  // 언마운트 시 SSE 연결 종료
   useEffect(() => {
     return () => {
       if (closeEventSourceRef.current) closeEventSourceRef.current();

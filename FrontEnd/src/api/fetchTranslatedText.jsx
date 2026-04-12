@@ -1,6 +1,8 @@
 import axios from "axios";
 import { DEFAULT_UI_LANGUAGE } from "../constants/uiLanguage.js";
 
+const containsHangul = (s) => /[\uAC00-\uD7A3]/.test(s);
+
 // HTML 엔티티 디코딩 함수
 const decodeHTMLEntities = (text) => {
   const textarea = document.createElement("textarea");
@@ -10,7 +12,7 @@ const decodeHTMLEntities = (text) => {
 
 export const fetchTranslatedText = async (text, language) => {
     if (text == null || text === "") return text ?? "";
-    if (language === DEFAULT_UI_LANGUAGE) return text;
+    if (language === DEFAULT_UI_LANGUAGE && containsHangul(text)) return text;
 
     const cleanedText = text
       .replace(/’/g, "'")

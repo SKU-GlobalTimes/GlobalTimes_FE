@@ -29,6 +29,9 @@ const setCache = (text, lang, result) => {
     }
 };
 
+/** UI가 한국어일 때: 이미 한글인 문자열은 재번역 생략, 영어 등만 번역 API로 ko 표시 */
+const containsHangul = (s) => /[\uAC00-\uD7A3]/.test(s);
+
 const TranslatedText = ({ text }) => {
     const { language } = useLanguage();
     /* 첫 페인트부터 원문 표시 → 빈 칸 방지, 이후 번역으로 갱신 */
@@ -44,7 +47,10 @@ const TranslatedText = ({ text }) => {
                 .replace(/\u2026/g, "...")
                 .replace(/[\u201C\u201D]/g, '"');
 
-            if (language === DEFAULT_UI_LANGUAGE) {
+            if (
+                language === DEFAULT_UI_LANGUAGE &&
+                containsHangul(cleanedText)
+            ) {
                 setTranslated(cleanedText);
                 return;
             }

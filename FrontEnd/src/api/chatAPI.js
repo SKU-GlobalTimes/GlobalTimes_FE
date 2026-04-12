@@ -3,16 +3,27 @@ import { authAPI } from "./authAPI";
 
 const apiBase = () => import.meta.env.VITE_APP_API ?? "";
 
+/** detailsAPI·SSE와 동일: 빈 문자열이면 상대 경로 `/api/...` (Vite 프록시) */
+function historyUrl(articleId) {
+    const base = apiBase();
+    return base ? `${base}/api/ai/${articleId}/ask/history` : `/api/ai/${articleId}/ask/history`;
+}
+
 // 비로그인: Redis에 저장된 기사별 대화 (백엔드 GET /api/ai/{id}/ask/history)
 export const getAnonymousChatsByArticle = async (articleId, sessionId) => {
     if (!sessionId || !articleId) return [];
     try {
-        const response = await axios.get(`${apiBase()}/api/ai/${articleId}/ask/history`, {
+        const response = await axios.get(historyUrl(articleId), {
             params: { anonymousSession: sessionId },
         });
-        return response.data?.data ?? [];
+        const raw = response.data?.data;
+        const list = Array.isArray(raw) ? raw : [];
+        return list.map((row) => ({
+            question: row?.question ?? row?.q ?? "",
+            answer: row?.answer ?? row?.a ?? "",
+        }));
     } catch (error) {
-        console.error("비로그인 채팅 히스토리 조회 실패:", error);
+        console.error("비로그인 채팅 히스토리 조회 실패:", error?.response?.status, error?.message);
         return [];
     }
 };

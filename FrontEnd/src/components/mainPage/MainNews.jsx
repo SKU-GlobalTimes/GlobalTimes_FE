@@ -89,7 +89,7 @@ export default function MainNews() {
       <div className={styled["MainNews--Newscontainer"]}>
         <div className={styled["MainNews--titleBlock"]}>
           <h1 className={styled["MainNews--title"]}>
-            <TranslatedText text="Popular News" />
+            <TranslatedText text="인기 뉴스" />
           </h1>
           <p className={styled["MainNews--subtitle"]}>
             <TranslatedText text="최근 조회수 기준 정렬입니다." />
@@ -124,7 +124,7 @@ export default function MainNews() {
       <div className={styled["MainNews--Newscontainer"]}>
         <div className={styled["MainNews--titleBlock"]}>
           <h1 className={styled["MainNews--title"]}>
-            <TranslatedText text="Latest News" />
+            <TranslatedText text="최신 뉴스" />
           </h1>
           <p className={styled["MainNews--subtitle"]}>
             <TranslatedText text="발행일 기준 최신순 정렬입니다." />
