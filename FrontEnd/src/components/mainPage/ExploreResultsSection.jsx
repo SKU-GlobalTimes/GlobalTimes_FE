@@ -1,5 +1,5 @@
 import styled from "./News.module.css";
-import BasicNewsCard from "../newsCard/BasicNewsCard";
+import ExploreNewsCard from "../newsCard/ExploreNewsCard";
 import CursorPagination from "./CursorPagination";
 import TranslatedText from "../../api/TranslatedText";
 import PropTypes from "prop-types";
@@ -23,7 +23,12 @@ export default function ExploreResultsSection({
             <TranslatedText text="탐색 결과" />
           </h2>
           <p className={styled["ExploreSection__subtitle"]}>
-            <TranslatedText text="국가·카테고리·날짜 조건으로 모은 기사입니다. 키워드는 상단 검색으로 이용해 주세요." />
+            <span className={styled["ExploreSection__subtitleLine"]}>
+              <TranslatedText text="국가·카테고리·날짜 필터링 이후의 뉴스입니다." />
+            </span>
+            <span className={styled["ExploreSection__subtitleLine"]}>
+              <TranslatedText text="필터링 이후의 추가적인 검색어 기반 탐색은 상단의 검색 기능을 이용해 주세요." />
+            </span>
           </p>
         </div>
         {onDismiss && (
@@ -49,7 +54,7 @@ export default function ExploreResultsSection({
         <>
           <div className={styled["ExploreSection__grid"]}>
             {articles.map((news) => (
-              <BasicNewsCard
+              <ExploreNewsCard
                 key={news.id}
                 id={news.id}
                 press={news.sourceName}
