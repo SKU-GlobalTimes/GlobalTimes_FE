@@ -1,14 +1,16 @@
 import styled from "./SearchContainer.module.css";
 import PropTypes from "prop-types";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import {
   EXPLORE_COUNTRY_OPTIONS,
   EXPLORE_CATEGORY_OPTIONS,
 } from "./exploreOptions";
+import ExploreSelect from "./ExploreSelect.jsx";
+import ExploreDatePicker from "./ExploreDatePicker.jsx";
 
 const EXPLORE_UI_KEYS = {
   hint: "키워드는 위 입력 후 검색 버튼을 누르세요. 여기서는 국가·카테고리·날짜로 목록만 좁힙니다.",
@@ -22,6 +24,12 @@ const EXPLORE_UI_KEYS = {
   triggerAria:
     "탐색 조건 열기. 국가, 카테고리, 날짜로 목록을 좁힐 수 있습니다.",
   dialogAria: "탐색 조건",
+  chipsHint: "적용 중인 조건",
+  removeChip: "제거",
+  datePlaceholder: "날짜를 선택하세요",
+  dateClear: "날짜 지우기",
+  datePrevMonth: "이전 달",
+  dateNextMonth: "다음 달",
 };
 
 export default function SearchContainer({
@@ -30,6 +38,7 @@ export default function SearchContainer({
   onExploreApply,
 }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const exploreWrapRef = useRef(null);
 
@@ -104,7 +113,21 @@ export default function SearchContainer({
   function handleSearch() {
     const keyword = inputSearchTerm.trim();
     if (!keyword) return;
-    navigate(`/search/${keyword}`);
+    const params = new URLSearchParams();
+    if (showExplore) {
+      if (exCountry) params.set("country", exCountry);
+      if (exCategory) params.set("category", exCategory);
+      if (exDate) params.set("date", exDate);
+    } else {
+      ["country", "category", "date"].forEach((key) => {
+        const v = searchParams.get(key);
+        if (v) params.set(key, v);
+      });
+    }
+    const qs = params.toString();
+    navigate(
+      `/search/${encodeURIComponent(keyword)}${qs ? `?${qs}` : ""}`,
+    );
   }
 
   function handleInputChange(event) {
@@ -161,6 +184,46 @@ export default function SearchContainer({
       ),
     [exUi.all],
   );
+
+  const exploreChips = useMemo(() => {
+    if (!showExplore || !hasExploreFilters) return [];
+    const chips = [];
+    if (exCountry) {
+      const opt = countryOptions.find((o) => o.value === exCountry);
+      chips.push({
+        key: "country",
+        text: opt?.label ?? exCountry,
+      });
+    }
+    if (exCategory) {
+      const opt = categoryOptions.find((o) => o.value === exCategory);
+      chips.push({
+        key: "category",
+        text: opt?.label ?? exCategory,
+      });
+    }
+    if (exDate) {
+      chips.push({
+        key: "date",
+        text: exDate.replace(/-/g, "."),
+      });
+    }
+    return chips;
+  }, [
+    showExplore,
+    hasExploreFilters,
+    exCountry,
+    exCategory,
+    exDate,
+    countryOptions,
+    categoryOptions,
+  ]);
+
+  function removeExploreChip(key) {
+    if (key === "country") setExCountry("");
+    else if (key === "category") setExCategory("");
+    else if (key === "date") setExDate("");
+  }
 
   return (
     <div className={styled["searchContainer--container"]}>
@@ -233,6 +296,34 @@ export default function SearchContainer({
           </button>
         </div>
 
+        {showExplore && exploreChips.length > 0 && (
+          <div
+            className={styled["searchExplore__chipsRow"]}
+            aria-label={exUi.chipsHint}
+          >
+            <span className={styled["searchExplore__chipsHint"]}>
+              {exUi.chipsHint}
+            </span>
+            <div className={styled["searchExplore__chips"]}>
+              {exploreChips.map((chip) => (
+                <span key={chip.key} className={styled["searchExplore__chip"]}>
+                  <span className={styled["searchExplore__chipText"]}>
+                    {chip.text}
+                  </span>
+                  <button
+                    type="button"
+                    className={styled["searchExplore__chipRemove"]}
+                    onClick={() => removeExploreChip(chip.key)}
+                    aria-label={`${chip.text} ${exUi.removeChip}`}
+                  >
+                    <X size={12} strokeWidth={2.5} aria-hidden />
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {showExplore && exploreOpen && (
           <div
             className={styled["searchExplore__popover"]}
@@ -244,39 +335,35 @@ export default function SearchContainer({
             <div className={styled["searchExplore__grid"]}>
               <div className={styled["searchExplore__field"]}>
                 <label htmlFor="explore-country">{exUi.labelCountry}</label>
-                <select
+                <ExploreSelect
                   id="explore-country"
                   value={exCountry}
-                  onChange={(e) => setExCountry(e.target.value)}
-                >
-                  {countryOptions.map((o) => (
-                    <option key={o.value || "all"} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setExCountry}
+                  options={countryOptions}
+                  ariaLabel={exUi.labelCountry}
+                />
               </div>
               <div className={styled["searchExplore__field"]}>
                 <label htmlFor="explore-category">{exUi.labelCategory}</label>
-                <select
+                <ExploreSelect
                   id="explore-category"
                   value={exCategory}
-                  onChange={(e) => setExCategory(e.target.value)}
-                >
-                  {categoryOptions.map((o) => (
-                    <option key={o.value || "all-c"} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setExCategory}
+                  options={categoryOptions}
+                  ariaLabel={exUi.labelCategory}
+                />
               </div>
               <div className={styled["searchExplore__field"]}>
                 <label htmlFor="explore-date">{exUi.labelDate}</label>
-                <input
+                <ExploreDatePicker
                   id="explore-date"
-                  type="date"
                   value={exDate}
-                  onChange={(e) => setExDate(e.target.value)}
+                  onChange={setExDate}
+                  placeholder={exUi.datePlaceholder}
+                  clearLabel={exUi.dateClear}
+                  ariaLabel={exUi.labelDate}
+                  prevMonthAria={exUi.datePrevMonth}
+                  nextMonthAria={exUi.dateNextMonth}
                 />
               </div>
             </div>

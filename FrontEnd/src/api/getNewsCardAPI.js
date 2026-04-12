@@ -93,9 +93,16 @@ export async function getExploreArticles({
 
 // mainPage - Search News Card //
 // response.data.data.originalText
-export async function getSearch(input) {
+/** @param {string} input 검색어
+ *  @param {{ country?: string, category?: string, date?: string }} [exploreFilters] 탐색과 동일 필터(BE /api/search 선택 파라미터) */
+export async function getSearch(input, exploreFilters = {}) {
     try {
-        const baseUrl = `${import.meta.env.VITE_APP_API}/api/search?text=${input}`;
+        const params = new URLSearchParams();
+        params.set("text", input);
+        if (exploreFilters.country) params.set("country", exploreFilters.country);
+        if (exploreFilters.category) params.set("category", exploreFilters.category);
+        if (exploreFilters.date) params.set("date", exploreFilters.date);
+        const baseUrl = `${import.meta.env.VITE_APP_API}/api/search?${params.toString()}`;
         const response = await axios.get(baseUrl);
 
         if (response.data.isSuccess === true) {

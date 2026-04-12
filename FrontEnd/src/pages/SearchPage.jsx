@@ -3,13 +3,25 @@ import SearchContainer from '../components/mainPage/SearchContainer';
 import SearchNews from '../components/mainPage/SearchNews';
 import BlankNews from '../components/mainPage/BlankNews';
 
-import { useState, useEffect } from 'react';
-import { useParams, useLocation } from "react-router-dom";
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useLocation, useSearchParams } from "react-router-dom";
 import { getSearch } from '../api/getNewsCardAPI';
+
+function exploreFiltersFromParams(searchParams) {
+    const country = searchParams.get("country");
+    const category = searchParams.get("category");
+    const date = searchParams.get("date");
+    return {
+        ...(country ? { country } : {}),
+        ...(category ? { category } : {}),
+        ...(date ? { date } : {}),
+    };
+}
 
 export default function SearchPage() {
     const { keyword } = useParams();
     const location = useLocation();
+    const [searchParams] = useSearchParams();
     const [searchTerm, setSearchTerm] = useState(keyword);
     
     const [searchResults, setSearchResults] = useState(null);
@@ -17,24 +29,26 @@ export default function SearchPage() {
     const [originalWord, setOriginalWord] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSearch = async (term) => {
-        if (!term.trim()) return; // 빈 값이면 검색 안 함
-        setIsLoading(true); // 로딩 시작
+    const handleSearch = useCallback(async (term, exploreFilters = {}) => {
+        if (!term.trim()) return;
+        setIsLoading(true);
 
-        const { results, originalText, translatedText } = await getSearch(term);
+        const { results, originalText, translatedText } = await getSearch(term, exploreFilters);
         setSearchResults(results || []);
         setOriginalWord(originalText || "");
         setTranslatedWord(translatedText || "");
 
-        setIsLoading(false); // 로딩 끝
-    };
+        setIsLoading(false);
+    }, []);
+
+    const exploreQueryKey = searchParams.toString();
 
     useEffect(() => {
-        if (keyword) {
-            setSearchTerm(keyword);
-            handleSearch(keyword);
-        }
-    }, [location.key]);
+        if (!keyword) return;
+        setSearchTerm(keyword);
+        const filters = exploreFiltersFromParams(searchParams);
+        handleSearch(keyword, filters);
+    }, [location.key, keyword, exploreQueryKey, handleSearch]);
 
 
     return(
