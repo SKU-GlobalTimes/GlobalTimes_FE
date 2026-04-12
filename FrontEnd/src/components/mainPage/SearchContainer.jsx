@@ -2,7 +2,7 @@ import styled from "./SearchContainer.module.css";
 import PropTypes from "prop-types";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import {
@@ -30,6 +30,7 @@ export default function SearchContainer({
   onExploreApply,
 }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const exploreWrapRef = useRef(null);
 
@@ -104,7 +105,21 @@ export default function SearchContainer({
   function handleSearch() {
     const keyword = inputSearchTerm.trim();
     if (!keyword) return;
-    navigate(`/search/${keyword}`);
+    const params = new URLSearchParams();
+    if (showExplore) {
+      if (exCountry) params.set("country", exCountry);
+      if (exCategory) params.set("category", exCategory);
+      if (exDate) params.set("date", exDate);
+    } else {
+      ["country", "category", "date"].forEach((key) => {
+        const v = searchParams.get(key);
+        if (v) params.set(key, v);
+      });
+    }
+    const qs = params.toString();
+    navigate(
+      `/search/${encodeURIComponent(keyword)}${qs ? `?${qs}` : ""}`,
+    );
   }
 
   function handleInputChange(event) {
