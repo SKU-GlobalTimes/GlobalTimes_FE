@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { authAPI } from "../api/authAPI";
+import { clearAnonymousSessionId } from "./anonymousSession.js";
 
 const AuthContext = createContext();
 
@@ -20,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = (newToken) => {
+    clearAnonymousSessionId();
     localStorage.setItem("token", newToken);
     setToken(newToken);
   };

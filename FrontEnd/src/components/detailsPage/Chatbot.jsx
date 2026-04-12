@@ -3,11 +3,12 @@ import styles from "./Chatbot.module.css";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { getNewsDetailsAsk } from "../../api/detailsAPI.js";
-import { getChatsByArticle } from "../../api/chatAPI.js";
+import { getAnonymousChatsByArticle, getChatsByArticle } from "../../api/chatAPI.js";
 
 import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { useAuth } from "../../util/AuthContext.jsx";
+import { getOrCreateAnonymousSessionId } from "../../util/anonymousSession.js";
 
 export default function Chatbot({ articleId }) {
     const [input, setInput] = useState("");
@@ -32,7 +33,24 @@ export default function Chatbot({ articleId }) {
             if (token && articleId) {
                 const history = await getChatsByArticle(articleId);
                 if (history.length > 0) {
-                    // 이전 대화 내역을 messages로 변환
+                    const historyMessages = [];
+                    history.forEach((chat) => {
+                        historyMessages.push({ type: "user", text: chat.question });
+                        historyMessages.push({ type: "bot", text: chat.answer });
+                    });
+                    setMessages([
+                        { type: "bot", text: translatedGreeting },
+                        { type: "divider", text: "── 이전 대화 내역 ──" },
+                        ...historyMessages,
+                        { type: "divider", text: "── 새 대화 ──" },
+                    ]);
+                } else {
+                    setMessages([{ type: "bot", text: translatedGreeting }]);
+                }
+            } else if (articleId) {
+                const sessionId = getOrCreateAnonymousSessionId();
+                const history = sessionId ? await getAnonymousChatsByArticle(articleId, sessionId) : [];
+                if (history.length > 0) {
                     const historyMessages = [];
                     history.forEach((chat) => {
                         historyMessages.push({ type: "user", text: chat.question });
@@ -71,6 +89,8 @@ export default function Chatbot({ articleId }) {
         setInput("");
         setIsStreaming(true);
 
+        const anonymousSessionId = token ? null : getOrCreateAnonymousSessionId();
+
         const close = getNewsDetailsAsk(
             articleId,
             userText,
@@ -98,7 +118,8 @@ export default function Chatbot({ articleId }) {
                     return updated;
                 });
             },
-            token
+            token,
+            anonymousSessionId
         );
 
         closeEventSourceRef.current = close;
@@ -113,7 +134,7 @@ export default function Chatbot({ articleId }) {
             <div className={styles.chatHeader}>Global AI</div>
             {!token && (
                 <div className={styles.loginNotice}>
-                    💡 로그인하면 대화 내역이 저장되고 문맥이 이어집니다.
+                    💡 이 브라우저에서는 잠시 대화가 유지됩니다. 로그인하면 계정에 저장됩니다.
                 </div>
             )}
             <div className={styles.chatBody} ref={chatRef}>
