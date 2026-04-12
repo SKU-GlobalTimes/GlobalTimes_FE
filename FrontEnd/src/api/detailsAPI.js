@@ -20,11 +20,22 @@ export const getNewsDetailsSummary = async (articleId) => {
     }
 };
 
-export const getNewsDetailsAsk = (articleId, question, onMessage, onComplete, onError, token = null) => {
-    let url = `${import.meta.env.VITE_APP_API}/api/ai/${articleId}/ask?question=${encodeURIComponent(question)}`;
-    // EventSource는 커스텀 헤더 미지원 → 로그인 시 쿼리 파라미터로 토큰 전달 (BE 인증 + 히스토리 저장)
+export const getNewsDetailsAsk = (
+    articleId,
+    question,
+    onMessage,
+    onComplete,
+    onError,
+    token = null,
+    anonymousSessionId = null
+) => {
+    const base = import.meta.env.VITE_APP_API ?? "";
+    let url = `${base}/api/ai/${articleId}/ask?question=${encodeURIComponent(question)}`;
+    // EventSource는 커스텀 헤더 미지원 → 로그인: token, 비로그인: anonymousSession (BE Redis 맥락)
     if (token) {
         url += `&token=${encodeURIComponent(token)}`;
+    } else if (anonymousSessionId) {
+        url += `&anonymousSession=${encodeURIComponent(anonymousSessionId)}`;
     }
 
     const eventSource = new EventSource(url);
