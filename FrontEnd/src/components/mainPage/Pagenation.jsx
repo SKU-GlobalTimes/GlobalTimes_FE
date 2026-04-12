@@ -1,14 +1,46 @@
-import styled from './Pagenation.module.css';
-import PropTypes from 'prop-types';
+import styled from "./Pagenation.module.css";
+import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import { useLanguage } from "../../util/LanguageContext.jsx";
+import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 
-function Pagenation({ currentPage, totalPages, onPageChange}) {
+const PAGE_UI_KO = {
+  first: "첫 페이지",
+  prev: "이전 페이지",
+  pagePrefix: "페이지",
+  next: "다음 페이지",
+  last: "마지막 페이지",
+};
+
+function Pagenation({ currentPage, totalPages, onPageChange }) {
+  const { language } = useLanguage();
+  const [ui, setUi] = useState(() => ({ ...PAGE_UI_KO }));
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const entries = Object.entries(PAGE_UI_KO);
+      const translated = await Promise.all(
+        entries.map(([, ko]) => fetchTranslatedText(ko, language)),
+      );
+      if (cancelled) return;
+      const next = {};
+      entries.forEach(([key], i) => {
+        next[key] = translated[i];
+      });
+      setUi(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [language]);
 
   function firstClick() {
     if (currentPage !== 1) {
       onPageChange(1);
     }
   }
-  
+
   function lastClick() {
     if (currentPage !== totalPages) {
       onPageChange(totalPages);
@@ -17,51 +49,45 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
 
   function getPageNumbers() {
     const pages = [];
-  
+
     if (totalPages <= 5) {
-      // 전체 페이지가 5 이하라면 그냥 다 보여줘
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      pages.push(1); // 첫 페이지는 무조건
-  
+      pages.push(1);
+
       if (currentPage > 3) {
-        pages.push('...'); // 왼쪽 점
+        pages.push("...");
       }
-  
-      // 현재 페이지 기준 앞뒤로 보여줄 페이지
+
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-  
+
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
-  
+
       if (currentPage < totalPages - 2) {
-        pages.push('...'); // 오른쪽 점
+        pages.push("...");
       }
-  
-      pages.push(totalPages); // 마지막 페이지는 무조건
+
+      pages.push(totalPages);
     }
-  
+
     return pages;
   }
 
-
-
-  // 페이지 화살표
   function prevClick() {
-    if(currentPage > 1) {
-      onPageChange(currentPage-1);
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
     }
   }
   function nextClick() {
-    if (currentPage<totalPages){
+    if (currentPage < totalPages) {
       onPageChange(currentPage + 1);
     }
   }
-
 
   const canPrev = currentPage > 1;
   const canNext = currentPage < totalPages;
@@ -73,8 +99,8 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
         className={styled.pagenationButton}
         onClick={firstClick}
         disabled={!canPrev}
-        aria-label="첫 페이지"
-        title="첫 페이지"
+        aria-label={ui.first}
+        title={ui.first}
       >
         ≪
       </button>
@@ -83,14 +109,14 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
         className={styled.pagenationButton}
         onClick={prevClick}
         disabled={!canPrev}
-        aria-label="이전 페이지"
-        title="이전 페이지"
+        aria-label={ui.prev}
+        title={ui.prev}
       >
         &lt;
       </button>
 
       {getPageNumbers().map((pageNumber, index) =>
-        pageNumber === '...' ? (
+        pageNumber === "..." ? (
           <span key={`ellipsis-${index}`} className={styled.ellipsis}>
             ...
           </span>
@@ -98,14 +124,14 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
           <button
             type="button"
             key={pageNumber}
-            className={`${styled.pagenationButton} ${pageNumber === currentPage ? styled.activePage : ''}`}
+            className={`${styled.pagenationButton} ${pageNumber === currentPage ? styled.activePage : ""}`}
             onClick={() => onPageChange(pageNumber)}
-            aria-label={`페이지 ${pageNumber}`}
-            aria-current={pageNumber === currentPage ? 'page' : undefined}
+            aria-label={`${ui.pagePrefix} ${pageNumber}`}
+            aria-current={pageNumber === currentPage ? "page" : undefined}
           >
             {pageNumber}
           </button>
-        )
+        ),
       )}
 
       <button
@@ -113,8 +139,8 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
         className={styled.pagenationButton}
         onClick={nextClick}
         disabled={!canNext}
-        aria-label="다음 페이지"
-        title="다음 페이지"
+        aria-label={ui.next}
+        title={ui.next}
       >
         &gt;
       </button>
@@ -123,8 +149,8 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
         className={styled.pagenationButton}
         onClick={lastClick}
         disabled={!canNext}
-        aria-label="마지막 페이지"
-        title="마지막 페이지"
+        aria-label={ui.last}
+        title={ui.last}
       >
         ≫
       </button>
@@ -134,12 +160,8 @@ function Pagenation({ currentPage, totalPages, onPageChange}) {
 
 export default Pagenation;
 
-
-
-
 Pagenation.propTypes = {
-    currentPage: PropTypes.number.isRequired,
-    totalPages: PropTypes.number.isRequired,
-    onPageChange: PropTypes.func.isRequired
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
 };
-

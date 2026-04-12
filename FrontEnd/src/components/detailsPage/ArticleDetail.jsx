@@ -6,12 +6,16 @@ import ReactMarkdown from "react-markdown";
 
 import TranslatedText from "../../api/TranslatedText.jsx";
 import { useAuth } from "../../util/AuthContext.jsx";
+import { useLanguage } from "../../util/LanguageContext.jsx";
+import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
 import { toggleScrap, getScrapStatus } from "../../api/scrapAPI.js";
 
 export default function ArticleDetail({ id, newsDetail, content, isLoading, isSummaryLoading }) {
   const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } = newsDetail;
   const { token } = useAuth();
+  const { language } = useLanguage();
+  const imageAlt = useTranslatedLabel("기사 이미지");
 
   const [isScrapped, setIsScrapped] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -57,6 +61,9 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
   // 제목 말줄임 (모달용)
   const shortTitle = title && title.length > 22 ? title.slice(0, 22) + "..." : title;
 
+  const dateLocale =
+    language === "ja" ? "ja-JP" : language === "ko" ? "ko-KR" : "en-US";
+
   return (
     <div className={styles.articleDetail}>
 
@@ -92,7 +99,7 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
       <h1><TranslatedText text={title}/></h1>
       <div className={styles.infoContainer}>
         <p className={styles.timeText}>
-          <TranslatedText text={new Date(publishedAt).toLocaleString()}/>
+          {new Date(publishedAt).toLocaleString(dateLocale)}
         </p>
         <div className={styles.stats}>
           <span><TranslatedText text="조회수"/>{viewCount}</span>
@@ -110,7 +117,7 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
       <p className={styles.meta}>
         {sourceName} - {author}
       </p>
-      <img src={urlToImage} alt="기사 이미지" className={styles.image} />
+      <img src={urlToImage} alt={imageAlt} className={styles.image} />
       {/* 기사 요약내용 - 상세 정보와 독립적으로 로딩 */}
       {isSummaryLoading ? (
          <MutatingDots 
@@ -127,7 +134,9 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
              <ReactMarkdown>{content}</ReactMarkdown>
            </div>
          ) : (
-           <p className={styles.content}>요약 정보를 불러올 수 없습니다.</p>
+           <p className={styles.content}>
+             <TranslatedText text="요약 정보를 불러올 수 없습니다." />
+           </p>
          )
        }
     </div>

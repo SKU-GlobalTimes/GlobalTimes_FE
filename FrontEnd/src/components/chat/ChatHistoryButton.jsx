@@ -5,9 +5,14 @@ import ReactMarkdown from "react-markdown";
 import { useAuth } from "../../util/AuthContext.jsx";
 import { getChatList } from "../../api/chatAPI.js";
 import styles from "./ChatHistoryButton.module.css";
+import TranslatedText from "../../api/TranslatedText.jsx";
+import { useLanguage } from "../../util/LanguageContext.jsx";
+import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
 
 export default function ChatHistoryButton() {
     const { token } = useAuth();
+    const { language } = useLanguage();
+    const fabLabel = useTranslatedLabel("채팅 히스토리");
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [chatList, setChatList] = useState([]);
@@ -37,13 +42,18 @@ export default function ChatHistoryButton() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [isOpen]);
 
+    const dateLocale =
+        language === "ja" ? "ja-JP" : language === "ko" ? "ko-KR" : "en-US";
+
     return (
         <div className={styles.wrapper} ref={popupRef}>
             {/* 팝업 */}
             {isOpen && (
                 <div className={styles.popup}>
                     <div className={styles.popupHeader}>
-                        <span>채팅 히스토리</span>
+                        <span>
+                            <TranslatedText text="채팅 히스토리" />
+                        </span>
                         <button onClick={() => setIsOpen(false)} className={styles.closeBtn}>
                             <X size={16} />
                         </button>
@@ -54,7 +64,9 @@ export default function ChatHistoryButton() {
                             <div className={styles.loginPrompt}>
                                 <MessageSquare size={36} className={styles.promptIcon} />
                                 <p className={styles.promptText}>
-                                    로그인하면 기사별 AI 대화 내역을<br />언제든지 다시 볼 수 있어요.
+                                    <TranslatedText text="로그인하면 기사별 AI 대화 내역을" />
+                                    <br />
+                                    <TranslatedText text="언제든지 다시 볼 수 있어요." />
                                 </p>
                                 <button
                                     className={styles.loginBtn}
@@ -63,15 +75,21 @@ export default function ChatHistoryButton() {
                                         window.location.href = "/oauth2/authorization/google";
                                     }}
                                 >
-                                    Google로 로그인
+                                    <TranslatedText text="Google로 로그인" />
                                 </button>
                             </div>
                         )}
 
                         {/* 로그인 상태 */}
-                        {token && isLoading && <p className={styles.empty}>불러오는 중...</p>}
+                        {token && isLoading && (
+                            <p className={styles.empty}>
+                                <TranslatedText text="불러오는 중..." />
+                            </p>
+                        )}
                         {token && !isLoading && chatList.length === 0 && (
-                            <p className={styles.empty}>저장된 대화 내역이 없습니다.</p>
+                            <p className={styles.empty}>
+                                <TranslatedText text="저장된 대화 내역이 없습니다." />
+                            </p>
                         )}
                         {token && !isLoading && chatList.map((item) => (
                             <div
@@ -97,7 +115,7 @@ export default function ChatHistoryButton() {
                                         <ReactMarkdown>{item.lastAnswerPreview}</ReactMarkdown>
                                     </div>
                                     <p className={styles.time}>
-                                        {new Date(item.lastChatAt).toLocaleString("ko-KR")}
+                                        {new Date(item.lastChatAt).toLocaleString(dateLocale)}
                                     </p>
                                 </div>
                             </div>
@@ -110,7 +128,8 @@ export default function ChatHistoryButton() {
             <button
                 className={styles.fab}
                 onClick={() => setIsOpen((prev) => !prev)}
-                title="채팅 히스토리"
+                title={fabLabel}
+                aria-label={fabLabel}
             >
                 <MessageSquare size={22} />
             </button>
