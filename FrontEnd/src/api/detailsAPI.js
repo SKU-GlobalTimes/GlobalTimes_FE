@@ -20,6 +20,19 @@ export const getNewsDetailsSummary = async (articleId) => {
     }
 };
 
+/** 국가별 시각(Perspectives): 키워드 기반 유사 기사를 국가 코드별로 그룹 */
+export const getNewsPerspectives = async (articleId) => {
+    try {
+        const response = await axios.get(
+            `${import.meta.env.VITE_APP_API}/api/news/${articleId}/perspectives`,
+        );
+        return response.data;
+    } catch (error) {
+        console.error("국가별 관점 기사를 불러오는 데 실패했습니다.", error);
+        return null;
+    }
+};
+
 export const getNewsDetailsAsk = (
     articleId,
     question,

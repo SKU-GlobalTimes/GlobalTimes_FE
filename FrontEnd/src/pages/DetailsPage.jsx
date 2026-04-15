@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getNewsDetails, getNewsDetailsSummary } from "../api/detailsAPI";
 import styles from "./DetailsPage.module.css";
 import ArticleDetail from "../components/detailsPage/ArticleDetail";
+import PerspectivesSection from "../components/detailsPage/PerspectivesSection";
 import Sidebar from "../components/detailsPage/Sidebar";
 import Chatbot from "../components/detailsPage/Chatbot";
 
@@ -61,6 +62,7 @@ export default function DetailsPage() {
             isLoading={isLoading}
             isSummaryLoading={isSummaryLoading}
             />
+          <PerspectivesSection articleId={id} />
           <Chatbot articleId={id} />
         </div>
         <div className={styles.sidebar}>
