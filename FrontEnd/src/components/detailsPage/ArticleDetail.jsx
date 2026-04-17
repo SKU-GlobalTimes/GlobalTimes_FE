@@ -11,6 +11,14 @@ import { useLanguage } from "../../util/LanguageContext.jsx";
 import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
 import { toggleScrap, getScrapStatus } from "../../api/scrapAPI.js";
 
+/** RSS/DB에 url이 없거나 문자열 "null" 등인 경우 — img 렌더 생략 */
+function hasArticleImageUrl(url) {
+  if (url == null || typeof url !== "string") return false;
+  const u = url.trim();
+  if (!u || u === "null" || u === "undefined") return false;
+  return /^https?:\/\//i.test(u);
+}
+
 export default function ArticleDetail({ id, newsDetail, content, isLoading, isSummaryLoading }) {
   const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } = newsDetail;
@@ -20,6 +28,8 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
 
   const [isScrapped, setIsScrapped] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  /** 유효 URL이어도 404·만료 시 깨진 아이콘 방지 */
+  const [imageLoadFailed, setImageLoadFailed] = useState(false);
   /** 요약 마크다운: 전역 UI 언어로 번역된 문자열 (제목과 동일하게 Google 번역) */
   const [translatedMarkdown, setTranslatedMarkdown] = useState("");
 
@@ -35,6 +45,10 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
     };
     initScrapStatus();
   }, [articleId, token]);
+
+  useEffect(() => {
+    setImageLoadFailed(false);
+  }, [urlToImage]);
 
   useEffect(() => {
     if (!content) {
@@ -135,7 +149,14 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
       <p className={styles.meta}>
         {sourceName} - {author}
       </p>
-      <img src={urlToImage} alt={imageAlt} className={styles.image} />
+      {hasArticleImageUrl(urlToImage) && !imageLoadFailed ? (
+        <img
+          src={urlToImage.trim()}
+          alt={imageAlt}
+          className={styles.image}
+          onError={() => setImageLoadFailed(true)}
+        />
+      ) : null}
       {/* 기사 요약내용 - 상세 정보와 독립적으로 로딩 */}
       {isSummaryLoading ? (
          <MutatingDots 
