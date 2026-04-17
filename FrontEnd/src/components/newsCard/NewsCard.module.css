@@ -508,6 +508,13 @@
     font-weight: 700;
     color: #111;
     font-size: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    max-width: 100%;
+    text-align: center;
 }
 
 .scrapModal--buttons {

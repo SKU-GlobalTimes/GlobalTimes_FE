@@ -15,8 +15,6 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
     const [showModal, setShowModal] = useState(false);
     const removeBtnTitle = useTranslatedLabel("스크랩 취소");
 
-    const shortTitle = title && title.length > 20 ? title.slice(0, 20) + "..." : title;
-
     function handleClickNewsCard(){
         navigate(`/detail/${id}`);
     }
@@ -56,7 +54,9 @@ export default function ScrapNewsCard({ id, press, title, summary, image, year, 
                         <p className={styled['scrapModal--message']}>
                             <span className={styled['scrapModal--press']}>{press}</span>
                             <br />
-                            <span className={styled['scrapModal--title']}>「{shortTitle}」</span>
+                            <span className={styled['scrapModal--title']}>
+                                「<TranslatedText text={title} />」
+                            </span>
                             <br />
                             <TranslatedText text="스크랩을 취소하시겠습니까?" />
                         </p>

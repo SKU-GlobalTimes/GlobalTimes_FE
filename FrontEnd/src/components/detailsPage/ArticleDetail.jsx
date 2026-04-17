@@ -58,9 +58,6 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
     }
   }
 
-  // 제목 말줄임 (모달용)
-  const shortTitle = title && title.length > 22 ? title.slice(0, 22) + "..." : title;
-
   const dateLocale =
     language === "ja" ? "ja-JP" : language === "ko" ? "ko-KR" : "en-US";
 
@@ -77,7 +74,9 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
             <p className={styles.modalMessage}>
               <span className={styles.modalPress}>{sourceName}</span>
               <br />
-              <span className={styles.modalTitle}>「{shortTitle}」</span>
+              <span className={styles.modalTitle}>
+                「<TranslatedText text={title} />」
+              </span>
               <br />
               <TranslatedText text={isScrapped ? "스크랩을 취소하시겠습니까?" : "기사를 스크랩하시겠습니까?"} />
             </p>

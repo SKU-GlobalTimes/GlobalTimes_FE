@@ -97,7 +97,9 @@ export default function ChatHistoryButton() {
                                         }}
                                     />
                                     <div className={styles.chatInfo}>
-                                        <p className={styles.articleTitle}>{item.articleTitle}</p>
+                                        <p className={styles.articleTitle}>
+                                            <TranslatedText text={item.articleTitle} />
+                                        </p>
                                         <p className={styles.lastQuestion}>Q: {item.lastQuestion}</p>
                                         <div className={styles.preview}>
                                             <ReactMarkdown>{item.lastAnswerPreview}</ReactMarkdown>

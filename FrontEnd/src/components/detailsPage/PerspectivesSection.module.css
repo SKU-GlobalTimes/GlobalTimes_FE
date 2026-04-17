@@ -39,6 +39,15 @@
   width: 100%;
 }
 
+.hint {
+  font-size: 0.8rem;
+  color: #777;
+  line-height: 1.55;
+  margin: 0 0 12px;
+  text-align: left;
+  width: 100%;
+}
+
 .sub {
   font-size: 0.85rem;
   color: #666;

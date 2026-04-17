@@ -11,8 +11,7 @@ function regionLabel(countryCode, locale) {
   if (!countryCode) return "";
   const code = String(countryCode).toUpperCase();
   try {
-    const loc =
-      locale === "ja" ? "ja" : locale === "ko" ? "ko" : "en";
+    const loc = locale === "ja" ? "ja" : locale === "ko" ? "ko" : "en";
     const dn = new Intl.DisplayNames([loc], { type: "region" });
     return dn.of(code);
   } catch {
@@ -143,6 +142,11 @@ export default function PerspectivesSection({ articleId }) {
       <h2 className={styles.heading}>
         <TranslatedText text="다른 나라의 관련 기사" />
       </h2>
+      <p className={styles.hint}>
+        <TranslatedText text="유사 키워드 기반 탐색 시, 실제 검색에는 해당 데이터를 영어 키워드로 바꿔 사용합니다." />
+        <br />
+        <TranslatedText text="아래 표시는 기사 제목에서 추출한 원문 키워드입니다." />
+      </p>
       {payload.keyword ? (
         <p className={styles.sub}>
           <TranslatedText text="탐색 키워드" />
