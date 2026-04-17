@@ -39,13 +39,38 @@ export const getChatsByArticle = async (articleId) => {
     }
 };
 
-// 기사별 마지막 대화 미리보기 목록 (플로팅 팝업)
+// 기사별 마지막 대화 미리보기 목록 (플로팅 팝업, 로그인)
 export const getChatList = async () => {
     try {
         const response = await authAPI.get("/api/user/chat-history");
         return response.data?.data ?? [];
     } catch (error) {
         console.error("채팅 히스토리 목록 조회 실패:", error);
+        return [];
+    }
+};
+
+function anonymousChatListUrl() {
+    const base = apiBase();
+    return base
+        ? `${base}/api/ai/anonymous/chat-history`
+        : `/api/ai/anonymous/chat-history`;
+}
+
+/** 비로그인: 세션별 대화한 기사 목록 (플로팅, BE GET /api/ai/anonymous/chat-history) */
+export const getAnonymousChatList = async (sessionId) => {
+    if (!sessionId) return [];
+    try {
+        const response = await axios.get(anonymousChatListUrl(), {
+            params: { anonymousSession: sessionId },
+        });
+        return response.data?.data ?? [];
+    } catch (error) {
+        console.error(
+            "비로그인 채팅 목록 조회 실패:",
+            error?.response?.status,
+            error?.message
+        );
         return [];
     }
 };

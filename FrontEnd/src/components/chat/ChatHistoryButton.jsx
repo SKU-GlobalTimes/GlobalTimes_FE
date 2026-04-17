@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { MessageSquare, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "../../util/AuthContext.jsx";
-import { getChatList } from "../../api/chatAPI.js";
+import { getAnonymousChatList, getChatList } from "../../api/chatAPI.js";
+import { getOrCreateAnonymousSessionId } from "../../util/anonymousSession.js";
 import styles from "./ChatHistoryButton.module.css";
 import TranslatedText from "../../api/TranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
@@ -19,14 +20,23 @@ export default function ChatHistoryButton() {
     const [isLoading, setIsLoading] = useState(false);
     const popupRef = useRef(null);
 
-    // 로그인 상태에서 팝업 열 때 히스토리 불러오기
+    // 팝업 열 때: 로그인 → DB 목록, 비로그인 → Redis 세션 목록
     useEffect(() => {
-        if (!isOpen || !token) return;
+        if (!isOpen) return;
         const fetchList = async () => {
             setIsLoading(true);
-            const data = await getChatList();
-            setChatList(data);
-            setIsLoading(false);
+            try {
+                if (token) {
+                    const data = await getChatList();
+                    setChatList(data);
+                } else {
+                    const sid = getOrCreateAnonymousSessionId();
+                    const data = await getAnonymousChatList(sid);
+                    setChatList(data);
+                }
+            } finally {
+                setIsLoading(false);
+            }
         };
         fetchList();
     }, [isOpen, token]);
@@ -47,7 +57,6 @@ export default function ChatHistoryButton() {
 
     return (
         <div className={styles.wrapper} ref={popupRef}>
-            {/* 팝업 */}
             {isOpen && (
                 <div className={styles.popup}>
                     <div className={styles.popupHeader}>
@@ -59,72 +68,71 @@ export default function ChatHistoryButton() {
                         </button>
                     </div>
                     <div className={styles.popupBody}>
-                        {/* 비로그인 안내 */}
-                        {!token && (
-                            <div className={styles.loginPrompt}>
-                                <MessageSquare size={36} className={styles.promptIcon} />
-                                <p className={styles.promptText}>
-                                    <TranslatedText text="로그인하면 기사별 AI 대화 내역을" />
-                                    <br />
-                                    <TranslatedText text="언제든지 다시 볼 수 있어요." />
-                                </p>
-                                <button
-                                    className={styles.loginBtn}
-                                    onClick={() => {
-                                        setIsOpen(false);
-                                        window.location.href = "/oauth2/authorization/google";
-                                    }}
-                                >
-                                    <TranslatedText text="Google로 로그인" />
-                                </button>
-                            </div>
-                        )}
-
-                        {/* 로그인 상태 */}
-                        {token && isLoading && (
+                        {isLoading && (
                             <p className={styles.empty}>
                                 <TranslatedText text="불러오는 중..." />
                             </p>
                         )}
-                        {token && !isLoading && chatList.length === 0 && (
+                        {!isLoading && chatList.length === 0 && (
                             <p className={styles.empty}>
                                 <TranslatedText text="저장된 대화 내역이 없습니다." />
                             </p>
                         )}
-                        {token && !isLoading && chatList.map((item) => (
-                            <div
-                                key={item.articleId}
-                                className={styles.chatItem}
+                        {!isLoading &&
+                            chatList.map((item) => (
+                                <div
+                                    key={item.articleId}
+                                    className={styles.chatItem}
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        navigate(`/detail/${item.articleId}`);
+                                    }}
+                                >
+                                    <div
+                                        className={styles.thumbnail}
+                                        style={{
+                                            backgroundImage: item.thumbnailUrl
+                                                ? `url(${item.thumbnailUrl})`
+                                                : undefined,
+                                        }}
+                                    />
+                                    <div className={styles.chatInfo}>
+                                        <p className={styles.articleTitle}>{item.articleTitle}</p>
+                                        <p className={styles.lastQuestion}>Q: {item.lastQuestion}</p>
+                                        <div className={styles.preview}>
+                                            <ReactMarkdown>{item.lastAnswerPreview}</ReactMarkdown>
+                                        </div>
+                                        <p className={styles.time}>
+                                            {new Date(item.lastChatAt).toLocaleString(dateLocale)}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                    </div>
+                    {!token && !isLoading && (
+                        <div className={styles.anonFooter}>
+                            {chatList.length > 0 && (
+                                <p className={styles.anonHint}>
+                                    <TranslatedText text="비로그인 대화는 일정 기간 후 자동 삭제됩니다." />
+                                    <br />
+                                    <TranslatedText text="로그인하면 계정에 보관됩니다." />
+                                </p>
+                            )}
+                            <button
+                                type="button"
+                                className={styles.loginBtn}
                                 onClick={() => {
                                     setIsOpen(false);
-                                    navigate(`/detail/${item.articleId}`);
+                                    window.location.href = "/oauth2/authorization/google";
                                 }}
                             >
-                                <div
-                                    className={styles.thumbnail}
-                                    style={{
-                                        backgroundImage: item.thumbnailUrl
-                                            ? `url(${item.thumbnailUrl})`
-                                            : undefined,
-                                    }}
-                                />
-                                <div className={styles.chatInfo}>
-                                    <p className={styles.articleTitle}>{item.articleTitle}</p>
-                                    <p className={styles.lastQuestion}>Q: {item.lastQuestion}</p>
-                                    <div className={styles.preview}>
-                                        <ReactMarkdown>{item.lastAnswerPreview}</ReactMarkdown>
-                                    </div>
-                                    <p className={styles.time}>
-                                        {new Date(item.lastChatAt).toLocaleString(dateLocale)}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                <TranslatedText text="Google로 로그인" />
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 
-            {/* 플로팅 버튼 */}
             <button
                 className={styles.fab}
                 onClick={() => setIsOpen((prev) => !prev)}
