@@ -5,6 +5,7 @@ import { MutatingDots } from "react-loader-spinner";
 import ReactMarkdown from "react-markdown";
 
 import TranslatedText from "../../api/TranslatedText.jsx";
+import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useAuth } from "../../util/AuthContext.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
@@ -19,6 +20,8 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
 
   const [isScrapped, setIsScrapped] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  /** 요약 마크다운: 전역 UI 언어로 번역된 문자열 (제목과 동일하게 Google 번역) */
+  const [translatedMarkdown, setTranslatedMarkdown] = useState("");
 
   useEffect(() => {
     const initScrapStatus = async () => {
@@ -32,6 +35,22 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
     };
     initScrapStatus();
   }, [articleId, token]);
+
+  useEffect(() => {
+    if (!content) {
+      setTranslatedMarkdown("");
+      return;
+    }
+    setTranslatedMarkdown(content);
+    let cancelled = false;
+    (async () => {
+      const next = await fetchTranslatedText(content, language);
+      if (!cancelled) setTranslatedMarkdown(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [content, language]);
 
   // 버튼 클릭 → 모달 열기
   function clickScrapBTN() {
@@ -130,7 +149,7 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
          />
          ) : content ? (
            <div className={styles.content}>
-             <ReactMarkdown>{content}</ReactMarkdown>
+             <ReactMarkdown>{translatedMarkdown}</ReactMarkdown>
            </div>
          ) : (
            <p className={styles.content}>
