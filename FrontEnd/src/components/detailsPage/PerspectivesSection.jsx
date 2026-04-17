@@ -35,6 +35,12 @@ function formatPublishedAt(value, dateLocale) {
   return "";
 }
 
+/** 백엔드 plain 키워드(공백 구분) → 표시용 토큰 배열 */
+function keywordTokensFromPlain(plain) {
+  if (plain == null || typeof plain !== "string") return [];
+  return plain.trim().split(/\s+/).filter(Boolean);
+}
+
 export default function PerspectivesSection({ articleId }) {
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -81,6 +87,11 @@ export default function PerspectivesSection({ articleId }) {
     if (!map || typeof map !== "object") return [];
     return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
   }, [payload]);
+
+  const keywordTokens = useMemo(
+    () => keywordTokensFromPlain(payload?.keyword),
+    [payload?.keyword],
+  );
 
   const total = payload?.totalArticles ?? 0;
 
@@ -147,11 +158,19 @@ export default function PerspectivesSection({ articleId }) {
         <br />
         <TranslatedText text="아래 표시는 기사 제목에서 추출한 원문 키워드입니다." />
       </p>
-      {payload.keyword ? (
+      {keywordTokens.length > 0 ? (
         <p className={styles.sub}>
           <TranslatedText text="탐색 키워드" />
           {": "}
-          {payload.keyword}
+          {keywordTokens.map((word, i) => (
+            <span key={`${i}-${word}`} className={styles.keywordChunk}>
+              {i > 0 ? ", " : null}
+              <span className={styles.keywordLemma}>{word}</span>
+              <span className={styles.keywordParen}>(</span>
+              <TranslatedText text={word} />
+              <span className={styles.keywordParen}>)</span>
+            </span>
+          ))}
         </p>
       ) : null}
 

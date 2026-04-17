@@ -55,6 +55,20 @@
   word-break: break-word;
 }
 
+.keywordChunk {
+  white-space: normal;
+}
+
+.keywordLemma {
+  font-weight: 600;
+  color: #444;
+}
+
+.keywordParen {
+  color: #888;
+  font-weight: 400;
+}
+
 .countryBlock {
   margin-bottom: 20px;
 }
