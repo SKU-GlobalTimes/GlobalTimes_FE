@@ -19,9 +19,16 @@ function hasArticleImageUrl(url) {
   return /^https?:\/\//i.test(u);
 }
 
-export default function ArticleDetail({ id, newsDetail, content, isLoading, isSummaryLoading }) {
+export default function ArticleDetail({
+  id,
+  newsDetail,
+  content,
+  isLoading,
+  isSummaryLoading,
+}) {
   const articleId = Number(id);
-  const { title, author, sourceName, publishedAt, viewCount, urlToImage } = newsDetail;
+  const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
+    newsDetail;
   const { token } = useAuth();
   const { language } = useLanguage();
   const imageAlt = useTranslatedLabel("기사 이미지");
@@ -39,7 +46,8 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
         const status = await getScrapStatus(articleId);
         setIsScrapped(status);
       } else {
-        const storedScrapIds = JSON.parse(localStorage.getItem("scrapIds")) || [];
+        const storedScrapIds =
+          JSON.parse(localStorage.getItem("scrapIds")) || [];
         setIsScrapped(storedScrapIds.includes(articleId));
       }
     };
@@ -93,16 +101,21 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
 
   const dateLocale =
     language === "ja" ? "ja-JP" : language === "ko" ? "ko-KR" : "en-US";
-
   return (
     <div className={styles.articleDetail}>
-
       {/* 스크랩 확인 모달 */}
       {showModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowModal(false)}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalIcon}>
-              <FaBookmark className={isScrapped ? styles.modalIconActive : styles.modalIconDefault} />
+              <FaBookmark
+                className={
+                  isScrapped ? styles.modalIconActive : styles.modalIconDefault
+                }
+              />
             </div>
             <p className={styles.modalMessage}>
               <span className={styles.modalPress}>{sourceName}</span>
@@ -111,10 +124,19 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
                 「<TranslatedText text={title} />」
               </span>
               <br />
-              <TranslatedText text={isScrapped ? "스크랩을 취소하시겠습니까?" : "기사를 스크랩하시겠습니까?"} />
+              <TranslatedText
+                text={
+                  isScrapped
+                    ? "스크랩을 취소하시겠습니까?"
+                    : "기사를 스크랩하시겠습니까?"
+                }
+              />
             </p>
             <div className={styles.modalButtons}>
-              <button className={styles.modalCancel} onClick={() => setShowModal(false)}>
+              <button
+                className={styles.modalCancel}
+                onClick={() => setShowModal(false)}
+              >
                 <TranslatedText text="아니오" />
               </button>
               <button
@@ -128,18 +150,36 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
         </div>
       )}
 
-      <h1><TranslatedText text={title}/></h1>
+      <h1>
+        <TranslatedText text={title} />
+      </h1>
       <div className={styles.infoContainer}>
         <p className={styles.timeText}>
-          {new Date(publishedAt).toLocaleString(dateLocale)}
+          {(() => {
+            try {
+              if (!publishedAt) return "";
+              const iso = publishedAt.includes("T")
+                ? publishedAt
+                : publishedAt.replace(" ", "T").split(".")[0];
+              const d = new Date(iso);
+              return isNaN(d.getTime()) ? "" : d.toLocaleString(dateLocale);
+            } catch (e) {
+              return "";
+            }
+          })()}
         </p>
         <div className={styles.stats}>
-          <span><TranslatedText text="조회수"/>{viewCount}</span>
+          <span>
+            <TranslatedText text="조회수" />
+            {viewCount}
+          </span>
           <button
             className={`${styles.scrap} ${isScrapped ? styles.scrapActive : ""}`}
             onClick={clickScrapBTN}
           >
-            <FaBookmark className={`${styles.icon} ${isScrapped ? styles.active : ""}`} />
+            <FaBookmark
+              className={`${styles.icon} ${isScrapped ? styles.active : ""}`}
+            />
             <span className={styles.scrapLabel}>
               <TranslatedText text={isScrapped ? "스크랩됨" : "스크랩"} />
             </span>
@@ -159,25 +199,24 @@ export default function ArticleDetail({ id, newsDetail, content, isLoading, isSu
       ) : null}
       {/* 기사 요약내용 - 상세 정보와 독립적으로 로딩 */}
       {isSummaryLoading ? (
-         <MutatingDots 
-           height={100} 
-           width={100} 
-           color="#4fa94d" 
-           secondaryColor="#ccc"
-           radius={12.5}
-           ariaLabel="mutating-dots-loading"
-           visible={true}
-         />
-         ) : content ? (
-           <div className={styles.content}>
-             <ReactMarkdown>{translatedMarkdown}</ReactMarkdown>
-           </div>
-         ) : (
-           <p className={styles.content}>
-             <TranslatedText text="요약 정보를 불러올 수 없습니다." />
-           </p>
-         )
-       }
+        <MutatingDots
+          height={100}
+          width={100}
+          color="#4fa94d"
+          secondaryColor="#ccc"
+          radius={12.5}
+          ariaLabel="mutating-dots-loading"
+          visible={true}
+        />
+      ) : content ? (
+        <div className={styles.content}>
+          <ReactMarkdown>{translatedMarkdown}</ReactMarkdown>
+        </div>
+      ) : (
+        <p className={styles.content}>
+          <TranslatedText text="요약 정보를 불러올 수 없습니다." />
+        </p>
+      )}
     </div>
   );
 }

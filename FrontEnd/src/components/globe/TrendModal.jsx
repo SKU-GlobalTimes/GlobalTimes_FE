@@ -1,4 +1,5 @@
 import styles from "./TrendModal.module.css";
+import { formatLocal } from "../../util/date";
 import TranslatedText from "../../api/TranslatedText";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 
@@ -15,7 +16,7 @@ const TrendModal = ({ country, trends, timestamp, onSelect, onClose }) => {
         </h3>
         <p className={styles.dateTime}>
           <TranslatedText text="업데이트:" />{" "}
-          {new Date(timestamp).toLocaleString(dateLocale)}
+          {formatLocal(timestamp, dateLocale)}
         </p>
       </div>
 
