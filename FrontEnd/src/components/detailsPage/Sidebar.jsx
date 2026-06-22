@@ -25,7 +25,9 @@ export default function Sidebar({ recentNewsList }) {
 
   return (
     <div className={styles.sidebar}>
-      <h2><TranslatedText text="최근기사"/></h2>
+      <h2>
+        <TranslatedText text="최근기사" />
+      </h2>
       <ul>
         {recentNewsList.map((article) => (
           <li
@@ -45,13 +47,24 @@ export default function Sidebar({ recentNewsList }) {
             />
             <div>
               <p className={styles.articleSource}>
-                <TranslatedText text={article.sourceName}/>
+                <TranslatedText text={article.sourceName} />
               </p>
               <p className={styles.articleTitle}>
-                <TranslatedText text={article.title}/>
+                <TranslatedText text={article.title} />
               </p>
               <p className={styles.articleTime}>
-                <TranslatedText text={new Date(article.publishedAt).toLocaleString("ko-KR")}/>
+                {(() => {
+                  try {
+                    if (!article.publishedAt) return "";
+                    const iso = article.publishedAt.includes("T")
+                      ? article.publishedAt
+                      : article.publishedAt.replace(" ", "T").split(".")[0];
+                    const d = new Date(iso);
+                    return isNaN(d.getTime()) ? "" : d.toLocaleString("ko-KR");
+                  } catch (e) {
+                    return "";
+                  }
+                })()}
               </p>
             </div>
           </li>

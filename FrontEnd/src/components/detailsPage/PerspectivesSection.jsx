@@ -6,6 +6,7 @@ import TranslatedText from "../../api/TranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { getNewsPerspectives } from "../../api/detailsAPI.js";
 import styles from "./PerspectivesSection.module.css";
+import { parseApiDate } from "../../util/date";
 
 function regionLabel(countryCode, locale) {
   if (!countryCode) return "";
@@ -24,7 +25,7 @@ function formatPublishedAt(value, dateLocale) {
   try {
     const d =
       typeof value === "string" || typeof value === "number"
-        ? new Date(value)
+        ? parseApiDate(value)
         : null;
     if (d && !Number.isNaN(d.getTime())) {
       return d.toLocaleString(dateLocale);
