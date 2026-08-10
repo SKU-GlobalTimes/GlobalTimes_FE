@@ -1,10 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { MutatingDots } from "react-loader-spinner";
 
 import TranslatedText from "../../api/TranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { getNewsPerspectives } from "../../api/detailsAPI.js";
+import { getApiErrorMessage } from "../../api/apiClient.js";
+import ApiErrorMessage from "../commons/apiState/ApiErrorMessage.jsx";
 import styles from "./PerspectivesSection.module.css";
 import { parseApiDate } from "../../util/date";
 
@@ -46,7 +49,7 @@ export default function PerspectivesSection({ articleId }) {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [payload, setPayload] = useState(null);
 
   const dateLocale =
@@ -62,7 +65,7 @@ export default function PerspectivesSection({ articleId }) {
 
     (async () => {
       setLoading(true);
-      setError(false);
+      setError("");
       try {
         const res = await getNewsPerspectives(id);
         if (cancelled) return;
@@ -71,8 +74,10 @@ export default function PerspectivesSection({ articleId }) {
         } else {
           setPayload(null);
         }
-      } catch {
-        if (!cancelled) setError(true);
+      } catch (requestError) {
+        if (!cancelled) {
+          setError(getApiErrorMessage(requestError, "관련 기사를 불러오지 못했습니다."));
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -126,9 +131,7 @@ export default function PerspectivesSection({ articleId }) {
           <h2 className={styles.heading}>
             <TranslatedText text="다른 나라의 관련 기사" />
           </h2>
-          <p className={styles.error}>
-            <TranslatedText text="관련 기사를 불러오지 못했습니다." />
-          </p>
+          <ApiErrorMessage message={error} />
         </div>
       </section>
     );
@@ -218,3 +221,7 @@ export default function PerspectivesSection({ articleId }) {
     </section>
   );
 }
+
+PerspectivesSection.propTypes = {
+  articleId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};

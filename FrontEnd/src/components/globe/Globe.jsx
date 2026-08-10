@@ -4,6 +4,7 @@ import TrendModal from "./TrendModal";
 import NewsModal from "./NewsModal";
 import { getTrend } from "../../api/landingPageAPI";
 import styles from "./Globe.module.css";
+import { getApiErrorMessage } from "../../api/apiClient";
 
 const BASE_THETA = 0.3;
 
@@ -258,7 +259,7 @@ const GlobeComponent = () => {
           isSuccess: false,
           data: [],
           timestamp: new Date().toISOString(),
-          message: "",
+          message: getApiErrorMessage(err, "트렌드 정보를 불러오지 못했습니다."),
         });
       });
 
@@ -322,11 +323,8 @@ const GlobeComponent = () => {
             country={COUNTRY_MARKERS[selectedCountry].name}
             trends={trendData.data}
             timestamp={trendData.timestamp}
+            errorMessage={trendData.isSuccess === false ? trendData.message : ""}
             onSelect={(news) => setSelectedNews(news)}
-            onClose={() => {
-              setSelectedCountry(null);
-              setTrendData(null);
-            }}
           />
         </div>
       )}

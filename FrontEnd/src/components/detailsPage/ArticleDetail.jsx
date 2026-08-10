@@ -1,6 +1,7 @@
 import styles from "./ArticleDetail.module.css";
 import { FaBookmark } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { MutatingDots } from "react-loader-spinner";
 import ReactMarkdown from "react-markdown";
 
@@ -10,6 +11,8 @@ import { useAuth } from "../../util/AuthContext.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
 import { toggleScrap, getScrapStatus } from "../../api/scrapAPI.js";
+import { getApiErrorMessage } from "../../api/apiClient.js";
+import ApiErrorMessage from "../commons/apiState/ApiErrorMessage.jsx";
 
 /** RSS/DB에 url이 없거나 문자열 "null" 등인 경우 — img 렌더 생략 */
 function hasArticleImageUrl(url) {
@@ -25,6 +28,7 @@ export default function ArticleDetail({
   content,
   isLoading,
   isSummaryLoading,
+  summaryError,
 }) {
   const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
@@ -39,12 +43,17 @@ export default function ArticleDetail({
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
   /** 요약 마크다운: 전역 UI 언어로 번역된 문자열 (제목과 동일하게 Google 번역) */
   const [translatedMarkdown, setTranslatedMarkdown] = useState("");
+  const [scrapError, setScrapError] = useState("");
 
   useEffect(() => {
     const initScrapStatus = async () => {
       if (token) {
-        const status = await getScrapStatus(articleId);
-        setIsScrapped(status);
+        try {
+          const status = await getScrapStatus(articleId);
+          setIsScrapped(status);
+        } catch (error) {
+          setScrapError(getApiErrorMessage(error, "스크랩 상태를 확인하지 못했습니다."));
+        }
       } else {
         const storedScrapIds =
           JSON.parse(localStorage.getItem("scrapIds")) || [];
@@ -83,8 +92,13 @@ export default function ArticleDetail({
   async function handleConfirmScrap() {
     setShowModal(false);
     if (token) {
-      const result = await toggleScrap(articleId);
-      if (result !== null) setIsScrapped(result);
+      try {
+        setScrapError("");
+        const result = await toggleScrap(articleId);
+        setIsScrapped(result);
+      } catch (error) {
+        setScrapError(getApiErrorMessage(error, "스크랩을 변경하지 못했습니다."));
+      }
     } else {
       const storedScrapIds = JSON.parse(localStorage.getItem("scrapIds")) || [];
       if (!storedScrapIds.includes(articleId)) {
@@ -101,6 +115,23 @@ export default function ArticleDetail({
 
   const dateLocale =
     language === "ja" ? "ja-JP" : language === "ko" ? "ko-KR" : "en-US";
+
+  if (isLoading) {
+    return (
+      <div className={styles.articleDetail} aria-busy="true">
+        <MutatingDots
+          height={100}
+          width={100}
+          color="#4fa94d"
+          secondaryColor="#ccc"
+          radius={12.5}
+          ariaLabel="article-detail-loading"
+          visible
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.articleDetail}>
       {/* 스크랩 확인 모달 */}
@@ -189,6 +220,7 @@ export default function ArticleDetail({
       <p className={styles.meta}>
         {sourceName} - {author}
       </p>
+      <ApiErrorMessage message={scrapError} />
       {hasArticleImageUrl(urlToImage) && !imageLoadFailed ? (
         <img
           src={urlToImage.trim()}
@@ -208,6 +240,8 @@ export default function ArticleDetail({
           ariaLabel="mutating-dots-loading"
           visible={true}
         />
+      ) : summaryError ? (
+        <ApiErrorMessage message={summaryError} />
       ) : content ? (
         <div className={styles.content}>
           <ReactMarkdown>{translatedMarkdown}</ReactMarkdown>
@@ -220,3 +254,19 @@ export default function ArticleDetail({
     </div>
   );
 }
+
+ArticleDetail.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  newsDetail: PropTypes.shape({
+    title: PropTypes.string,
+    author: PropTypes.string,
+    sourceName: PropTypes.string,
+    publishedAt: PropTypes.string,
+    viewCount: PropTypes.number,
+    urlToImage: PropTypes.string,
+  }).isRequired,
+  content: PropTypes.string,
+  isLoading: PropTypes.bool.isRequired,
+  isSummaryLoading: PropTypes.bool.isRequired,
+  summaryError: PropTypes.string,
+};
