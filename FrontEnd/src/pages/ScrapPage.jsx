@@ -7,18 +7,23 @@ import { getScrap } from "../api/getNewsCardAPI";
 import { getMyScrapList } from "../api/scrapAPI";
 import { useAuth } from "../util/AuthContext";
 import { parseApiDate } from "../util/date";
+import { getApiErrorMessage } from "../api/apiClient";
+import ApiErrorMessage from "../components/commons/apiState/ApiErrorMessage";
 
 export default function ScrapPage() {
   const [scrapNews, setScrapNews] = useState([]);
   const [scrapPage, setScrapPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isScrapped, setIsScrapped] = useState(true);
+  const [scrapError, setScrapError] = useState("");
   const { token } = useAuth();
   const newsPerPage = 12;
 
   useEffect(() => {
     async function fetchScrapNews() {
-      if (token) {
+      setScrapError("");
+      try {
+        if (token) {
         // 로그인: BE DB에서 스크랩 목록 조회
         const data = await getMyScrapList();
         const newTotalPages = Math.ceil(data.length / newsPerPage);
@@ -42,7 +47,7 @@ export default function ScrapPage() {
           };
         });
         setScrapNews(mapped);
-      } else {
+        } else {
         // 비로그인: localStorage → BE /api/scrap
         const storedScrapIds = JSON.parse(
           localStorage.getItem("scrapIds") || "[]",
@@ -67,8 +72,12 @@ export default function ScrapPage() {
         } else {
           setScrapNews([]);
         }
+        }
+        setIsScrapped(true);
+      } catch (error) {
+        setScrapNews([]);
+        setScrapError(getApiErrorMessage(error, "스크랩 목록을 불러오지 못했습니다."));
       }
-      setIsScrapped(true);
     }
 
     fetchScrapNews();
@@ -78,7 +87,9 @@ export default function ScrapPage() {
     <div className={styled["ScrapNews--container"]}>
       <div className={styled["ScrapNews--Newscontainer"]}>
         <div className={styled["ScrapNews--News"]}>
-          {scrapNews.length > 0 ? (
+          {scrapError ? (
+            <ApiErrorMessage message={scrapError} />
+          ) : scrapNews.length > 0 ? (
             <div className={styled["ScrapNews--News__container"]}>
               <div className={styled["ScrapNews--News__items"]}>
                 {scrapNews.map((news) => (

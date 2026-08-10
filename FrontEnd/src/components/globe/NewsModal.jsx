@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import styles from "./NewsModal.module.css";
 import { IoClose } from "react-icons/io5";
 import { getSummary } from "../../api/landingPageAPI";
@@ -6,6 +7,7 @@ import { ClipLoader } from "react-spinners";
 
 // 번역 컴포넌트
 import TranslatedText from "../../api/TranslatedText";
+import { getApiErrorMessage } from "../../api/apiClient";
 
 const NewsModal = ({ news, onClose }) => {
   const [summary, setSummary] = useState("");
@@ -16,7 +18,9 @@ const NewsModal = ({ news, onClose }) => {
       setIsLoading(true); // 요청 시작
       getSummary(news.url)
         .then((data) => setSummary(data))
-        .catch(() => setSummary("해당 언론사는 요약 정보 제공이 불가능합니다."))
+        .catch((error) =>
+          setSummary(getApiErrorMessage(error, "요약 정보를 불러오지 못했습니다.")),
+        )
         .finally(() => setIsLoading(false)); // 요청 완료
     }
   }, [news?.url]);
@@ -63,3 +67,13 @@ const NewsModal = ({ news, onClose }) => {
 };
 
 export default NewsModal;
+
+NewsModal.propTypes = {
+  news: PropTypes.shape({
+    url: PropTypes.string,
+    sourceName: PropTypes.string,
+    title: PropTypes.string,
+    urlToImage: PropTypes.string,
+  }),
+  onClose: PropTypes.func.isRequired,
+};

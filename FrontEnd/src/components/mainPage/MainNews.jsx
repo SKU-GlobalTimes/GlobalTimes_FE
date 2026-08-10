@@ -9,6 +9,8 @@ import { useState, useEffect, useCallback } from "react";
 import TranslatedText from "../../api/TranslatedText";
 
 import { getHot, getLatestCursor } from "../../api/getNewsCardAPI";
+import { getApiErrorMessage } from "../../api/apiClient";
+import ApiErrorMessage from "../commons/apiState/ApiErrorMessage";
 
 const LATEST_PAGE_SIZE = 8;
 
@@ -16,6 +18,7 @@ export default function MainNews() {
   const [hotNews, setHotNews] = useState([]);
   const [basicNews, setBasicNews] = useState([]);
   const [hotPage, setHotPage] = useState(1);
+  const [hotError, setHotError] = useState("");
   const hotTotalPages = 7;
 
   const [latestNextCursor, setLatestNextCursor] = useState(null);
@@ -24,15 +27,17 @@ export default function MainNews() {
   const [latestRequestCursor, setLatestRequestCursor] = useState(null);
   /** 다음으로 갈 때 push(latestRequestCursor) — 이전으로 갈 때 pop 한 값으로 재요청 */
   const [latestStack, setLatestStack] = useState([]);
+  const [latestError, setLatestError] = useState("");
 
   useEffect(() => {
     async function fetchHotNews() {
-      const data = await getHot(hotPage - 1, 6);
-
-      if (data && typeof data === "object") {
+      setHotError("");
+      try {
+        const data = await getHot(hotPage - 1, 6);
         setHotNews(Object.values(data));
-      } else {
-        console.error("🚨 예상과 다른 데이터 구조:", data);
+      } catch (error) {
+        setHotNews([]);
+        setHotError(getApiErrorMessage(error, "인기 기사를 불러오지 못했습니다."));
       }
     }
     fetchHotNews();
@@ -44,12 +49,25 @@ export default function MainNews() {
     setLatestHasNext(res.hasNext);
   }, []);
 
-  const loadLatestFirst = useCallback(async () => {
-    const res = await getLatestCursor(null, LATEST_PAGE_SIZE);
-    applyLatestResponse(res);
-    setLatestRequestCursor(null);
-    setLatestStack([]);
+  const requestLatest = useCallback(async (cursor) => {
+    setLatestError("");
+    try {
+      const res = await getLatestCursor(cursor, LATEST_PAGE_SIZE);
+      applyLatestResponse(res);
+      return true;
+    } catch (error) {
+      setLatestError(getApiErrorMessage(error, "최신 기사를 불러오지 못했습니다."));
+      return false;
+    }
   }, [applyLatestResponse]);
+
+  const loadLatestFirst = useCallback(async () => {
+    const succeeded = await requestLatest(null);
+    if (succeeded) {
+      setLatestRequestCursor(null);
+      setLatestStack([]);
+    }
+  }, [requestLatest]);
 
   useEffect(() => {
     loadLatestFirst();
@@ -57,25 +75,27 @@ export default function MainNews() {
 
   const handleLatestNext = useCallback(async () => {
     if (!latestHasNext || latestNextCursor == null) return;
-    setLatestStack((s) => [...s, latestRequestCursor]);
-    const res = await getLatestCursor(latestNextCursor, LATEST_PAGE_SIZE);
-    applyLatestResponse(res);
-    setLatestRequestCursor(latestNextCursor);
+    const succeeded = await requestLatest(latestNextCursor);
+    if (succeeded) {
+      setLatestStack((s) => [...s, latestRequestCursor]);
+      setLatestRequestCursor(latestNextCursor);
+    }
   }, [
     latestHasNext,
     latestNextCursor,
     latestRequestCursor,
-    applyLatestResponse,
+    requestLatest,
   ]);
 
   const handleLatestPrev = useCallback(async () => {
     if (latestStack.length === 0) return;
     const parentCursor = latestStack[latestStack.length - 1];
-    setLatestStack((s) => s.slice(0, -1));
-    const res = await getLatestCursor(parentCursor, LATEST_PAGE_SIZE);
-    applyLatestResponse(res);
-    setLatestRequestCursor(parentCursor);
-  }, [latestStack, applyLatestResponse]);
+    const succeeded = await requestLatest(parentCursor);
+    if (succeeded) {
+      setLatestStack((s) => s.slice(0, -1));
+      setLatestRequestCursor(parentCursor);
+    }
+  }, [latestStack, requestLatest]);
 
   const handleLatestFirst = useCallback(async () => {
     await loadLatestFirst();
@@ -97,6 +117,7 @@ export default function MainNews() {
         </div>
 
         <div className={styled["MainNews--News"]}>
+          {hotError && <ApiErrorMessage message={hotError} />}
           {hotNews.map((news) => (
             <HotNewsCard
               key={news.id}
@@ -132,6 +153,9 @@ export default function MainNews() {
         </div>
 
         <div className={styled["MainNews--News__latest"]}>
+          {latestError && (
+            <ApiErrorMessage message={latestError} onRetry={handleLatestFirst} />
+          )}
           {basicNews.map((news) => (
             <BasicNewsCard
               key={news.id}

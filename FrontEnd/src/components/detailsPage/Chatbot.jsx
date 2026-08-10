@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import styles from "./Chatbot.module.css";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -13,11 +14,14 @@ import { fetchTranslatedText } from "../../api/fetchTranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { useAuth } from "../../util/AuthContext.jsx";
 import { getOrCreateAnonymousSessionId } from "../../util/anonymousSession.js";
+import { getApiErrorMessage } from "../../api/apiClient.js";
+import ApiErrorMessage from "../commons/apiState/ApiErrorMessage.jsx";
 
 export default function Chatbot({ articleId }) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [historyError, setHistoryError] = useState("");
   const chatRef = useRef(null);
   const closeEventSourceRef = useRef(null);
 
@@ -41,6 +45,7 @@ export default function Chatbot({ articleId }) {
       );
       if (cancelled) return;
       setPlaceholder(translatedPlaceholder);
+      setHistoryError("");
 
       const buildFromHistory = (history, greeting) => {
         if (!history?.length) {
@@ -65,20 +70,26 @@ export default function Chatbot({ articleId }) {
         ];
       };
 
-      if (token && articleId) {
-        const history = await getChatsByArticle(articleId);
-        if (cancelled) return;
-        setMessages(buildFromHistory(history, translatedGreeting));
-      } else if (articleId) {
-        const sessionId = getOrCreateAnonymousSessionId();
-        const history = sessionId
-          ? await getAnonymousChatsByArticle(articleId, sessionId)
-          : [];
-        if (cancelled) return;
-        setMessages(buildFromHistory(history, translatedGreeting));
-      } else {
+      try {
+        if (token && articleId) {
+          const history = await getChatsByArticle(articleId);
+          if (cancelled) return;
+          setMessages(buildFromHistory(history, translatedGreeting));
+        } else if (articleId) {
+          const sessionId = getOrCreateAnonymousSessionId();
+          const history = sessionId
+            ? await getAnonymousChatsByArticle(articleId, sessionId)
+            : [];
+          if (cancelled) return;
+          setMessages(buildFromHistory(history, translatedGreeting));
+        } else {
+          if (cancelled) return;
+          setMessages([{ type: "bot", text: translatedGreeting }]);
+        }
+      } catch (error) {
         if (cancelled) return;
         setMessages([{ type: "bot", text: translatedGreeting }]);
+        setHistoryError(getApiErrorMessage(error, "이전 대화를 불러오지 못했습니다."));
       }
     };
 
@@ -159,6 +170,7 @@ export default function Chatbot({ articleId }) {
           <TranslatedText text="비로그인 상태에서는 대화가 짧은 기간(7일) 동안만 일시적으로 유지되며, 로그인하면 계정에 영구 저장됩니다." />
         </div>
       )}
+      <ApiErrorMessage message={historyError} />
       <div className={styles.chatBody} ref={chatRef}>
         {messages.map((msg, index) => {
           if (msg.type === "divider") {
@@ -226,3 +238,7 @@ export default function Chatbot({ articleId }) {
     </div>
   );
 }
+
+Chatbot.propTypes = {
+  articleId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};

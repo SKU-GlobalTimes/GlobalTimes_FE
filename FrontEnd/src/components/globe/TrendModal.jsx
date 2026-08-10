@@ -1,9 +1,11 @@
 import styles from "./TrendModal.module.css";
+import PropTypes from "prop-types";
 import { formatLocal } from "../../util/date";
 import TranslatedText from "../../api/TranslatedText";
 import { useLanguage } from "../../util/LanguageContext.jsx";
+import ApiErrorMessage from "../commons/apiState/ApiErrorMessage.jsx";
 
-const TrendModal = ({ country, trends, timestamp, onSelect, onClose }) => {
+const TrendModal = ({ country, trends, timestamp, errorMessage, onSelect }) => {
   const { language } = useLanguage();
   const dateLocale =
     language === "ja" ? "ja-JP" : language === "ko" ? "ko-KR" : "en-US";
@@ -20,13 +22,17 @@ const TrendModal = ({ country, trends, timestamp, onSelect, onClose }) => {
         </p>
       </div>
 
-      <ul>
-        {trends.map((trend, index) => (
-          <li key={index} onClick={() => onSelect(trend)}>
-            {trend.keyword}
-          </li>
-        ))}
-      </ul>
+      {errorMessage ? (
+        <ApiErrorMessage message={errorMessage} />
+      ) : (
+        <ul>
+          {trends.map((trend, index) => (
+            <li key={index} onClick={() => onSelect(trend)}>
+              {trend.keyword}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <p className={styles.copyright}>
         <TranslatedText text="본 페이지에 표시된 트렌드 데이터는 " />
@@ -44,3 +50,15 @@ const TrendModal = ({ country, trends, timestamp, onSelect, onClose }) => {
 };
 
 export default TrendModal;
+
+TrendModal.propTypes = {
+  country: PropTypes.string.isRequired,
+  trends: PropTypes.arrayOf(
+    PropTypes.shape({
+      keyword: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  timestamp: PropTypes.string,
+  errorMessage: PropTypes.string,
+  onSelect: PropTypes.func.isRequired,
+};

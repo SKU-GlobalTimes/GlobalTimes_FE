@@ -4,9 +4,11 @@ import CursorPagination from "./CursorPagination";
 import TranslatedText from "../../api/TranslatedText";
 import PropTypes from "prop-types";
 import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
+import ApiErrorMessage from "../commons/apiState/ApiErrorMessage.jsx";
 
 export default function ExploreResultsSection({
   loading,
+  error,
   articles,
   pageLabel,
   canPrev,
@@ -49,6 +51,8 @@ export default function ExploreResultsSection({
         <p className={styled["ExploreSection__loading"]}>
           <TranslatedText text="불러오는 중…" />
         </p>
+      ) : error ? (
+        <ApiErrorMessage message={error} onRetry={onFirst} />
       ) : articles.length === 0 ? (
         <p className={styled["ExploreSection__empty"]}>
           <TranslatedText text="조건에 맞는 기사가 없습니다." />
@@ -88,6 +92,7 @@ export default function ExploreResultsSection({
 
 ExploreResultsSection.propTypes = {
   loading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
   articles: PropTypes.arrayOf(PropTypes.object).isRequired,
   pageLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,

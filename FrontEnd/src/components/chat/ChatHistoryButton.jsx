@@ -10,6 +10,8 @@ import TranslatedText from "../../api/TranslatedText.jsx";
 import { useLanguage } from "../../util/LanguageContext.jsx";
 import { useTranslatedLabel } from "../../hooks/useTranslatedLabel.js";
 import { formatLocal } from "../../util/date";
+import { getApiErrorMessage } from "../../api/apiClient";
+import ApiErrorMessage from "../commons/apiState/ApiErrorMessage";
 
 export default function ChatHistoryButton() {
   const { token } = useAuth();
@@ -19,6 +21,7 @@ export default function ChatHistoryButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [chatList, setChatList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const popupRef = useRef(null);
 
   // 팝업 열 때: 로그인 → DB 목록, 비로그인 → Redis 세션 목록
@@ -26,6 +29,7 @@ export default function ChatHistoryButton() {
     if (!isOpen) return;
     const fetchList = async () => {
       setIsLoading(true);
+      setLoadError("");
       try {
         if (token) {
           const data = await getChatList();
@@ -35,6 +39,9 @@ export default function ChatHistoryButton() {
           const data = await getAnonymousChatList(sid);
           setChatList(data);
         }
+      } catch (error) {
+        setChatList([]);
+        setLoadError(getApiErrorMessage(error, "대화 목록을 불러오지 못했습니다."));
       } finally {
         setIsLoading(false);
       }
@@ -72,6 +79,7 @@ export default function ChatHistoryButton() {
             </button>
           </div>
           <div className={styles.popupBody}>
+            <ApiErrorMessage message={loadError} />
             {isLoading && (
               <p className={styles.empty}>
                 <TranslatedText text="불러오는 중..." />

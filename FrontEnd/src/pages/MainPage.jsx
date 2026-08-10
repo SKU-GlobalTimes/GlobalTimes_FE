@@ -4,6 +4,7 @@ import MainNews from "../components/mainPage/MainNews";
 import ExploreResultsSection from "../components/mainPage/ExploreResultsSection";
 import { useState, useCallback } from "react";
 import { getExploreArticles } from "../api/getNewsCardAPI";
+import { getApiErrorMessage } from "../api/apiClient";
 
 const EXPLORE_PAGE_SIZE = 12;
 
@@ -16,6 +17,7 @@ export default function MainPage() {
   const [exploreFilters, setExploreFilters] = useState({});
   const [exploreStack, setExploreStack] = useState([]);
   const [exploreRequestCursor, setExploreRequestCursor] = useState(null);
+  const [exploreError, setExploreError] = useState("");
 
   const applyExploreResponse = useCallback((res) => {
     setExploreArticles(res.articles);
@@ -23,67 +25,82 @@ export default function MainPage() {
     setExploreHasNext(res.hasNext);
   }, []);
 
+  const requestExplore = useCallback(async (params) => {
+    setExploreLoading(true);
+    setExploreError("");
+    try {
+      const res = await getExploreArticles(params);
+      applyExploreResponse(res);
+      return true;
+    } catch (error) {
+      setExploreError(getApiErrorMessage(error, "탐색 결과를 불러오지 못했습니다."));
+      return false;
+    } finally {
+      setExploreLoading(false);
+    }
+  }, [applyExploreResponse]);
+
   const handleExploreApply = useCallback(
     async (filters) => {
-      setExploreLoading(true);
       setExploreActive(true);
       setExploreFilters(filters);
-      const res = await getExploreArticles({
+      const succeeded = await requestExplore({
         ...filters,
         cursor: null,
         size: EXPLORE_PAGE_SIZE,
       });
-      applyExploreResponse(res);
-      setExploreStack([]);
-      setExploreRequestCursor(null);
-      setExploreLoading(false);
+      if (succeeded) {
+        setExploreStack([]);
+        setExploreRequestCursor(null);
+      }
     },
-    [applyExploreResponse],
+    [requestExplore],
   );
 
   const handleExploreFirst = useCallback(async () => {
-    setExploreLoading(true);
-    const res = await getExploreArticles({
+    const succeeded = await requestExplore({
       ...exploreFilters,
       cursor: null,
       size: EXPLORE_PAGE_SIZE,
     });
-    applyExploreResponse(res);
-    setExploreStack([]);
-    setExploreRequestCursor(null);
-    setExploreLoading(false);
-  }, [exploreFilters, applyExploreResponse]);
+    if (succeeded) {
+      setExploreStack([]);
+      setExploreRequestCursor(null);
+    }
+  }, [exploreFilters, requestExplore]);
 
   const handleExploreNext = useCallback(async () => {
     if (!exploreHasNext || exploreNextCursor == null) return;
-    setExploreStack((s) => [...s, exploreRequestCursor]);
-    const res = await getExploreArticles({
+    const succeeded = await requestExplore({
       ...exploreFilters,
       cursor: exploreNextCursor,
       size: EXPLORE_PAGE_SIZE,
     });
-    applyExploreResponse(res);
-    setExploreRequestCursor(exploreNextCursor);
+    if (succeeded) {
+      setExploreStack((s) => [...s, exploreRequestCursor]);
+      setExploreRequestCursor(exploreNextCursor);
+    }
   }, [
     exploreHasNext,
     exploreNextCursor,
     exploreRequestCursor,
     exploreFilters,
-    applyExploreResponse,
+    requestExplore,
   ]);
 
   const handleExplorePrev = useCallback(async () => {
     if (exploreStack.length === 0) return;
     const parentCursor = exploreStack[exploreStack.length - 1];
-    setExploreStack((s) => s.slice(0, -1));
-    const res = await getExploreArticles({
+    const succeeded = await requestExplore({
       ...exploreFilters,
       cursor: parentCursor,
       size: EXPLORE_PAGE_SIZE,
     });
-    applyExploreResponse(res);
-    setExploreRequestCursor(parentCursor);
-  }, [exploreStack, exploreFilters, applyExploreResponse]);
+    if (succeeded) {
+      setExploreStack((s) => s.slice(0, -1));
+      setExploreRequestCursor(parentCursor);
+    }
+  }, [exploreStack, exploreFilters, requestExplore]);
 
   const handleExploreDismiss = useCallback(() => {
     setExploreActive(false);
@@ -93,6 +110,7 @@ export default function MainPage() {
     setExploreFilters({});
     setExploreStack([]);
     setExploreRequestCursor(null);
+    setExploreError("");
   }, []);
 
   const explorePageLabel = exploreStack.length + 1;
@@ -108,6 +126,7 @@ export default function MainPage() {
       {exploreActive && (
         <ExploreResultsSection
           loading={exploreLoading}
+          error={exploreError}
           articles={exploreArticles}
           pageLabel={explorePageLabel}
           canPrev={canExplorePrev}

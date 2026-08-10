@@ -1,36 +1,21 @@
-import axios from "axios";
+import { apiClient } from "./apiClient";
 
 export const getNewsDetails = async (articleId) => {
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_API}/api/news/detail?id=${articleId}`);
-        return response.data;
-    } catch (error) {
-        console.error("뉴스 상세 정보를 불러오는 데 실패했습니다.", error);
-        return null;
-    }
+    const response = await apiClient.get("/api/news/detail", {
+        params: { id: articleId },
+    });
+    return response.data;
 };
 
 export const getNewsDetailsSummary = async (articleId) => {
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_API}/api/ai/${articleId}/summary`);
-        return response.data;
-    } catch (error) {
-        console.error("뉴스 요약본을 불러오는 데 실패했습니다.", error);
-        return null;
-    }
+    const response = await apiClient.get(`/api/ai/${articleId}/summary`);
+    return response.data;
 };
 
 /** 국가별 시각(Perspectives): 키워드 기반 유사 기사를 국가 코드별로 그룹 */
 export const getNewsPerspectives = async (articleId) => {
-    try {
-        const response = await axios.get(
-            `${import.meta.env.VITE_APP_API}/api/news/${articleId}/perspectives`,
-        );
-        return response.data;
-    } catch (error) {
-        console.error("국가별 관점 기사를 불러오는 데 실패했습니다.", error);
-        return null;
-    }
+    const response = await apiClient.get(`/api/news/${articleId}/perspectives`);
+    return response.data;
 };
 
 export const getNewsDetailsAsk = (
