@@ -13,11 +13,15 @@
 
 ## In Progress
 
-### #100 Frontend 취약 의존성 단계적 업데이트 및 E2E 회귀 검증
+- 없음
+
+## Recently Merged
+
+### #100/#101 Frontend 취약 의존성 단계적 업데이트 및 E2E 회귀 검증
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/100
 - PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/101
-- Branch: `fix/100-frontend-dependency-security`
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/5210004b85f337c22d6902745007f3090a92e709
 - 목적: 오래된 npm 의존성에 누적된 수정 가능한 보안 경고를 제거하고, 업데이트 이후 기존 Frontend-Backend 연동에 회귀가 없는지 검증합니다.
 - 초기 기준선:
   - GitHub Dependabot: Critical 1, High 35, Medium 37, Low 4
@@ -35,9 +39,8 @@
   - 전체 lint는 변경 전과 동일한 기존 기준선 `17 errors / 4 warnings`이며 신규 회귀 없음
   - 실제 Frontend → Backend → MySQL/Redis 익명·인증 Playwright 2개 시나리오 통과 (`36.7s`)
   - Full-stack orchestration과 container/network cleanup 완료 (`106.9s`)
-  - GitHub `ubuntu-latest` Node `20.19.0` Full Stack E2E 성공 (`1m 13s`, run `31520794337`)
-
-## Recently Merged
+  - 최종 HEAD GitHub `ubuntu-latest` Node `20.19.0` Full Stack E2E 성공 (`1m 11s`, run `31520997000`)
+  - AI Reviewer `MERGE_READY`, Blocking 없음 확인 후 사용자 승인으로 squash merge
 
 ### #98/#99 인증 사용자 스크랩·채팅 실제 연동 E2E
 
