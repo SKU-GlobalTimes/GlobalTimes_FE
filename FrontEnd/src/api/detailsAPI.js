@@ -39,8 +39,10 @@ export const getNewsDetailsAsk = (
     const eventSource = new EventSource(url);
 
     let previousText = "";
+    let settled = false;
 
     eventSource.onmessage = (event) => {
+        if (settled) return;
         const newText = event.data;
         const newChunk = newText.slice(previousText.length);
         previousText = newText;
@@ -48,15 +50,22 @@ export const getNewsDetailsAsk = (
     };
 
     eventSource.onerror = (error) => {
+        if (settled) return;
+        settled = true;
         console.error("SSE 연결 오류:", error);
         eventSource.close();
         if (onError) onError(error);
     };
 
     eventSource.addEventListener("end", () => {
+        if (settled) return;
+        settled = true;
         eventSource.close();
         if (onComplete) onComplete();
     });
 
-    return () => eventSource.close();
+    return () => {
+        settled = true;
+        eventSource.close();
+    };
 };

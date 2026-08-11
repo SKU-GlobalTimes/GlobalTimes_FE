@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "./Chatbot.module.css";
-import { Send } from "lucide-react";
+import { RotateCcw, Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { getNewsDetailsAsk } from "../../api/detailsAPI.js";
 import {
@@ -21,9 +21,12 @@ export default function Chatbot({ articleId }) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [activeResponseId, setActiveResponseId] = useState(null);
   const [historyError, setHistoryError] = useState("");
   const chatRef = useRef(null);
   const closeEventSourceRef = useRef(null);
+  const requestSequenceRef = useRef(0);
+  const responseSequenceRef = useRef(0);
 
   const { language } = useLanguage();
   const { token } = useAuth();
@@ -100,58 +103,113 @@ export default function Chatbot({ articleId }) {
   }, [articleId, language, token]);
 
   useEffect(() => {
+    setIsStreaming(false);
+    setActiveResponseId(null);
     return () => {
-      if (closeEventSourceRef.current) closeEventSourceRef.current();
+      requestSequenceRef.current += 1;
+      if (closeEventSourceRef.current) {
+        closeEventSourceRef.current();
+        closeEventSourceRef.current = null;
+      }
     };
-  }, []);
+  }, [articleId]);
 
-  const handleSend = () => {
-    if (!input.trim() || isStreaming) return;
+  const closeCurrentStream = () => {
+    if (!closeEventSourceRef.current) return;
+    closeEventSourceRef.current();
+    closeEventSourceRef.current = null;
+  };
 
-    const userText = input;
-    const newMessages = [...messages, { type: "user", text: userText }];
-    setMessages([...newMessages, { type: "bot", text: "" }]);
-    setInput("");
+  const updateResponse = (responseId, updater) => {
+    setMessages((prev) =>
+      prev.map((message) =>
+        message.id === responseId ? updater(message) : message,
+      ),
+    );
+  };
+
+  const startRequest = (question, responseId) => {
+    closeCurrentStream();
+    const requestSequence = requestSequenceRef.current + 1;
+    requestSequenceRef.current = requestSequence;
     setIsStreaming(true);
+    setActiveResponseId(responseId);
+
+    const finishRequest = () => {
+      if (requestSequenceRef.current !== requestSequence) return false;
+      closeEventSourceRef.current = null;
+      setIsStreaming(false);
+      setActiveResponseId(null);
+      return true;
+    };
+
+    const failRequest = () => {
+      if (!finishRequest()) return;
+      updateResponse(responseId, (message) => ({
+        ...message,
+        fetchError: true,
+        retryQuestion: question,
+      }));
+    };
 
     const anonymousSessionId = token ? null : getOrCreateAnonymousSessionId();
 
-    const close = getNewsDetailsAsk(
-      articleId,
-      userText,
-      (chunk) => {
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            ...updated[updated.length - 1],
-            text: updated[updated.length - 1].text + chunk,
-          };
-          return updated;
-        });
-      },
-      () => {
-        setIsStreaming(false);
-      },
-      (error) => {
-        console.error("스트리밍 에러:", error);
-        setIsStreaming(false);
-        setMessages((prev) => {
-          const updated = [...prev];
-          if (updated[updated.length - 1].text === "") {
-            updated[updated.length - 1] = {
-              type: "bot",
-              text: "",
-              fetchError: true,
-            };
-          }
-          return updated;
-        });
-      },
-      token,
-      anonymousSessionId,
-    );
+    try {
+      const close = getNewsDetailsAsk(
+        articleId,
+        question,
+        (chunk) => {
+          if (requestSequenceRef.current !== requestSequence) return;
+          updateResponse(responseId, (message) => ({
+            ...message,
+            text: message.text + chunk,
+          }));
+        },
+        finishRequest,
+        (error) => {
+          console.error("스트리밍 에러:", error);
+          failRequest();
+        },
+        token,
+        anonymousSessionId,
+      );
 
-    closeEventSourceRef.current = close;
+      closeEventSourceRef.current = close;
+    } catch (error) {
+      console.error("SSE 연결 생성 오류:", error);
+      failRequest();
+    }
+  };
+
+  const handleSend = () => {
+    const question = input.trim();
+    if (!question || isStreaming) return;
+
+    const responseId = `stream-${responseSequenceRef.current + 1}`;
+    responseSequenceRef.current += 1;
+    setMessages((prev) => [
+      ...prev,
+      { type: "user", text: question },
+      {
+        id: responseId,
+        type: "bot",
+        text: "",
+        fetchError: false,
+        retryQuestion: question,
+      },
+    ]);
+    setInput("");
+    startRequest(question, responseId);
+  };
+
+  const handleRetry = (message) => {
+    if (isStreaming || !message.id || !message.retryQuestion) return;
+    updateResponse(message.id, (current) => ({
+      ...current,
+      text: "",
+      fetchError: false,
+    }));
+    startRequest(message.retryQuestion, message.id);
   };
 
   useEffect(() => {
@@ -186,41 +244,48 @@ export default function Chatbot({ articleId }) {
               </div>
             );
           }
-          if (msg.type === "bot" && msg.fetchError) {
-            return (
-              <div key={index} className={styles.botMessage}>
-                <TranslatedText text="응답을 가져오는 데 실패했습니다." />
-              </div>
-            );
-          }
           return (
             <div
-              key={index}
+              key={msg.id ?? index}
               className={
                 msg.type === "bot" ? styles.botMessage : styles.userMessage
               }
             >
               {msg.type === "bot" ? (
-                <div className={styles.markdown}>
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
-                </div>
+                <>
+                  {msg.text && (
+                    <div className={styles.markdown}>
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </div>
+                  )}
+                  {msg.id === activeResponseId && !msg.text && !msg.fetchError && (
+                    <span className={styles.typingIndicator}>
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                  )}
+                  {msg.fetchError && (
+                    <div className={styles.streamError} role="alert">
+                      <TranslatedText text="응답 연결이 중단되었습니다." />
+                      <button
+                        type="button"
+                        onClick={() => handleRetry(msg)}
+                        disabled={isStreaming}
+                        title="같은 질문 다시 시도"
+                      >
+                        <RotateCcw size={15} aria-hidden />
+                        <TranslatedText text="다시 시도" />
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 msg.text
               )}
             </div>
           );
         })}
-        {isStreaming &&
-          messages[messages.length - 1]?.text === "" &&
-          !messages[messages.length - 1]?.fetchError && (
-            <div className={styles.botMessage}>
-              <span className={styles.typingIndicator}>
-                <span />
-                <span />
-                <span />
-              </span>
-            </div>
-          )}
       </div>
       <div className={styles.chatInput}>
         <input
@@ -231,8 +296,14 @@ export default function Chatbot({ articleId }) {
           disabled={isStreaming}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
-        <button onClick={handleSend} disabled={isStreaming}>
-          <Send size={20} />
+        <button
+          type="button"
+          onClick={handleSend}
+          disabled={isStreaming}
+          title="질문 보내기"
+          aria-label="질문 보내기"
+        >
+          <Send size={20} aria-hidden />
         </button>
       </div>
     </div>

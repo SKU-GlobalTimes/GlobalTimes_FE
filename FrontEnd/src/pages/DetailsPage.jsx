@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getNewsDetails, getNewsDetailsSummary } from "../api/detailsAPI";
 import styles from "./DetailsPage.module.css";
@@ -19,6 +19,23 @@ export default function DetailsPage() {
   const [detailError, setDetailError] = useState("");
   const [summaryError, setSummaryError] = useState("");
 
+  const fetchSummary = useCallback(async () => {
+    if (!id) return;
+
+    setIsSummaryLoading(true);
+    setSummaryError("");
+    try {
+      const summaryRes = await getNewsDetailsSummary(id);
+      if (summaryRes && typeof summaryRes.data === "string") {
+        setContent(summaryRes.data);
+      }
+    } catch (error) {
+      setSummaryError(getApiErrorMessage(error, "기사 요약을 불러오지 못했습니다."));
+    } finally {
+      setIsSummaryLoading(false);
+    }
+  }, [id]);
+
   useEffect(() => {
     const fetchDetail = async () => {
       setIsLoading(true);
@@ -36,26 +53,11 @@ export default function DetailsPage() {
       }
     };
 
-    const fetchSummary = async () => {
-      setIsSummaryLoading(true);
-      setSummaryError("");
-      try {
-        const summaryRes = await getNewsDetailsSummary(id);
-        if (summaryRes && typeof summaryRes.data === "string") {
-          setContent(summaryRes.data);
-        }
-      } catch (error) {
-        setSummaryError(getApiErrorMessage(error, "기사 요약을 불러오지 못했습니다."));
-      } finally {
-        setIsSummaryLoading(false);
-      }
-    };
-
     if (id) {
       fetchDetail();
       fetchSummary();
     }
-  }, [id]);
+  }, [id, fetchSummary]);
 
   return (
     <div className={styles.detailsPage}>
@@ -72,6 +74,7 @@ export default function DetailsPage() {
                 isLoading={isLoading}
                 isSummaryLoading={isSummaryLoading}
                 summaryError={summaryError}
+                onSummaryRetry={fetchSummary}
               />
               <PerspectivesSection articleId={id} />
               <Chatbot articleId={id} />
