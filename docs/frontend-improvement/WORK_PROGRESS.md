@@ -13,6 +13,29 @@
 
 ## In Progress
 
+### #98 인증 사용자 스크랩·채팅 실제 연동 E2E
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/98
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/99
+- Branch: `test/98-authenticated-user-e2e`
+- 목적: OAuth 성공 이후 JWT 인증 사용자의 스크랩·AI 채팅 핵심 흐름을 실제 Frontend → Backend → MySQL 경로로 자동 검증합니다.
+- 범위:
+  - E2E user fixture와 실행 시점 JWT 생성
+  - `/api/user/me`와 Backend JWT filter 실제 통과
+  - 기사 스크랩 저장·상태 조회·마이 스크랩 화면 반영
+  - 로그인 SSE 질의·DB 채팅 history 저장·히스토리 팝업 노출
+- Mock 경계: 실제 Google OAuth와 Gemini·화면 번역·Perspectives 품질 검증은 제외합니다.
+- Overengineering 판단: 기존 #96 Playwright orchestration을 확장하며 테스트 전용 Backend endpoint나 신규 인증 도구를 추가하지 않습니다.
+- 로컬 검증 중 Docker readiness probe가 Windows에서 반복적으로 console 창을 생성하는 문제를 발견해 hidden process, timeout wait, dispose 경계를 보강했습니다.
+- 인증 GET은 성공하지만 스크랩 POST가 403인 원인을 E2E `127.0.0.1` Origin과 Backend 허용 `localhost` Origin 불일치로 확인해 브라우저 base URL을 `localhost:5173`으로 정렬했습니다.
+- 로컬 검증:
+  - 인증·익명 Playwright 2개 시나리오 통과 (`11.1s`)
+  - 전체 Backend·MySQL·Redis orchestration과 cleanup 완료 (`71.3s`)
+  - JWT `/api/user/me`, 스크랩 저장·목록 재조회, 로그인 SSE·DB chat history·히스토리 팝업 노출 확인
+  - Docker readiness console 창 및 CLI process 누적 없이 완료
+  - Production build, 변경 E2E 파일 ESLint, PowerShell parser와 `git diff --check` 통과
+  - GitHub `ubuntu-latest` Full Stack E2E 성공 (`1m 34s`, run `31517789173`)
+
 ## Recently Merged
 
 ### #96/#97 Frontend-Backend 실제 연동 Playwright 자동화

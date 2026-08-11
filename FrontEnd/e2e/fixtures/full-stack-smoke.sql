@@ -2,6 +2,19 @@ INSERT INTO source (source_id, source_api_id, source_name)
 VALUES (990096, 'e2e-source', 'E2E Press')
 ON DUPLICATE KEY UPDATE source_name = VALUES(source_name);
 
+INSERT INTO users (user_id, created_at, email, nickname, provider, provider_id)
+VALUES (
+  990098,
+  '2026-08-12 00:00:00',
+  'authenticated-e2e@example.com',
+  'Authenticated E2E User',
+  'e2e',
+  'authenticated-e2e-user'
+)
+ON DUPLICATE KEY UPDATE
+  email = VALUES(email),
+  nickname = VALUES(nickname);
+
 INSERT INTO article (
   article_id, author, category, content, country, crawled_content,
   description, published_at, summary, title, url, url_to_image,

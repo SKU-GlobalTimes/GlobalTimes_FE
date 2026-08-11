@@ -19,6 +19,13 @@ if (-not $BackendPath) {
 $BackendPath = (Resolve-Path $BackendPath).Path
 
 New-Item -ItemType Directory -Force -Path $artifactPath | Out-Null
+$dockerContext = ""
+if ($onWindows) {
+    $dockerConfigPath = Join-Path $artifactPath "docker-config"
+    New-Item -ItemType Directory -Force -Path $dockerConfigPath | Out-Null
+    $env:DOCKER_CONFIG = $dockerConfigPath
+    $env:DOCKER_HOST = "npipe:////./pipe/dockerDesktopLinuxEngine"
+}
 $backendLog = Join-Path $artifactPath "backend.log"
 $backendErrorLog = Join-Path $artifactPath "backend-error.log"
 $frontendLog = Join-Path $artifactPath "frontend.log"
@@ -66,18 +73,29 @@ function Test-DockerReady([string]$Context = "") {
 
     $probeOut = Join-Path $artifactPath "docker-probe.out.log"
     $probeError = Join-Path $artifactPath "docker-probe.error.log"
-    $probe = Start-Process -FilePath $dockerCommand `
-        -ArgumentList $arguments `
-        -RedirectStandardOutput $probeOut `
-        -RedirectStandardError $probeError `
-        -PassThru
-    if (-not $probe.WaitForExit(5000)) {
-        $probe.Kill()
-        return $false
+    $startProcessArgs = @{
+        FilePath = $dockerCommand
+        ArgumentList = $arguments
+        RedirectStandardOutput = $probeOut
+        RedirectStandardError = $probeError
+        PassThru = $true
     }
-    $probe.WaitForExit()
-    $version = Get-Content $probeOut -Raw -ErrorAction SilentlyContinue
-    return -not [string]::IsNullOrWhiteSpace($version)
+    if ($onWindows) {
+        $startProcessArgs.WindowStyle = "Hidden"
+    }
+
+    $probe = Start-Process @startProcessArgs
+    try {
+        if (-not $probe.WaitForExit(5000)) {
+            $probe.Kill()
+            $probe.WaitForExit()
+            return $false
+        }
+        $version = Get-Content $probeOut -Raw -ErrorAction SilentlyContinue
+        return -not [string]::IsNullOrWhiteSpace($version)
+    } finally {
+        $probe.Dispose()
+    }
 }
 
 function Stop-Tree($Process) {
@@ -97,14 +115,13 @@ try {
         }
     }
 
-    $dockerContext = if ($onWindows) { "desktop-linux" } else { "" }
     if (-not (Test-DockerReady $dockerContext) -and $onWindows) {
         $dockerDesktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
         if (-not (Test-Path $dockerDesktop)) { throw "Docker Desktop is not installed." }
         Start-Process -FilePath $dockerDesktop -WindowStyle Hidden | Out-Null
-        for ($i = 0; $i -lt 60; $i++) {
-            if (Test-DockerReady "desktop-linux") {
-                & docker context use desktop-linux | Out-Null
+        $dockerDeadline = (Get-Date).AddSeconds(120)
+        while ((Get-Date) -lt $dockerDeadline) {
+            if (Test-DockerReady $dockerContext) {
                 break
             }
             Start-Sleep -Seconds 3
@@ -170,7 +187,7 @@ try {
         -RedirectStandardOutput $frontendLog `
         -RedirectStandardError $frontendErrorLog `
         -PassThru
-    Wait-Http "http://127.0.0.1:5173" 90
+    Wait-Http "http://localhost:5173" 90
 
     Push-Location $frontendPath
     try {
@@ -179,7 +196,7 @@ try {
             & $npxCommand playwright install chromium
             if ($LASTEXITCODE -ne 0) { throw "Failed to install Playwright Chromium." }
         }
-        $env:E2E_BASE_URL = "http://127.0.0.1:5173"
+        $env:E2E_BASE_URL = "http://localhost:5173"
         & $npxCommand playwright test
         if ($LASTEXITCODE -ne 0) { throw "Playwright E2E failed." }
     } finally {
