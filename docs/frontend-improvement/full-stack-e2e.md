@@ -69,3 +69,13 @@ Frontend와 Backend 저장소가 같은 상위 디렉터리에 있을 때 Fronte
 Reviewer 검토에서 메시지 내용만으로 대화 시작 여부를 판별하면 기사 A에서 B로 이동했을 때 A의 메시지가 B의 history 반영을 막을 수 있다는 회귀가 확인되었다. 이를 초기화 시점의 conversation revision과 실제 질문 시작 시점의 revision 비교로 변경했다. 기사·언어·인증 identity가 바뀌면 기존 메시지를 비우고 새 history를 반영하되, 해당 초기화가 진행되는 동안 사용자가 질문했다면 늦은 history만 폐기한다. E2E는 새로고침 없이 두 번째 기사로 이동해 첫 기사 질문이 남지 않는 조건도 검증한다.
 
 Compose project 이름은 실행 프로세스 ID를 포함해 실행별로 분리한다. 또한 해당 실행이 `docker compose up`을 시작한 경우에만 같은 project의 log 수집과 `down -v`를 수행한다. 따라서 이미 사용 중인 port를 발견해 두 번째 실행이 시작 전에 실패하더라도 먼저 실행 중인 E2E의 container와 volume을 제거하지 않는다.
+
+## 인증 사용자 시나리오
+
+실제 Google OAuth 로그인은 외부 계정과 redirect 정책에 의존하므로 E2E 범위에서 제외한다. 대신 fixture 사용자와 실행 시점의 E2E `JWT_SECRET`으로 10분 유효 JWT를 생성한다. 저장소에는 완성된 token을 기록하지 않는다.
+
+브라우저가 localStorage의 token을 읽은 뒤 실제 Backend `JwtAuthenticationFilter`와 Security matcher를 통과한다. `/api/user/me` 인증, 기사 스크랩 저장과 `/api/user/scraps` 재조회, 로그인 AI SSE 질의, MySQL `chat_history` 조회와 채팅 히스토리 팝업 노출을 순서대로 검증한다. Gemini와 화면 번역 Mock 경계는 익명 시나리오와 동일하다.
+
+Windows에서는 E2E artifact 아래의 임시 Docker config와 Docker Desktop Linux named pipe를 사용해 사용자 전역 Docker config 권한과 context 전환에 의존하지 않는다. readiness probe는 숨김 process로 실행하며 각 probe는 5초 timeout 뒤 종료 완료를 기다리고 process handle을 dispose한다. 전체 준비 대기도 2분으로 제한해 Docker daemon 응답이 늦어도 `docker.exe` console 창과 process가 누적되거나 대기가 과도하게 길어지지 않는다.
+
+브라우저 base URL은 Backend CORS에 등록된 `http://localhost:5173`을 사용한다. 같은 로컬 서버라도 `127.0.0.1`은 다른 Origin이므로 GET에는 드러나지 않던 CORS 불일치가 Origin header를 포함한 스크랩 POST에서 403으로 나타날 수 있다.
