@@ -17,3 +17,7 @@
 |🚀|Deploy|Deploying stuff|
 |🔄️|Rename|파일 혹은 폴더명을 수정하거나 옮기는 작업만인 경우|
 |🪚|Remove|파일을 삭제하는 작업만 수행한 경우|
+
+### Full-stack E2E
+
+Frontend, Backend, MySQL, Redis와 Playwright 브라우저를 한 번에 실행하는 방법은 [Full-stack E2E 문서](../docs/frontend-improvement/full-stack-e2e.md)를 참고합니다.
