@@ -18,4 +18,10 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  overrides: [
+    {
+      files: ['playwright.config.js', 'e2e/**/*.js'],
+      env: { node: true, es2022: true },
+    },
+  ],
 }

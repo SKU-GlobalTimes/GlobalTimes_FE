@@ -27,6 +27,7 @@ export default function Chatbot({ articleId }) {
   const closeEventSourceRef = useRef(null);
   const requestSequenceRef = useRef(0);
   const responseSequenceRef = useRef(0);
+  const conversationRevisionRef = useRef(0);
 
   const { language } = useLanguage();
   const { token } = useAuth();
@@ -36,6 +37,10 @@ export default function Chatbot({ articleId }) {
   // 인사말 번역 + 로그인·비로그인 이전 대화 내역 (비로그인: Redis + anonymousSession)
   useEffect(() => {
     let cancelled = false;
+    const initialConversationRevision = conversationRevisionRef.current;
+
+    setMessages([]);
+    setHistoryError("");
 
     const init = async () => {
       const translatedGreeting = await fetchTranslatedText(
@@ -46,9 +51,11 @@ export default function Chatbot({ articleId }) {
         "질문을 입력하세요...",
         language,
       );
-      if (cancelled) return;
+      if (
+        cancelled ||
+        conversationRevisionRef.current !== initialConversationRevision
+      ) return;
       setPlaceholder(translatedPlaceholder);
-      setHistoryError("");
 
       const buildFromHistory = (history, greeting) => {
         if (!history?.length) {
@@ -76,21 +83,33 @@ export default function Chatbot({ articleId }) {
       try {
         if (token && articleId) {
           const history = await getChatsByArticle(articleId);
-          if (cancelled) return;
+          if (
+            cancelled ||
+            conversationRevisionRef.current !== initialConversationRevision
+          ) return;
           setMessages(buildFromHistory(history, translatedGreeting));
         } else if (articleId) {
           const sessionId = getOrCreateAnonymousSessionId();
           const history = sessionId
             ? await getAnonymousChatsByArticle(articleId, sessionId)
             : [];
-          if (cancelled) return;
+          if (
+            cancelled ||
+            conversationRevisionRef.current !== initialConversationRevision
+          ) return;
           setMessages(buildFromHistory(history, translatedGreeting));
         } else {
-          if (cancelled) return;
+          if (
+            cancelled ||
+            conversationRevisionRef.current !== initialConversationRevision
+          ) return;
           setMessages([{ type: "bot", text: translatedGreeting }]);
         }
       } catch (error) {
-        if (cancelled) return;
+        if (
+          cancelled ||
+          conversationRevisionRef.current !== initialConversationRevision
+        ) return;
         setMessages([{ type: "bot", text: translatedGreeting }]);
         setHistoryError(getApiErrorMessage(error, "이전 대화를 불러오지 못했습니다."));
       }
@@ -187,6 +206,7 @@ export default function Chatbot({ articleId }) {
 
     const responseId = `stream-${responseSequenceRef.current + 1}`;
     responseSequenceRef.current += 1;
+    conversationRevisionRef.current += 1;
     setMessages((prev) => [
       ...prev,
       { type: "user", text: question },
