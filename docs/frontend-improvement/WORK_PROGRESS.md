@@ -13,7 +13,31 @@
 
 ## In Progress
 
-- 없음
+### #102 다국어 검색·Perspectives 실제 Backend 연동 E2E
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/102
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/103
+- Branch: `test/102-search-perspectives-e2e`
+- 목적: Backend Phase 1의 번역 cache·MySQL FULLTEXT·Perspectives 국가 그룹·Redis cache 계약을 실제 Frontend 화면까지 자동 검증합니다.
+- 실제 경로:
+  - 한국어 검색 입력 → Backend `/api/search` → Redis 번역 cache hit → MySQL FULLTEXT 원문·번역어 검색
+  - 한국 기준 기사 상세 → Backend `/api/news/{id}/perspectives` → 국가별 관련 기사 계산·Redis cache 저장과 warm 재조회
+  - Perspectives 미국 기사 카드 → 실제 상세 API와 client-side route 이동
+- Fixture·Mock 경계:
+  - MySQL에 동일 이슈의 한국·미국·일본 기사와 언론사 fixture를 적재합니다.
+  - Backend 번역은 Redis에 미리 넣은 고정 결과를 사용해 실제 `TranslationService` cache 경로를 통과하며 Google Translation API는 호출하지 않습니다.
+  - 브라우저 UI 번역과 Gemini upstream만 기존처럼 Mock하고 검색·FULLTEXT·Perspectives·Redis는 실제 경로를 사용합니다.
+- Overengineering 판단: 신규 Backend API나 테스트 프레임워크 없이 기존 Playwright·MySQL·Redis orchestration을 확장했습니다.
+- 연동 중 발견한 문제:
+  - Windows PowerShell native stdin으로 SQL을 전달하면 한글이 `????`로 손상되어 `docker compose cp` 후 container 내부 mysql client로 적재하도록 변경했습니다.
+  - CSS animated placeholder는 실제 input `placeholder` 속성이 아니므로 Playwright textbox role을 사용했습니다.
+  - 같은 관련 기사가 Perspectives와 최근기사에 함께 노출되어 strict locator를 button 카드로 한정했습니다.
+  - 첫 Ubuntu Runner에서 Docker probe가 순간 실패하자 Linux는 재시도 없이 종료되어, Windows·Linux 모두 최대 120초 bounded readiness retry를 사용하도록 보완했습니다.
+- 검증 결과:
+  - 익명·인증·검색/Perspectives Playwright 3개 시나리오 통과 (`13.6s`)
+  - 전체 Backend·MySQL·Redis orchestration과 cache key 확인·cleanup 완료 (`71.0s`)
+  - Vite 7 Production build 통과 (`2,338 modules`, `7.09s`)
+  - 신규 E2E ESLint, PowerShell parser와 `git diff --check` 통과
 
 ## Recently Merged
 
