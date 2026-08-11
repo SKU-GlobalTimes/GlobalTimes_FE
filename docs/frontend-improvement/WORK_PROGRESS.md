@@ -13,7 +13,29 @@
 
 ## In Progress
 
-- 없음
+### #100 Frontend 취약 의존성 단계적 업데이트 및 E2E 회귀 검증
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/100
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/101
+- Branch: `fix/100-frontend-dependency-security`
+- 목적: 오래된 npm 의존성에 누적된 수정 가능한 보안 경고를 제거하고, 업데이트 이후 기존 Frontend-Backend 연동에 회귀가 없는지 검증합니다.
+- 초기 기준선:
+  - GitHub Dependabot: Critical 1, High 35, Medium 37, Low 4
+  - 로컬 `npm audit`: Critical 1, High 13, Moderate 5, Low 1로 취약 패키지 20개
+  - Critical 경로: `axios 1.8.4 → form-data 4.0.2`
+- 변경 범위:
+  - Axios `1.8.4 → 1.19.0`, React Router DOM `7.4.0 → 7.18.2`
+  - Vite `5.4.15 → 7.3.6`, React plugin `4.3.4 → 5.1.4`
+  - Vite 7 요구사항에 맞춰 프로젝트 Node 범위를 `^20.19.0 || >=22.12.0`, GitHub Actions를 `20.19.0`으로 정렬
+  - `react-loader-spinner`의 취약 PostCSS 전이 경로는 허용 범위의 `styled-components 6.5.2` override로 제거
+- Overengineering 판단: 보안 수정과 무관한 React 19, ESLint 10, Vite 8 및 전체 의존성 최신화는 제외했습니다.
+- 검증 결과:
+  - `npm ci` 재현 설치 및 `npm audit --audit-level=low` 통과 (`20 → 0`)
+  - Vite 7 Production build 통과 (`2,338 modules`, `14.09s`)
+  - 전체 lint는 변경 전과 동일한 기존 기준선 `17 errors / 4 warnings`이며 신규 회귀 없음
+  - 실제 Frontend → Backend → MySQL/Redis 익명·인증 Playwright 2개 시나리오 통과 (`36.7s`)
+  - Full-stack orchestration과 container/network cleanup 완료 (`106.9s`)
+  - GitHub `ubuntu-latest` Node `20.19.0` Full Stack E2E 성공 (`1m 13s`, run `31520794337`)
 
 ## Recently Merged
 
