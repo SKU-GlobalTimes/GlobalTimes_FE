@@ -137,6 +137,42 @@
     font-size: 0.9em;
 }
 
+.streamError {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    color: #a22a2a;
+    font-size: 13px;
+}
+
+.markdown + .streamError {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #d8b6b6;
+}
+
+.streamError button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #a22a2a;
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: #8f2020;
+    background: #fff;
+    cursor: pointer;
+}
+
+.streamError button:hover:not(:disabled) {
+    background: #fff1f1;
+}
+
+.streamError button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
 .chatInput input:disabled {
     background: #f0f0f0;
     cursor: not-allowed;

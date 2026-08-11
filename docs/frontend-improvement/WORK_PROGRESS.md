@@ -13,9 +13,36 @@
 
 ## In Progress
 
-없음
+- 없음
 
 ## Recently Merged
+
+### #94/#95 Backend AI 요약·질의 종료 및 실패 재시도 UX 연동
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/94
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/95
+- Backend 연동:
+  - Backend #245/PR #246에서 추가한 named SSE `end` 이벤트를 정상 완료 신호로 소비합니다.
+  - Backend 요약 API의 `502/503/504` 메시지를 유지하면서 사용자가 직접 재시도할 수 있게 연결합니다.
+- 연동 중 발견한 Frontend 문제:
+  - 완료·오류 뒤 EventSource 참조가 정리되지 않았습니다.
+  - 요약 오류 UI에 재시도 동작이 없었습니다.
+  - SSE 실패 질문이 답변 상태에 보존되지 않아 같은 질문을 다시 입력해야 했습니다.
+- 해결 범위:
+  - SSE 완료·오류·재요청의 단일 종료 처리와 오래된 callback 차단
+  - 요약 수동 재시도와 실패 질문의 위치 기반 재시도
+  - Mock API/SSE 브라우저 검증과 가능한 경우 실제 Backend 연동 확인
+- 검증 결과:
+  - Mock 요약 `503 → 수동 재시도 200`과 오류 UI 제거 확인
+  - Mock SSE `503 → 동일 질문 재시도 → data chunk → event: end` 정상 완료 확인
+  - 재시도 후 사용자 질문 DOM 1건 유지, 입력 버튼 재활성화, 실패 버튼 제거 확인
+  - `npm run build`와 변경 JavaScript·JSX ESLint 통과
+  - 전체 `npm run lint`는 변경 파일과 무관한 기존 기준선 `17 errors / 4 warnings`로 실패
+  - Docker Desktop의 `desktop-linux` context에서 MySQL·Redis를 기동하고 Frontend `5173` proxy → Backend `8080` → 실제 DB/Redis 경로 확인
+  - 실제 기사 상세·요약·최근 기사 응답이 화면 DOM에 렌더링되는지 확인
+  - Gemini만 로컬 Mock으로 대체한 실제 Backend SSE에서 `data` → named `event: end`, `data: completed` wire 응답 확인
+  - 동일 익명 세션의 Redis 이력 조회에서 질의·응답 저장 결과 확인
+- 범위 제외: 신규 AI 기능, 자동 무한 재시도, React Query·전역 상태, 신규 SSE 라이브러리와 Backend API 추가 변경
 
 ### #92/#93 Backend API 주소·인증·오류 응답 처리 통합
 

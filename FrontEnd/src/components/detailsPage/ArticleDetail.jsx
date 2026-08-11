@@ -29,6 +29,7 @@ export default function ArticleDetail({
   isLoading,
   isSummaryLoading,
   summaryError,
+  onSummaryRetry,
 }) {
   const articleId = Number(id);
   const { title, author, sourceName, publishedAt, viewCount, urlToImage } =
@@ -241,7 +242,7 @@ export default function ArticleDetail({
           visible={true}
         />
       ) : summaryError ? (
-        <ApiErrorMessage message={summaryError} />
+        <ApiErrorMessage message={summaryError} onRetry={onSummaryRetry} />
       ) : content ? (
         <div className={styles.content}>
           <ReactMarkdown>{translatedMarkdown}</ReactMarkdown>
@@ -269,4 +270,5 @@ ArticleDetail.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   isSummaryLoading: PropTypes.bool.isRequired,
   summaryError: PropTypes.string,
+  onSummaryRetry: PropTypes.func.isRequired,
 };
