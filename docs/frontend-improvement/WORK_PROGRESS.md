@@ -13,10 +13,13 @@
 
 ## In Progress
 
-### #96 Frontend-Backend 실제 연동 Playwright 자동화
+## Recently Merged
+
+### #96/#97 Frontend-Backend 실제 연동 Playwright 자동화
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/96
-- Branch: `test/96-full-stack-playwright-e2e`
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/97
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/cc8f31146b07105f9d0b195b511dab9df549a3cf
 - 목적: 수동 Frontend `5173` → Backend `8080` → MySQL/Redis 검증을 로컬 한 명령과 GitHub Runner에서 재현합니다.
 - 실제 경로:
   - 별도 MySQL `13306`·Redis `16379`와 일회성 volume
@@ -25,9 +28,8 @@
 - Mock 경계: Gemini, 브라우저 번역과 범위 밖 Perspectives만 대체하고 실제 외부 API·OAuth·수집 scheduler는 호출하지 않습니다.
 - 연동 중 발견한 Frontend 문제:
   - 초기 채팅 이력 응답이 늦게 도착하면 이미 시작된 질문과 SSE 답변 상태를 덮어쓸 수 있었습니다.
-  - 사용자가 대화를 시작한 뒤에는 늦은 초기화 결과가 현재 메시지를 교체하지 않도록 보강했습니다.
-  - Reviewer 검토에서 기사 전환 시 이전 기사의 메시지가 새 history 반영을 막는 회귀를 발견했습니다.
   - 초기화 시점과 질문 시작 시점의 conversation revision을 비교해 늦은 동일 초기화 응답만 폐기하고, 기사·언어·인증 identity 변경 시에는 새 history를 반영하도록 보완했습니다.
+  - Reviewer 검토에서 발견한 기사 전환 history 잔존 회귀도 함께 수정했습니다.
 - E2E 격리 보완:
   - Compose project 이름을 실행 PID별로 분리했습니다.
   - 이 실행이 `docker compose up`을 시작한 경우에만 동일 project의 container와 volume을 cleanup하도록 ownership guard를 적용했습니다.
@@ -36,18 +38,12 @@
   - 로컬 `scripts/run-full-stack-e2e.cmd`
   - GitHub Actions `workflow_dispatch` 및 `full-stack-e2e` label 기반 opt-in PR 실행
   - 실패 시 report·screenshot·video·trace와 서버·컨테이너 로그 artifact 보관
-- 로컬 검증:
-  - 결정적 1.5초 history 지연 조건을 포함한 Playwright 1개 시나리오 통과 (`6.9s`)
-  - 전체 orchestration과 cleanup 완료 (`93.9s`)
-  - `npm run build`, 변경 파일 ESLint, PowerShell parser, Docker Compose config 통과
+- 검증 결과:
+  - 결정적 1.5초 history 지연과 기사 A→B 전환을 포함한 Playwright 시나리오 통과
+  - `npm run build`, 변경 파일 ESLint, PowerShell parser와 `git diff --check` 통과
+  - Blocking 반영 후 `ubuntu-latest` Full Stack E2E 성공 (`1m 18s`, run `31490194111`)
   - 전체 lint는 변경과 무관한 기존 기준선 `17 errors / 4 warnings`로 실패
-- GitHub Runner 검증:
-  - `ubuntu-latest`에서 Backend `develop`과 opt-in full-stack E2E 성공 (`1m 12s`)
-  - Node 24 기반 공식 action과 Node dependency cache를 사용하고 비차단 annotation 없이 완료
-  - Playwright report와 Backend·Frontend·Mock·container 로그 artifact 업로드 확인
 - 범위 제외: 실제 외부 API, 전체 사용자 흐름, 매 PR 자동 실행, Backend production code·schema 변경
-
-## Recently Merged
 
 ### #94/#95 Backend AI 요약·질의 종료 및 실패 재시도 UX 연동
 
