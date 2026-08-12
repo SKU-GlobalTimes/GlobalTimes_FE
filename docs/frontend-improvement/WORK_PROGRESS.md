@@ -13,25 +13,26 @@
 
 ## In Progress
 
-### #106 Frontend Build·Lint PR 자동 검증 구축
+- 없음
+
+## Recently Merged
+
+### #106/#107 Frontend Build·Lint PR 자동 검증 구축
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/106
 - PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/107
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/8f9f5156c9e941b00c4eb2bf12ba7549f75575cd
 - 목적: #104에서 정상화한 ESLint 기준선과 production build를 모든 `develop` 대상 PR에서 자동 검증합니다.
-- 기존 상태: Full Stack E2E는 라벨 또는 수동 실행 방식이며, Backend와 독립된 기본 Frontend PR check는 없습니다.
-- Overengineering 판단: 신규 도구 없이 기존 npm scripts와 GitHub Actions를 재사용하고 Docker·Backend·Playwright·배포는 제외합니다.
 - 구현 범위:
   - Node `20.19.0`, npm cache, `npm ci` 기반 재현 가능한 의존성 설치
   - `npm run lint`와 `npm run build` 순차 실행
-  - `contents: read` 최소 권한과 10분 timeout 적용
-  - 동일 PR의 이전 실행을 취소하는 concurrency 설정
+  - `contents: read` 최소 권한, 10분 timeout, 동일 PR 이전 실행 취소 적용
+  - Docker·Backend가 필요한 opt-in Full Stack E2E와 빠른 Frontend 기본 CI 분리
 - 검증 결과:
   - 로컬 전체 ESLint 통과 (`0 errors / 0 warnings`)
   - Vite 7 Production build 통과 (`2,339 modules`, `20.41s`)
-  - `git diff --check` 통과
-  - PR 생성 후 신규 `Frontend CI` workflow의 실제 GitHub Ubuntu Runner 성공 확인 예정
-
-## Recently Merged
+  - 신규 Frontend CI가 PR 생성·최신 HEAD에서 자동 실행되어 성공 (`26s`, run `31569913642`)
+  - AI Reviewer `MERGE_READY`, Blocking 없음 확인 후 사용자 승인으로 squash merge
 
 ### #104/#105 Frontend ESLint 오류·경고 해소 및 품질 기준선 정상화
 
@@ -216,12 +217,13 @@
 
 ## Next Candidates
 
-1. 기존 전체 ESLint 오류 기준선 정리 (`17 errors / 4 warnings`, #92 변경 파일 제외)
-2. Full-stack E2E 안정화 후 핵심 PR 자동 실행 승격 여부 판단
-3. 인증 사용자 스크랩·채팅 흐름의 opt-in E2E 확장 필요성 조사
+1. 공개 기사 탐색의 인기·cursor 최신·Explore 및 비로그인 스크랩 실제 Backend 연동 E2E
+2. 랜딩 Google Trends 조회·요약의 Frontend-Backend 계약과 E2E 경계 검증
+3. 연동 완료 후 미사용 legacy API·Frontend 번역 컴포넌트 제거 여부 판단
+4. 연동 완료 이후 Frontend 성능 후보: 초기 JS bundle `633.31 kB` 측정 및 라우트 단위 Code Splitting
 
 ## Guardrail
 
 - 현재 Backend 규모에서 필요한 연동·회귀 방지부터 처리합니다.
 - React Query, 전역 상태 관리, 대규모 API 계층 재작성은 실제 중복과 상태 복잡성이 근거로 확인되기 전까지 도입하지 않습니다.
-- 번들 분할과 렌더링 최적화는 측정 결과가 없는 상태에서 선행하지 않습니다.
+- 번들 분할과 렌더링 최적화는 Backend 연동 완료 후 실제 초기 chunk·로딩 측정을 근거로 진행합니다.
