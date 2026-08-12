@@ -13,10 +13,15 @@
 
 ## In Progress
 
+- 없음
+
+## Recently Merged
+
 ### #110 랜딩 국가별 Trend·기사 원문 이동 실제 Backend 연동 E2E
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/110
 - PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/111
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/a0ab366a56b0e3079c798cd702794ba1450bffb7
 - 목적: 랜딩 지구본에서 국가를 선택한 뒤 Trend 조회, 기사 요약, 언론사 원문 새 탭 이동까지 실제 Frontend → Backend 계약을 자동 검증합니다.
 - 검증 국가: South Korea(`KR`), United States(`US`), United Kingdom(`GB`)
 - 실제 경로:
@@ -38,8 +43,6 @@
   - Blocking 교차 시나리오 로컬 단독 통과 (`36.0s`), 최신 GitHub Runner에서 기존 회귀를 포함한 전체 `9/9` 통과 (`1m 15s`, run `31618234320`)
   - 데스크톱 3개국과 `390×844` 모바일 screenshot, canvas pixel 검사로 비어 있지 않은 지구본 렌더링 확인
 - Overengineering 판단: 실제 Google Trends RSS·Gemini·외부 언론사를 호출하지 않고 기존 orchestration과 Mock server를 확장했습니다. 3D 랜딩까지 핵심 사용자 경로를 확보했으므로 이후에는 E2E 도메인을 계속 늘리지 않고 현재 회귀 세트를 유지합니다.
-
-## Recently Merged
 
 ### #108/#109 공개 기사 탐색·비로그인 스크랩 실제 Backend 연동 E2E
 
