@@ -13,7 +13,23 @@
 
 ## In Progress
 
-- 없음
+### #106 Frontend Build·Lint PR 자동 검증 구축
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/106
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/107
+- 목적: #104에서 정상화한 ESLint 기준선과 production build를 모든 `develop` 대상 PR에서 자동 검증합니다.
+- 기존 상태: Full Stack E2E는 라벨 또는 수동 실행 방식이며, Backend와 독립된 기본 Frontend PR check는 없습니다.
+- Overengineering 판단: 신규 도구 없이 기존 npm scripts와 GitHub Actions를 재사용하고 Docker·Backend·Playwright·배포는 제외합니다.
+- 구현 범위:
+  - Node `20.19.0`, npm cache, `npm ci` 기반 재현 가능한 의존성 설치
+  - `npm run lint`와 `npm run build` 순차 실행
+  - `contents: read` 최소 권한과 10분 timeout 적용
+  - 동일 PR의 이전 실행을 취소하는 concurrency 설정
+- 검증 결과:
+  - 로컬 전체 ESLint 통과 (`0 errors / 0 warnings`)
+  - Vite 7 Production build 통과 (`2,339 modules`, `20.41s`)
+  - `git diff --check` 통과
+  - PR 생성 후 신규 `Frontend CI` workflow의 실제 GitHub Ubuntu Runner 성공 확인 예정
 
 ## Recently Merged
 
