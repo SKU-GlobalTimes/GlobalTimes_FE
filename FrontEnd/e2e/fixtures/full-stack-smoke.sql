@@ -124,7 +124,7 @@ INSERT INTO article (
   'US',
   'This second article verifies client-side detail navigation.',
   'Second article description for the full-stack E2E smoke test.',
-  '2026-08-11 11:00:00',
+  CURRENT_TIMESTAMP - INTERVAL 1 HOUR,
   'The second article summary passed through the real backend.',
   'Second full-stack E2E article',
   'https://example.com/e2e/full-stack-97',
@@ -135,5 +135,6 @@ INSERT INTO article (
 )
 ON DUPLICATE KEY UPDATE
   crawled_content = VALUES(crawled_content),
+  published_at = VALUES(published_at),
   summary = VALUES(summary),
   title = VALUES(title);
