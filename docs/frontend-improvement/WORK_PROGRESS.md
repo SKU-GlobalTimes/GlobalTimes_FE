@@ -13,11 +13,15 @@
 
 ## In Progress
 
-### #102 다국어 검색·Perspectives 실제 Backend 연동 E2E
+- 없음
+
+## Recently Merged
+
+### #102/#103 다국어 검색·Perspectives 실제 Backend 연동 E2E
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/102
 - PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/103
-- Branch: `test/102-search-perspectives-e2e`
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/37be0ee5407f13e0256d46b8b6ac657544d073b5
 - 목적: Backend Phase 1의 번역 cache·MySQL FULLTEXT·Perspectives 국가 그룹·Redis cache 계약을 실제 Frontend 화면까지 자동 검증합니다.
 - 실제 경로:
   - 한국어 검색 입력 → Backend `/api/search` → Redis 번역 cache hit → MySQL FULLTEXT 원문·번역어 검색
@@ -38,8 +42,8 @@
   - 전체 Backend·MySQL·Redis orchestration과 cache key 확인·cleanup 완료 (`71.0s`)
   - Vite 7 Production build 통과 (`2,338 modules`, `7.09s`)
   - 신규 E2E ESLint, PowerShell parser와 `git diff --check` 통과
-
-## Recently Merged
+  - 최종 HEAD GitHub Full Stack E2E 성공 (`1m 32s`, run `31524168174`)
+  - AI Reviewer `MERGE_READY`, Blocking 없음 확인 후 사용자 승인으로 squash merge
 
 ### #100/#101 Frontend 취약 의존성 단계적 업데이트 및 E2E 회귀 검증
 
