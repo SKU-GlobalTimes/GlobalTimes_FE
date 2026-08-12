@@ -199,6 +199,22 @@ try {
         }
     }
 
+    $trendFixtureDir = Join-Path $frontendPath "e2e/fixtures/trends"
+    foreach ($countryCode in "KR", "US", "GB") {
+        $trendFixturePath = Join-Path $trendFixtureDir "$countryCode.json"
+        $containerFixturePath = "/tmp/trend-$countryCode.json"
+        & docker compose -p $projectName -f $composeFile cp $trendFixturePath "redis:$containerFixturePath"
+        if ($LASTEXITCODE -ne 0) { throw "Failed to copy Redis trend fixture for $countryCode." }
+        $setResult = (& docker compose -p $projectName -f $composeFile exec -T redis sh -c "redis-cli -x SETEX trend:$countryCode 173400 < $containerFixturePath") -join ""
+        if ($LASTEXITCODE -ne 0 -or $setResult.Trim() -ne "OK") {
+            throw "Failed to load Redis trend fixture for $countryCode."
+        }
+        $trendExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "trend:$countryCode") -join ""
+        if ($LASTEXITCODE -ne 0 -or $trendExists.Trim() -ne "1") {
+            throw "Redis trend fixture verification failed for $countryCode."
+        }
+    }
+
     $npmCommand = if ($onWindows) { "npm.cmd" } else { "npm" }
     $frontendProcess = Start-Process -FilePath $npmCommand `
         -ArgumentList "run", "dev", "--", "--host", "127.0.0.1", "--port", "5173" `

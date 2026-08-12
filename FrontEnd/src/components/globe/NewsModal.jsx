@@ -28,10 +28,17 @@ const NewsModal = ({ news, onClose }) => {
   if (!news) return null;
 
   return (
-    <div className={styles.newsModal}>
+    <div className={styles.newsModal} role="dialog" aria-label={news.title}>
       <div className={styles.titleContainer}>
         <p><TranslatedText text={news.sourceName}/></p>
-        <IoClose className={styles.closeIcon} onClick={onClose} />
+        <button
+          type="button"
+          className={styles.closeButton}
+          aria-label="기사 닫기"
+          onClick={onClose}
+        >
+          <IoClose className={styles.closeIcon} aria-hidden />
+        </button>
       </div>
       <h3>
         <a
@@ -74,6 +81,6 @@ NewsModal.propTypes = {
     sourceName: PropTypes.string,
     title: PropTypes.string,
     urlToImage: PropTypes.string,
-  }),
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
