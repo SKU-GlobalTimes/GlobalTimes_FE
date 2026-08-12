@@ -29,7 +29,18 @@
 
   .closeIcon{
     font-size: 16px;
+  }
+
+  .closeButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
     margin-bottom: 10px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
   }
 
   .titleContainer{

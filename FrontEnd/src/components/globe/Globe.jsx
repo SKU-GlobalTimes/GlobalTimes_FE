@@ -46,6 +46,10 @@ const GlobeComponent = () => {
   const thetaRef = useRef(BASE_THETA);
   const trendModalRef = useRef(null);
   const newsModalRef = useRef(null);
+  const markerInteractionRef = useRef({
+    hovered: new Set(),
+    focused: new Set(),
+  });
   /** 연속 국가 클릭 시 마지막 요청만 반영 (레이스 방지) */
   const trendFetchGenRef = useRef(0);
 
@@ -105,7 +109,8 @@ const GlobeComponent = () => {
     let rafId;
 
     const animate = () => {
-      if (autoRotate) {
+      const { hovered, focused } = markerInteractionRef.current;
+      if (autoRotate && hovered.size === 0 && focused.size === 0) {
         phi += 0.003;
       }
       currentTheta += (targetTheta - currentTheta) * 0.08;
@@ -275,18 +280,32 @@ const GlobeComponent = () => {
 
       {/* cobe CSS 앵커 포지셔닝: --cobe-{id} 앵커에 자동 부착 */}
       {Object.entries(COUNTRY_MARKERS).map(([code, { name }]) => (
-        <div
+        <button
+          type="button"
           key={code}
           ref={(el) => {
             labelElsRef.current[code] = el;
           }}
           className={styles.markerLabel}
           data-name={name}
+          aria-label={`${name} trends`}
           style={{
             positionAnchor: `--cobe-${code.toLowerCase()}`,
             opacity: `var(--cobe-visible-${code.toLowerCase()}, 0)`,
           }}
           onMouseDown={(e) => e.stopPropagation()}
+          onMouseEnter={() => {
+            markerInteractionRef.current.hovered.add(code);
+          }}
+          onMouseLeave={() => {
+            markerInteractionRef.current.hovered.delete(code);
+          }}
+          onFocus={() => {
+            markerInteractionRef.current.focused.add(code);
+          }}
+          onBlur={() => {
+            markerInteractionRef.current.focused.delete(code);
+          }}
           onClick={() => setSelectedCountry(code)}
         >
           <img
@@ -297,7 +316,7 @@ const GlobeComponent = () => {
             draggable={false}
           />
           <span className={styles.flagName}>{name}</span>
-        </div>
+        </button>
       ))}
 
       {/* 좌측 하단 실시간 로컬 시계 */}

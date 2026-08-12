@@ -49,7 +49,7 @@ Frontend와 Backend 저장소가 같은 상위 디렉터리에 있을 때 Fronte
 실패 여부와 관계없이 다음 artifact를 14일간 보관한다.
 
 - Playwright HTML report
-- 실패 screenshot·video·trace
+- 실패 screenshot·trace
 - Backend·Frontend·Gemini Mock·container 로그
 
 ## 검증 시나리오
@@ -88,3 +88,15 @@ Explore 카드에서 상세 화면으로 이동한 뒤 비로그인 스크랩을
 Windows에서는 E2E artifact 아래의 임시 Docker config와 Docker Desktop Linux named pipe를 사용해 사용자 전역 Docker config 권한과 context 전환에 의존하지 않는다. readiness probe는 숨김 process로 실행하며 각 probe는 5초 timeout 뒤 종료 완료를 기다리고 process handle을 dispose한다. Windows와 Linux 모두 전체 준비 대기를 2분으로 제한한 bounded retry를 사용해 Docker daemon의 일시적인 준비 지연은 흡수하되 console 창·process 누적이나 무한 대기는 방지한다.
 
 브라우저 base URL은 Backend CORS에 등록된 `http://localhost:5173`을 사용한다. 같은 로컬 서버라도 `127.0.0.1`은 다른 Origin이므로 GET에는 드러나지 않던 CORS 불일치가 Origin header를 포함한 스크랩 POST에서 403으로 나타날 수 있다.
+
+## 랜딩 국가별 Trend·원문 이동 시나리오
+
+Redis에 `KR`, `US`, `GB` 국가별 Trend fixture를 TTL과 함께 적재한 뒤 랜딩 지구본의 국가 마커를 선택한다. 브라우저는 실제 Backend `/api/trend` 응답의 국가 코드와 두 개 keyword를 확인하고 국가별 Trend panel이 렌더링되는지 검증한다.
+
+대표 Trend를 선택하면 Backend `/api/trend/summary`가 실제 Service 경로에서 기사 원문을 crawling하고 Gemini 요약을 요청한다. 비용과 외부 장애 영향을 제거하기 위해 언론사 HTML과 Gemini만 로컬 Mock server가 제공하며, Backend HTTP client·crawler·summary 경로와 Frontend modal은 실제 코드를 통과한다.
+
+기사 제목은 `target="_blank"`, `rel="noopener noreferrer"` 계약을 가져야 한다. Playwright는 실제 popup을 열어 fixture의 언론사 URL로 이동했는지와 새 문서의 제목까지 확인한다. 외부 언론사 운영 화면 자체는 계약 범위가 아니므로 로컬 HTML 경계까지만 검증한다.
+
+국가 마커는 자동 회전하는 3D 좌표 위에 있어 pointer 좌표가 다른 마커와 겹칠 수 있다. 마커를 semantic button으로 제공하고 hover·focus 중 회전을 멈추며 keyboard activation으로 같은 선택 handler를 호출한다. 모바일 `390×844`에서는 canvas screenshot의 pixel을 표본 검사해 빈 WebGL frame이 아닌지 확인하고, 현재 앞면 국가 마커와 focus 국기가 viewport 안에 표시되는지 검증한다.
+
+국가별 기능 테스트와 3D 시각 테스트는 분리한다. 각 국가는 Trend·요약·popup 계약을 독립적으로 완결하고, canvas pixel·국기 확장 검증은 모바일 시각 시나리오가 담당한다. hover와 focus가 교차할 때는 CSS transition을 끈 상태에서 marker anchor 좌표를 비교해 둘 중 하나가 활성인 동안 자동 회전이 멈추는지 별도 검증한다. 로컬 단일 worker 기준 기존 8개 시나리오가 약 7.6분 걸렸으며, 교차 회귀를 포함한 9개 시나리오는 GitHub Runner에서 1분 15초에 통과했다. 이 랜딩 검증을 마지막 E2E 범위 확장으로 삼고 이후에는 핵심 회귀 세트를 유지한다.

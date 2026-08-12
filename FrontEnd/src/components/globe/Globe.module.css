@@ -46,7 +46,8 @@
   transition: width 0.2s ease, opacity 0.2s ease;
 }
 
-.markerLabel:hover .flagImg {
+.markerLabel:hover .flagImg,
+.markerLabel:focus .flagImg {
   width: 16px;
   opacity: 1;
 }
@@ -59,12 +60,18 @@
   text-transform: uppercase;
 }
 
-.markerLabel:hover {
+.markerLabel:hover,
+.markerLabel:focus {
   transform: scale(1.25);
   background: rgba(10, 8, 0, 0.85);
   border-color: rgba(240, 192, 64, 0.75);
   box-shadow: 0 2px 12px rgba(240, 192, 64, 0.35);
   z-index: 10;
+}
+
+.markerLabel:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.95);
+  outline-offset: 2px;
 }
 
 /* 좌측 하단 실시간 시계 위젯 */
