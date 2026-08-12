@@ -13,7 +13,28 @@
 
 ## In Progress
 
-- 없음
+### #108 공개 기사 탐색·비로그인 스크랩 실제 Backend 연동 E2E
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/108
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/109
+- 목적: 공개 사용자의 메인 기사 탐색부터 비로그인 스크랩 목록 복원까지 실제 Frontend → Backend → MySQL 계약을 자동 검증합니다.
+- 기존 공백: 상세·익명 SSE, 인증 스크랩·채팅, 검색·Perspectives E2E는 있지만 인기·cursor 최신·Explore·비로그인 `/api/scrap`의 브라우저 검증은 없습니다.
+- Overengineering 판단: 기존 Playwright·MySQL fixture·Full Stack E2E orchestration만 확장하며 신규 Backend API·프레임워크·외부 API 실호출은 추가하지 않습니다.
+- 검증 범위:
+  - 메인 화면 `/api/articles/popular`와 `/api/articles/cursor` 실제 응답·카드 렌더링
+  - `US + technology` Explore UI 조작과 `/api/articles/explore` query·fixture 결과
+  - Explore 카드 상세 이동과 비로그인 localStorage 스크랩 저장
+  - 마이스크랩 진입 후 `/api/scrap` 실제 조회와 카드 복원
+- Mock 경계: UI 번역과 이 시나리오 범위 밖의 Perspectives만 Mock하며 기사 목록·Explore·상세·요약·스크랩은 실제 Backend 경로를 사용합니다.
+- 검증 결과:
+  - 전체 ESLint 통과 (`0 errors / 0 warnings`)
+  - Vite 7 Production build 통과 (`2,339 modules`, `21.20s`)
+  - 로컬 Full Stack E2E 4개 시나리오 통과 (브라우저 `39.4s`, 전체 orchestration `231.2s`)
+  - MySQL·Redis container와 network cleanup 완료
+  - 첫 sandbox 실행은 Docker named pipe 접근 거부로 readiness 실패했으며, 권한이 적용된 동일 스크립트 재실행으로 코드와 환경 원인을 분리해 통과
+  - Reviewer Blocking: popular API의 최근 30일 조건 때문에 고정 발행일 fixture가 만료되는 문제를 실행 시각 1시간 전 발행일과 재실행 갱신으로 보완
+  - Blocking 반영 후 로컬 Full Stack E2E 4개 재통과 (브라우저 `37.5s`, 전체 orchestration `167.2s`)
+  - GitHub Ubuntu Runner 검증 예정
 
 ## Recently Merged
 

@@ -17,7 +17,7 @@ Playwright Chromium
 → MySQL 13306 / Redis 16379
 ```
 
-- 실제: Flyway migration, 기사 fixture 저장, 상세·요약 Controller/Service/Repository, SSE 처리, 익명 Redis 대화 저장·조회
+- 실제: Flyway migration, 기사 fixture 저장, 인기·cursor 최신·Explore·상세·요약·스크랩 Controller/Service/Repository, SSE 처리, 익명 Redis 대화 저장·조회
 - Mock: Gemini 응답과 브라우저 Google Translation
 - 실제 경로: Redis에 고정 번역 fixture를 넣은 Backend 다국어 검색, MySQL FULLTEXT, Perspectives 계산·Redis cache·국가별 기사 이동
 - 비활성: News API·RSS scheduler, OAuth, 실제 외부 API 호출
@@ -76,6 +76,14 @@ Compose project 이름은 실행 프로세스 ID를 포함해 실행별로 분�
 실제 Google OAuth 로그인은 외부 계정과 redirect 정책에 의존하므로 E2E 범위에서 제외한다. 대신 fixture 사용자와 실행 시점의 E2E `JWT_SECRET`으로 10분 유효 JWT를 생성한다. 저장소에는 완성된 token을 기록하지 않는다.
 
 브라우저가 localStorage의 token을 읽은 뒤 실제 Backend `JwtAuthenticationFilter`와 Security matcher를 통과한다. `/api/user/me` 인증, 기사 스크랩 저장과 `/api/user/scraps` 재조회, 로그인 AI SSE 질의, MySQL `chat_history` 조회와 채팅 히스토리 팝업 노출을 순서대로 검증한다. Gemini와 화면 번역 Mock 경계는 익명 시나리오와 동일하다.
+
+## 공개 기사 탐색·비로그인 스크랩 시나리오
+
+브라우저가 메인 화면에 진입하면 `/api/articles/popular?page=0&size=6`과 `/api/articles/cursor?size=8`의 실제 응답에 fixture 기사 ID가 포함되고 카드가 렌더링되는지 확인한다. 이후 사용자가 탐색 조건 UI에서 `US`와 `technology`를 선택해 `/api/articles/explore` query와 단일 fixture 결과를 검증한다.
+
+Backend 인기 기사 조회는 실행 시각 기준 최근 30일 기사만 대상으로 한다. 따라서 공개 탐색 fixture의 발행 시각은 적재 시점의 1시간 전으로 설정하고 재실행 시에도 갱신해, 고정 날짜 만료로 제품 회귀 없이 E2E가 실패하지 않도록 한다.
+
+Explore 카드에서 상세 화면으로 이동한 뒤 비로그인 스크랩을 선택하면 article ID가 localStorage `scrapIds`에 저장되는지 확인한다. 마이스크랩 화면은 이 ID를 `/api/scrap`에 전달하고 실제 MySQL 기사 데이터를 카드로 복원해야 한다. 이 시나리오에서 UI 번역과 Perspectives만 Mock하며 기사 목록·Explore·상세·요약·스크랩은 실제 Backend 경로를 사용한다.
 
 Windows에서는 E2E artifact 아래의 임시 Docker config와 Docker Desktop Linux named pipe를 사용해 사용자 전역 Docker config 권한과 context 전환에 의존하지 않는다. readiness probe는 숨김 process로 실행하며 각 probe는 5초 timeout 뒤 종료 완료를 기다리고 process handle을 dispose한다. Windows와 Linux 모두 전체 준비 대기를 2분으로 제한한 bounded retry를 사용해 Docker daemon의 일시적인 준비 지연은 흡수하되 console 창·process 누적이나 무한 대기는 방지한다.
 
