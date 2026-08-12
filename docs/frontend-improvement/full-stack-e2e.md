@@ -18,7 +18,8 @@ Playwright Chromium
 ```
 
 - 실제: Flyway migration, 기사 fixture 저장, 상세·요약 Controller/Service/Repository, SSE 처리, 익명 Redis 대화 저장·조회
-- Mock: Gemini 응답, 브라우저 Google Translation, 이 테스트 범위 밖의 Perspectives 응답
+- Mock: Gemini 응답과 브라우저 Google Translation
+- 실제 경로: Redis에 고정 번역 fixture를 넣은 Backend 다국어 검색, MySQL FULLTEXT, Perspectives 계산·Redis cache·국가별 기사 이동
 - 비활성: News API·RSS scheduler, OAuth, 실제 외부 API 호출
 
 Mock Gemini는 외부 비용을 제거하지만 Backend WebClient, SSE 누적 데이터, named `end` 이벤트와 Redis 저장은 실제 코드를 통과한다.
@@ -76,6 +77,6 @@ Compose project 이름은 실행 프로세스 ID를 포함해 실행별로 분�
 
 브라우저가 localStorage의 token을 읽은 뒤 실제 Backend `JwtAuthenticationFilter`와 Security matcher를 통과한다. `/api/user/me` 인증, 기사 스크랩 저장과 `/api/user/scraps` 재조회, 로그인 AI SSE 질의, MySQL `chat_history` 조회와 채팅 히스토리 팝업 노출을 순서대로 검증한다. Gemini와 화면 번역 Mock 경계는 익명 시나리오와 동일하다.
 
-Windows에서는 E2E artifact 아래의 임시 Docker config와 Docker Desktop Linux named pipe를 사용해 사용자 전역 Docker config 권한과 context 전환에 의존하지 않는다. readiness probe는 숨김 process로 실행하며 각 probe는 5초 timeout 뒤 종료 완료를 기다리고 process handle을 dispose한다. 전체 준비 대기도 2분으로 제한해 Docker daemon 응답이 늦어도 `docker.exe` console 창과 process가 누적되거나 대기가 과도하게 길어지지 않는다.
+Windows에서는 E2E artifact 아래의 임시 Docker config와 Docker Desktop Linux named pipe를 사용해 사용자 전역 Docker config 권한과 context 전환에 의존하지 않는다. readiness probe는 숨김 process로 실행하며 각 probe는 5초 timeout 뒤 종료 완료를 기다리고 process handle을 dispose한다. Windows와 Linux 모두 전체 준비 대기를 2분으로 제한한 bounded retry를 사용해 Docker daemon의 일시적인 준비 지연은 흡수하되 console 창·process 누적이나 무한 대기는 방지한다.
 
 브라우저 base URL은 Backend CORS에 등록된 `http://localhost:5173`을 사용한다. 같은 로컬 서버라도 `127.0.0.1`은 다른 Origin이므로 GET에는 드러나지 않던 CORS 불일치가 Origin header를 포함한 스크랩 POST에서 403으로 나타날 수 있다.

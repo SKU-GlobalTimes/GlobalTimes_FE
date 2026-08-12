@@ -115,19 +115,23 @@ try {
         }
     }
 
-    if (-not (Test-DockerReady $dockerContext) -and $onWindows) {
-        $dockerDesktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
-        if (-not (Test-Path $dockerDesktop)) { throw "Docker Desktop is not installed." }
-        Start-Process -FilePath $dockerDesktop -WindowStyle Hidden | Out-Null
+    $dockerReady = Test-DockerReady $dockerContext
+    if (-not $dockerReady) {
+        if ($onWindows) {
+            $dockerDesktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+            if (-not (Test-Path $dockerDesktop)) { throw "Docker Desktop is not installed." }
+            Start-Process -FilePath $dockerDesktop -WindowStyle Hidden | Out-Null
+        }
         $dockerDeadline = (Get-Date).AddSeconds(120)
         while ((Get-Date) -lt $dockerDeadline) {
             if (Test-DockerReady $dockerContext) {
+                $dockerReady = $true
                 break
             }
             Start-Sleep -Seconds 3
         }
     }
-    if (-not (Test-DockerReady $dockerContext)) { throw "Docker engine is not ready." }
+    if (-not $dockerReady) { throw "Docker engine is not ready." }
 
     $composeStarted = $true
     & docker compose -p $projectName -f $composeFile up -d
@@ -176,9 +180,24 @@ try {
         -PassThru
     Wait-Http "http://127.0.0.1:8080/api/articles/latest?page=0&size=1" 180
 
-    $fixture = Get-Content (Join-Path $frontendPath "e2e/fixtures/full-stack-smoke.sql") -Raw -Encoding utf8
-    $fixture | & docker compose -p $projectName -f $composeFile exec -T mysql mysql --default-character-set=utf8mb4 -uroot -pe2epw globaltimes
+    $fixturePath = Join-Path $frontendPath "e2e/fixtures/full-stack-smoke.sql"
+    & docker compose -p $projectName -f $composeFile cp $fixturePath mysql:/tmp/full-stack-smoke.sql
+    if ($LASTEXITCODE -ne 0) { throw "Failed to copy E2E fixture." }
+    & docker compose -p $projectName -f $composeFile exec -T mysql sh -c "mysql --default-character-set=utf8mb4 -uroot -pe2epw globaltimes < /tmp/full-stack-smoke.sql"
     if ($LASTEXITCODE -ne 0) { throw "Failed to load E2E fixture." }
+
+    $translationFixturePath = Join-Path $frontendPath "e2e/fixtures/redis-translations.json"
+    $translationFixtures = Get-Content $translationFixturePath -Raw -Encoding utf8 | ConvertFrom-Json
+    foreach ($translationFixture in $translationFixtures) {
+        $setResult = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli SETEX $translationFixture.key 3600 $translationFixture.value) -join ""
+        if ($LASTEXITCODE -ne 0 -or $setResult.Trim() -ne "OK") {
+            throw "Failed to load Redis translation fixture."
+        }
+        $cachedTranslation = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli GET $translationFixture.key) -join ""
+        if ($LASTEXITCODE -ne 0 -or $cachedTranslation.Trim() -ne $translationFixture.value) {
+            throw "Redis translation fixture verification failed."
+        }
+    }
 
     $npmCommand = if ($onWindows) { "npm.cmd" } else { "npm" }
     $frontendProcess = Start-Process -FilePath $npmCommand `
@@ -201,6 +220,11 @@ try {
         if ($LASTEXITCODE -ne 0) { throw "Playwright E2E failed." }
     } finally {
         Pop-Location
+    }
+
+    $perspectivesCacheExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "perspectives:article:990102") -join ""
+    if ($LASTEXITCODE -ne 0 -or $perspectivesCacheExists.Trim() -ne "1") {
+        throw "Perspectives cache was not created by the E2E flow."
     }
 } finally {
     Stop-Tree $frontendProcess
