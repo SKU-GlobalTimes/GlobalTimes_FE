@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { useLanguage } from "../util/LanguageContext";
 import axios from "axios";
 import { DEFAULT_UI_LANGUAGE } from "../constants/uiLanguage.js";
@@ -94,6 +95,10 @@ const TranslatedText = ({ text }) => {
     }, [language, text]);
 
     return <>{translated}</>;
+};
+
+TranslatedText.propTypes = {
+    text: PropTypes.string,
 };
 
 export default TranslatedText;

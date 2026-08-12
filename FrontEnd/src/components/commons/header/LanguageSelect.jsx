@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import styles from "./LanguageSelect.module.css";
 
 const LANGUAGES = [
@@ -81,3 +82,10 @@ export default function LanguageSelect({ value, onChange, isHome, isMobile = fal
     </div>
   );
 }
+
+LanguageSelect.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  isHome: PropTypes.bool,
+  isMobile: PropTypes.bool,
+};

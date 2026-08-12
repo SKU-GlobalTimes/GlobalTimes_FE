@@ -55,7 +55,7 @@ export default function ExploreDatePicker({
     if (selectedDate) {
       setView(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
     }
-  }, [value]);
+  }, [selectedDate]);
 
   const displayText = selectedDate
     ? selectedDate.toLocaleDateString("ko-KR", {

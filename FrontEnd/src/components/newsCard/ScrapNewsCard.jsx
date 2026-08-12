@@ -8,7 +8,7 @@ import { useTranslatedLabel } from '../../hooks/useTranslatedLabel.js';
 import { toggleScrap as toggleScrapAPI } from '../../api/scrapAPI';
 import { FaBookmark, FaTimes } from 'react-icons/fa';
 
-export default function ScrapNewsCard({ id, press, title, summary, image, year, month, day, isScrapped, setIsScrapped }) {
+export default function ScrapNewsCard({ id, press, title, summary, image, year, month, day, setIsScrapped }) {
     const articleId = id;
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -122,7 +122,6 @@ ScrapNewsCard.propTypes = {
     year: PropTypes.string.isRequired,
     month: PropTypes.string.isRequired,
     day: PropTypes.string.isRequired,
-    isScrapped: PropTypes.bool,
     setIsScrapped: PropTypes.func.isRequired,
 };
 

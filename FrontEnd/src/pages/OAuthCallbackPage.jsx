@@ -18,7 +18,7 @@ export default function OAuthCallbackPage() {
       // 토큰 없으면 메인으로
       navigate("/", { replace: true });
     }
-  }, []);
+  }, [login, navigate]);
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>

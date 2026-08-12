@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useCallback, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { authAPI } from "../api/authAPI";
 import { AUTH_EXPIRED_EVENT } from "../api/apiClient";
@@ -9,6 +9,18 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [user, setUser] = useState(null);
+
+  const login = useCallback((newToken) => {
+    clearAnonymousSessionId();
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
+  }, []);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+  }, []);
 
   useEffect(() => {
     const handleExpired = () => {
@@ -29,19 +41,7 @@ export const AuthProvider = ({ children }) => {
           logout();
         });
     }
-  }, [token]);
-
-  const login = (newToken) => {
-    clearAnonymousSessionId();
-    localStorage.setItem("token", newToken);
-    setToken(newToken);
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setUser(null);
-  };
+  }, [token, logout]);
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout, isLoggedIn: !!token }}>
