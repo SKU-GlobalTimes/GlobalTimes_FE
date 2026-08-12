@@ -1,4 +1,5 @@
 import styles from "./Sidebar.module.css";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { Bars } from "react-loader-spinner";
 
@@ -73,3 +74,15 @@ export default function Sidebar({ recentNewsList }) {
     </div>
   );
 }
+
+Sidebar.propTypes = {
+  recentNewsList: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      sourceName: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      urlToImage: PropTypes.string,
+      publishedAt: PropTypes.string,
+    }),
+  ),
+};

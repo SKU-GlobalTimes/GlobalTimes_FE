@@ -103,7 +103,6 @@ export default function ScrapPage() {
                     year={news.year}
                     month={news.month}
                     day={news.day}
-                    isScrapped={isScrapped}
                     setIsScrapped={setIsScrapped}
                   />
                 ))}

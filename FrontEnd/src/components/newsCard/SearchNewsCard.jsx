@@ -37,7 +37,7 @@ export default function SearchNewsCard({ id, press, title, summary, image, year,
             setTranslatedKeyword(translatedKeyword_);
         }
         getTranslation();
-    }, [language, id])
+    }, [language, id, title, summary, translatedText])
 
     function highlightText(text, keyword, originalKeyword) {
         // console.log("keyword"+keyword);

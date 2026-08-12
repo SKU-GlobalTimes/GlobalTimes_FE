@@ -70,9 +70,8 @@ export default function SearchPage() {
             ) : searchError ? (
                 <ApiErrorMessage message={searchError} />
             ) : searchResults?.length > 0 ? (
-                <SearchNews 
-                    searchTerm={searchTerm} 
-                    searchResults={searchResults} 
+                <SearchNews
+                    searchResults={searchResults}
                     originalText={originalWord}
                     translatedText={translatedWord}
                 />

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import PropTypes from "prop-types";
 import styles from "./IntroTop.module.css";
 import { useTranslatedLabel } from "../../../hooks/useTranslatedLabel.js";
 
@@ -39,3 +40,11 @@ export default function IntroAnimation({ isVisible, title, description, imgSrc, 
       </motion.div>
     );
   }
+
+IntroAnimation.propTypes = {
+    isVisible: PropTypes.bool.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    imgSrc: PropTypes.string.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+};
