@@ -13,13 +13,18 @@
 
 ## In Progress
 
-### #104 Frontend ESLint 오류·경고 해소 및 품질 기준선 정상화
+- 없음
+
+## Recently Merged
+
+### #104/#105 Frontend ESLint 오류·경고 해소 및 품질 기준선 정상화
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/104
 - PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/105
-- 목적: 기존 ESLint 위반을 해소해 이후 PR 단위 Build·Lint 자동 검증을 적용할 수 있는 정적 분석 기준선을 만듭니다.
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/b8547b1d912f2456813b0639af2a796298666719
+- 목적: 기존 ESLint 위반을 해소해 이후 PR 단위 Build·Lint 자동 검증을 적용할 수 있는 정적 분석 기준선을 만들었습니다.
 - 초기 기준선: 전체 ESLint `17 errors / 4 warnings`
-- Overengineering 판단: ESLint 메이저 업그레이드나 신규 규칙 도입 없이 기존 설정에서 확인된 위반만 해소합니다.
+- Overengineering 판단: ESLint 메이저 업그레이드나 신규 규칙 도입 없이 기존 설정에서 확인된 위반만 해소했습니다.
 - 변경 범위:
   - 번역·언어 선택·최근 기사·인트로 컴포넌트의 PropTypes 계약 보완
   - 검색·스크랩 컴포넌트의 사용하지 않는 props와 호출부 전달값 제거
@@ -29,10 +34,8 @@
   - 전체 ESLint `17 errors / 4 warnings → 0` (`--max-warnings 0` 통과)
   - Vite 7 Production build 통과 (`2,339 modules`, `34.72s`)
   - `git diff --check` 통과
-  - 로컬 Full Stack E2E는 Docker Desktop 기동 후 Engine이 120초 내 준비되지 않아 환경 사유로 보류
-  - PR `full-stack-e2e` 라벨을 통해 GitHub Ubuntu Runner 재검증 예정
-
-## Recently Merged
+  - 로컬 Full Stack E2E는 Docker Desktop Engine 미준비로 보류했으나 동일 HEAD의 GitHub Ubuntu Runner에서 성공 (`1m 23s`, run `31568873810`)
+  - AI Reviewer `MERGE_READY`, Blocking 없음 확인 후 사용자 승인으로 squash merge
 
 ### #102/#103 다국어 검색·Perspectives 실제 Backend 연동 E2E
 
