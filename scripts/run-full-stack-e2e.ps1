@@ -1,6 +1,7 @@
 param(
     [string]$BackendPath,
-    [switch]$SkipBrowserInstall
+    [switch]$SkipBrowserInstall,
+    [switch]$ExternalSmoke
 )
 
 # Windows PowerShell 5.1 converts native stderr warnings into ErrorRecord objects.
@@ -10,8 +11,12 @@ $onWindows = $env:OS -eq "Windows_NT"
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $frontendPath = Join-Path $repoRoot "FrontEnd"
 $composeFile = Join-Path $frontendPath "e2e/docker-compose.e2e.yml"
-$artifactPath = Join-Path $frontendPath "e2e-artifacts"
-$projectName = "globaltimes-fe-e2e-$PID"
+$artifactPath = if ($ExternalSmoke) {
+    Join-Path $frontendPath "e2e-artifacts/external-smoke"
+} else {
+    Join-Path $frontendPath "e2e-artifacts"
+}
+$projectName = if ($ExternalSmoke) { "globaltimes-external-smoke-$PID" } else { "globaltimes-fe-e2e-$PID" }
 
 if (-not $BackendPath) {
     $BackendPath = Join-Path (Split-Path $repoRoot -Parent) "GlobalTimes_BeSide"
@@ -108,8 +113,82 @@ function Stop-Tree($Process) {
     }
 }
 
+function Get-DotEnvFileValue([string]$Path, [string]$Name) {
+    if (-not (Test-Path $Path)) { return $null }
+
+    foreach ($line in Get-Content -Encoding utf8 $Path) {
+        if ($line -match "^\s*$([regex]::Escape($Name))\s*=\s*(.*)\s*$") {
+            return $Matches[1].Trim().Trim('"').Trim("'")
+        }
+    }
+    return $null
+}
+
+function Get-DotEnvValue([string]$Path, [string]$Name) {
+    $environmentValue = [Environment]::GetEnvironmentVariable($Name)
+    if (-not [string]::IsNullOrWhiteSpace($environmentValue)) { return $environmentValue }
+    return Get-DotEnvFileValue $Path $Name
+}
+
+function Get-ExternalSmokeSecrets([string]$Path) {
+    $secrets = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($name in "GOOGLE_API_KEY", "GEMINI_API_KEY") {
+        $environmentValue = [Environment]::GetEnvironmentVariable($name)
+        $dotEnvValue = Get-DotEnvFileValue $Path $name
+        foreach ($value in $environmentValue, $dotEnvValue) {
+            if (-not [string]::IsNullOrWhiteSpace($value)) {
+                [void]$secrets.Add($value)
+            }
+        }
+    }
+    return @($secrets.GetEnumerator() | ForEach-Object { $_ })
+}
+
+function Redact-ExternalSmokeArtifacts() {
+    if (-not $ExternalSmoke) { return }
+
+    $dotEnvPath = Join-Path $BackendPath ".env"
+    $secrets = Get-ExternalSmokeSecrets $dotEnvPath
+    $logPaths = @(
+        $backendLog,
+        $backendErrorLog,
+        $frontendLog,
+        $frontendErrorLog,
+        (Join-Path $artifactPath "containers.log")
+    )
+
+    foreach ($logPath in $logPaths) {
+        if (-not (Test-Path $logPath)) { continue }
+        $content = Get-Content -Raw -Encoding utf8 $logPath -ErrorAction SilentlyContinue
+        if ($null -eq $content) { continue }
+        foreach ($secret in $secrets) {
+            $content = $content.Replace($secret, "[REDACTED]")
+        }
+        $content = [regex]::Replace(
+            $content,
+            '(?i)([?&]key=)[^&\s"''<>]+',
+            '$1[REDACTED]'
+        )
+        Set-Content -Encoding utf8 -NoNewline -Path $logPath -Value $content
+    }
+}
+
+function Invoke-ComposeCleanup([int]$MaxAttempts = 3) {
+    $cleanupLog = Join-Path $artifactPath "cleanup.log"
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        & docker compose -p $projectName -f $composeFile down -v --remove-orphans *>> $cleanupLog
+        if ($LASTEXITCODE -eq 0) { return $true }
+        if ($attempt -lt $MaxAttempts) { Start-Sleep -Seconds 2 }
+    }
+    return $false
+}
+
 try {
-    foreach ($port in 8080, 5173, 19099, 13306, 16379) {
+    $requiredPorts = @(8080, 5173, 13306, 16379)
+    if (-not $ExternalSmoke) { $requiredPorts += 19099 }
+    foreach ($port in $requiredPorts) {
         if (Test-PortOpen $port) {
             throw "Port $port is already in use. Stop the existing process before running E2E."
         }
@@ -147,29 +226,57 @@ try {
     }
     if (-not ($mysqlReady -and $redisReady)) { throw "E2E containers are not healthy." }
 
-    $nodeCommand = if ($onWindows) { "node.exe" } else { "node" }
-    $mockProcess = Start-Process -FilePath $nodeCommand `
-        -ArgumentList (Join-Path $frontendPath "e2e/support/gemini-mock.cjs") `
-        -WorkingDirectory $frontendPath `
-        -RedirectStandardOutput $mockLog `
-        -RedirectStandardError $mockErrorLog `
-        -PassThru
-    Wait-Http "http://127.0.0.1:19099" 30
+    if (-not $ExternalSmoke) {
+        $nodeCommand = if ($onWindows) { "node.exe" } else { "node" }
+        $mockProcess = Start-Process -FilePath $nodeCommand `
+            -ArgumentList (Join-Path $frontendPath "e2e/support/gemini-mock.cjs") `
+            -WorkingDirectory $frontendPath `
+            -RedirectStandardOutput $mockLog `
+            -RedirectStandardError $mockErrorLog `
+            -PassThru
+        Wait-Http "http://127.0.0.1:19099" 30
+    }
 
     $env:SPRING_DATASOURCE_URL = "jdbc:mysql://127.0.0.1:13306/globaltimes?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true"
     $env:SPRING_DATASOURCE_USERNAME = "root"
     $env:SPRING_DATASOURCE_PASSWORD = "e2epw"
     $env:SPRING_DATA_REDIS_HOST = "127.0.0.1"
     $env:SPRING_DATA_REDIS_PORT = "16379"
-    $env:GEMINI_API_KEY = "e2e-key"
-    $env:GEMINI_BASE_URL = "http://127.0.0.1:19099"
-    $env:GOOGLE_API_KEY = "e2e-key"
-    $env:NEWS_API_KEY = "e2e-key"
-    $env:GOOGLE_OAUTH_CLIENT_ID = "e2e-client"
-    $env:GOOGLE_OAUTH_CLIENT_SECRET = "e2e-secret"
     $env:JWT_SECRET = "e2e_jwt_secret_key_must_be_at_least_32_characters"
-    $env:NEWS_FETCH_ENABLED = "false"
-    $env:AI_SUMMARY_SAVE_ENABLED = "false"
+
+    if ($ExternalSmoke) {
+        $dotEnvPath = Join-Path $BackendPath ".env"
+        foreach ($secretName in "GOOGLE_API_KEY", "GEMINI_API_KEY") {
+            if ([string]::IsNullOrWhiteSpace((Get-DotEnvValue $dotEnvPath $secretName))) {
+                throw "$secretName is required in the environment or Backend .env for External Smoke."
+            }
+        }
+        $nodeCommand = if ($onWindows) { "node.exe" } else { "node" }
+        $rssProbe = (& $nodeCommand (Join-Path $frontendPath "e2e/support/external-rss-probe.cjs")) -join ""
+        if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($rssProbe)) {
+            throw "No RSS candidate passed the free article crawl preflight; paid APIs were not called."
+        }
+
+        $env:NEWS_FETCH_ENABLED = "false"
+        Remove-Item Env:GEMINI_BASE_URL -ErrorAction SilentlyContinue
+        $env:NEWS_API_FETCH_ENABLED = "false"
+        $env:RSS_FETCH_ENABLED = "true"
+        $env:TREND_FETCH_ENABLED = "false"
+        $env:RSS_FETCH_COUNTRIES = $rssProbe.Trim()
+        $env:RSS_MAX_FEEDS_PER_RUN = "1"
+        $env:RSS_MAX_ARTICLES_PER_FEED = "1"
+        $env:CRAWLER_TIMEOUT_MS = "15000"
+        $env:AI_SUMMARY_SAVE_ENABLED = "true"
+    } else {
+        $env:GEMINI_API_KEY = "e2e-key"
+        $env:GEMINI_BASE_URL = "http://127.0.0.1:19099"
+        $env:GOOGLE_API_KEY = "e2e-key"
+        $env:NEWS_API_KEY = "e2e-key"
+        $env:GOOGLE_OAUTH_CLIENT_ID = "e2e-client"
+        $env:GOOGLE_OAUTH_CLIENT_SECRET = "e2e-secret"
+        $env:NEWS_FETCH_ENABLED = "false"
+        $env:AI_SUMMARY_SAVE_ENABLED = "false"
+    }
 
     $gradleCommand = if ($onWindows) { Join-Path $BackendPath "gradlew.bat" } else { Join-Path $BackendPath "gradlew" }
     $backendProcess = Start-Process -FilePath $gradleCommand `
@@ -180,38 +287,41 @@ try {
         -PassThru
     Wait-Http "http://127.0.0.1:8080/api/articles/latest?page=0&size=1" 180
 
-    $fixturePath = Join-Path $frontendPath "e2e/fixtures/full-stack-smoke.sql"
+    $fixtureName = if ($ExternalSmoke) { "external-smoke-user.sql" } else { "full-stack-smoke.sql" }
+    $fixturePath = Join-Path $frontendPath "e2e/fixtures/$fixtureName"
     & docker compose -p $projectName -f $composeFile cp $fixturePath mysql:/tmp/full-stack-smoke.sql
     if ($LASTEXITCODE -ne 0) { throw "Failed to copy E2E fixture." }
     & docker compose -p $projectName -f $composeFile exec -T mysql sh -c "mysql --default-character-set=utf8mb4 -uroot -pe2epw globaltimes < /tmp/full-stack-smoke.sql"
     if ($LASTEXITCODE -ne 0) { throw "Failed to load E2E fixture." }
 
-    $translationFixturePath = Join-Path $frontendPath "e2e/fixtures/redis-translations.json"
-    $translationFixtures = Get-Content $translationFixturePath -Raw -Encoding utf8 | ConvertFrom-Json
-    foreach ($translationFixture in $translationFixtures) {
-        $setResult = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli SETEX $translationFixture.key 3600 $translationFixture.value) -join ""
-        if ($LASTEXITCODE -ne 0 -or $setResult.Trim() -ne "OK") {
-            throw "Failed to load Redis translation fixture."
+    if (-not $ExternalSmoke) {
+        $translationFixturePath = Join-Path $frontendPath "e2e/fixtures/redis-translations.json"
+        $translationFixtures = Get-Content $translationFixturePath -Raw -Encoding utf8 | ConvertFrom-Json
+        foreach ($translationFixture in $translationFixtures) {
+            $setResult = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli SETEX $translationFixture.key 3600 $translationFixture.value) -join ""
+            if ($LASTEXITCODE -ne 0 -or $setResult.Trim() -ne "OK") {
+                throw "Failed to load Redis translation fixture."
+            }
+            $cachedTranslation = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli GET $translationFixture.key) -join ""
+            if ($LASTEXITCODE -ne 0 -or $cachedTranslation.Trim() -ne $translationFixture.value) {
+                throw "Redis translation fixture verification failed."
+            }
         }
-        $cachedTranslation = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli GET $translationFixture.key) -join ""
-        if ($LASTEXITCODE -ne 0 -or $cachedTranslation.Trim() -ne $translationFixture.value) {
-            throw "Redis translation fixture verification failed."
-        }
-    }
 
-    $trendFixtureDir = Join-Path $frontendPath "e2e/fixtures/trends"
-    foreach ($countryCode in "KR", "US", "GB") {
-        $trendFixturePath = Join-Path $trendFixtureDir "$countryCode.json"
-        $containerFixturePath = "/tmp/trend-$countryCode.json"
-        & docker compose -p $projectName -f $composeFile cp $trendFixturePath "redis:$containerFixturePath"
-        if ($LASTEXITCODE -ne 0) { throw "Failed to copy Redis trend fixture for $countryCode." }
-        $setResult = (& docker compose -p $projectName -f $composeFile exec -T redis sh -c "redis-cli -x SETEX trend:$countryCode 173400 < $containerFixturePath") -join ""
-        if ($LASTEXITCODE -ne 0 -or $setResult.Trim() -ne "OK") {
-            throw "Failed to load Redis trend fixture for $countryCode."
-        }
-        $trendExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "trend:$countryCode") -join ""
-        if ($LASTEXITCODE -ne 0 -or $trendExists.Trim() -ne "1") {
-            throw "Redis trend fixture verification failed for $countryCode."
+        $trendFixtureDir = Join-Path $frontendPath "e2e/fixtures/trends"
+        foreach ($countryCode in "KR", "US", "GB") {
+            $trendFixturePath = Join-Path $trendFixtureDir "$countryCode.json"
+            $containerFixturePath = "/tmp/trend-$countryCode.json"
+            & docker compose -p $projectName -f $composeFile cp $trendFixturePath "redis:$containerFixturePath"
+            if ($LASTEXITCODE -ne 0) { throw "Failed to copy Redis trend fixture for $countryCode." }
+            $setResult = (& docker compose -p $projectName -f $composeFile exec -T redis sh -c "redis-cli -x SETEX trend:$countryCode 173400 < $containerFixturePath") -join ""
+            if ($LASTEXITCODE -ne 0 -or $setResult.Trim() -ne "OK") {
+                throw "Failed to load Redis trend fixture for $countryCode."
+            }
+            $trendExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "trend:$countryCode") -join ""
+            if ($LASTEXITCODE -ne 0 -or $trendExists.Trim() -ne "1") {
+                throw "Redis trend fixture verification failed for $countryCode."
+            }
         }
     }
 
@@ -232,22 +342,46 @@ try {
             if ($LASTEXITCODE -ne 0) { throw "Failed to install Playwright Chromium." }
         }
         $env:E2E_BASE_URL = "http://localhost:5173"
-        & $npxCommand playwright test
+        if ($ExternalSmoke) {
+            $env:EXTERNAL_SMOKE = "true"
+            & $npxCommand playwright test e2e/external-api-smoke.spec.js --workers=1 --retries=0
+        } else {
+            Remove-Item Env:EXTERNAL_SMOKE -ErrorAction SilentlyContinue
+            & $npxCommand playwright test
+        }
         if ($LASTEXITCODE -ne 0) { throw "Playwright E2E failed." }
     } finally {
         Pop-Location
     }
 
-    $perspectivesCacheExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "perspectives:article:990102") -join ""
-    if ($LASTEXITCODE -ne 0 -or $perspectivesCacheExists.Trim() -ne "1") {
-        throw "Perspectives cache was not created by the E2E flow."
+    if ($ExternalSmoke) {
+        $perspectivesKeys = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli --scan --pattern "perspectives:article:*") -join ""
+        if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($perspectivesKeys)) {
+            throw "External Smoke did not create a Perspectives cache entry."
+        }
+        $translationCalls = (Select-String -Path $backendLog -Pattern "\[TranslateUtil\] success" -AllMatches).Matches.Count
+        $summaryCalls = (Select-String -Path $backendLog -Pattern "aiRequested=true" -AllMatches).Matches.Count
+        if ($translationCalls -lt 1 -or $translationCalls -gt 2) {
+            throw "External Smoke Translation call count was outside the 1..2 boundary."
+        }
+        if ($summaryCalls -ne 1) { throw "External Smoke must request exactly one Gemini summary." }
+    } else {
+        $perspectivesCacheExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "perspectives:article:990102") -join ""
+        if ($LASTEXITCODE -ne 0 -or $perspectivesCacheExists.Trim() -ne "1") {
+            throw "Perspectives cache was not created by the E2E flow."
+        }
     }
 } finally {
     Stop-Tree $frontendProcess
     Stop-Tree $backendProcess
     Stop-Tree $mockProcess
+    $cleanupSucceeded = $true
     if ($composeStarted) {
         & docker compose -p $projectName -f $composeFile logs --no-color *> (Join-Path $artifactPath "containers.log")
-        & docker compose -p $projectName -f $composeFile down -v --remove-orphans
+        $cleanupSucceeded = Invoke-ComposeCleanup
+    }
+    Redact-ExternalSmokeArtifacts
+    if (-not $cleanupSucceeded) {
+        throw "E2E container and volume cleanup failed after 3 attempts. See cleanup.log."
     }
 }

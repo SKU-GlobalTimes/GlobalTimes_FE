@@ -38,6 +38,22 @@ Frontend와 Backend 저장소가 같은 상위 디렉터리에 있을 때 Fronte
 .\scripts\run-full-stack-e2e.cmd -SkipBrowserInstall
 ```
 
+### 실제 외부 API Smoke
+
+기존 결정적 E2E와 별도로 실제 RSS, Backend Translation, Gemini를 소수 호출하는 수동 Smoke를 실행합니다. Backend `.env`에 실제 `GOOGLE_API_KEY`, `GEMINI_API_KEY`가 있어야 하며 값은 report나 log에 기록하지 않습니다.
+
+```powershell
+.\scripts\run-external-smoke-e2e.cmd -SkipBrowserInstall
+```
+
+이 실행은 News API와 Trend를 끄고 무료 RSS·기사 HTML preflight를 통과한 국가의 첫 feed에서 기사 후보 1개만 적재합니다. 후보 기사에서 본문을 확보하지 못하면 유료 API 호출 전에 중단하며, 실제 언론사 응답 지연을 수용하기 위해 이 수동 Smoke에서만 crawler timeout을 15초로 설정합니다. 브라우저 UI 번역은 Mock으로 차단하며 Backend 검색·Perspectives Translation 최대 2회, Gemini 요약 1회, 익명·로그인 질의 각 1회만 허용합니다. 실패 시 자동 재시도하지 않고 서버를 종료하며, compose cleanup은 최대 3회 시도한 뒤 실패를 명시적으로 보고합니다.
+
+External Smoke의 Backend·Frontend·container 로그는 종료 시 OS 환경변수와 Backend `.env` 양쪽의 실제 Google/Gemini key 값, `key=` query parameter를 `[REDACTED]`로 치환합니다. Playwright trace·screenshot·video도 비활성화해 실제 AI 응답과 요청 정보가 실패 artifact에 남는 범위를 줄입니다.
+
+실시간 기사와 Gemini 응답은 비결정적이므로 정확한 문자열을 비교하지 않습니다. Perspectives도 기술 경로와 cache 생성만 확인하고 관련 기사 수, 국가 수, 의미적 관련성을 합격 조건으로 사용하지 않습니다. 이 결과는 Backend Issue #110의 근본 한계를 해결했다는 근거가 아닙니다.
+
+최초 두 차례 수동 실행에서는 한국 기사 원문의 빈 stream과 영국 기사 원문의 5초 read timeout을 각각 확인했습니다. 두 실행 모두 검색·Perspectives Translation은 2회 성공했고 crawling 실패로 Gemini는 호출되지 않았으며 Backend `202` fallback과 전체 cleanup이 동작했습니다. 이 결과는 외부 기사 접근 성공을 fixture처럼 가정할 수 없다는 실행 경계로 보존합니다.
+
 스크립트는 Docker Desktop이 정지돼 있으면 실행을 시도하고 daemon 준비를 기다린다. 기존 개발 DB와 충돌하지 않도록 별도 포트와 일회성 volume을 사용하며 종료 시 제거한다.
 
 ## GitHub Actions 실행
