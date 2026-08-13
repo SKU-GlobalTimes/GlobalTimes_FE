@@ -13,10 +13,15 @@
 
 ## In Progress
 
+- 없음
+
+## Recently Merged
+
 ### #112 미사용 Google Translate legacy 컴포넌트 정리
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/112
 - PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/113
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/584539f3c47ce13a4bf126a9bc5fdf9c605ce49e
 - 목적: Backend 연동 완료 후 import되지 않는 번역 widget과 과거 최신 기사 offset 호출 흔적을 제거해 실제 사용 경로를 명확히 합니다.
 - 조사 근거:
   - `translateAPI.js`, `GoogleTranslate.jsx`, `GoogleTranslate.module.css`는 전체 source import graph에서 사용처가 없습니다.
@@ -31,8 +36,6 @@
   - 삭제 전후 초기 JS bundle은 `633.86 kB`로 동일해 legacy 파일이 기존 build tree에 포함되지 않았음을 확인했습니다.
   - source 기준 218줄을 제거하고 삭제 파일명·export의 잔여 import가 없음을 확인했습니다.
 - Overengineering 판단: 신규 번역 추상화나 API 계층 통합 없이 정적 import graph로 미사용이 확인된 파일만 제거합니다.
-
-## Recently Merged
 
 ### #110 랜딩 국가별 Trend·기사 원문 이동 실제 Backend 연동 E2E
 
