@@ -13,7 +13,24 @@
 
 ## In Progress
 
-- 없음
+### #112 미사용 Google Translate legacy 컴포넌트 정리
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/112
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/113
+- 목적: Backend 연동 완료 후 import되지 않는 번역 widget과 과거 최신 기사 offset 호출 흔적을 제거해 실제 사용 경로를 명확히 합니다.
+- 조사 근거:
+  - `translateAPI.js`, `GoogleTranslate.jsx`, `GoogleTranslate.module.css`는 전체 source import graph에서 사용처가 없습니다.
+  - `translateAPI.js`의 `/api/articles/latest` 호출은 실행되지 않는 주석 코드이며, 실제 최신 기사 화면은 `/api/articles/cursor`를 사용합니다.
+  - `TranslatedText.jsx`와 `fetchTranslatedText.jsx`는 다수 화면에서 실제 사용되므로 유지합니다.
+- 범위:
+  - 미사용 legacy 파일 3개 제거
+  - 활성 번역 컴포넌트, cursor 기사 조회와 Backend `/api/articles/latest` endpoint는 변경하지 않음
+- 검증 결과:
+  - 전체 ESLint 통과 (`0 errors / 0 warnings`)
+  - Vite 7 production build 통과 (`2,339 modules`, `21.02s`)
+  - 삭제 전후 초기 JS bundle은 `633.86 kB`로 동일해 legacy 파일이 기존 build tree에 포함되지 않았음을 확인했습니다.
+  - source 기준 218줄을 제거하고 삭제 파일명·export의 잔여 import가 없음을 확인했습니다.
+- Overengineering 판단: 신규 번역 추상화나 API 계층 통합 없이 정적 import graph로 미사용이 확인된 파일만 제거합니다.
 
 ## Recently Merged
 
@@ -266,10 +283,8 @@
 
 ## Next Candidates
 
-1. 공개 기사 탐색의 인기·cursor 최신·Explore 및 비로그인 스크랩 실제 Backend 연동 E2E
-2. 랜딩 Google Trends 조회·요약의 Frontend-Backend 계약과 E2E 경계 검증
-3. 연동 완료 후 미사용 legacy API·Frontend 번역 컴포넌트 제거 여부 판단
-4. 연동 완료 이후 Frontend 성능 후보: 초기 JS bundle `633.31 kB` 측정 및 라우트 단위 Code Splitting
+1. 연동 완료 이후 Frontend 성능 후보: 초기 JS bundle `633.86 kB` 측정 및 route 단위 Code Splitting
+2. 번역 호출 구조 통합은 실제 중복 요청·유지보수 비용을 측정하기 전까지 보류
 
 ## Guardrail
 
