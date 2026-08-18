@@ -13,11 +13,16 @@
 
 ## In Progress
 
+- 없음
+
+## Recently Merged
+
 ### #118 News API·RSS·Google Trends 실수집 로그인 사용자 E2E 검증
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/118
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/119
 - 브랜치: `test/118-real-collection-user-e2e`
-- 상태: `In Progress`
+- 상태: `Done`
 - 목적: 실제 News API·언론사 RSS·Google Trends 적재부터 Translation 검색, Gemini 요약·로그인 SSE 질의, MySQL 대화·스크랩 저장까지 대표 사용자 사이클을 수동 Playwright E2E로 검증합니다.
 - 호출 경계: Backend #249 설정으로 News API·RSS·Trend 범위를 작게 제한하고 실제 Gemini 요약·로그인 질의를 각각 한 번만 수행하며 자동 재시도하지 않습니다.
 - 인증 경계: 실제 Google OAuth redirect 대신 fixture JWT를 사용하지만 실제 Backend 인증 필터와 사용자 MySQL 저장 경로를 통과합니다.
@@ -26,9 +31,7 @@
 - 저장 검증: UI·API 재조회에 더해 종료 전 MySQL에서 fixture 사용자의 해당 기사 스크랩 1건과 채팅 이력을 직접 조회하고, Redis Perspectives cache와 `trend:KR` 존재를 확인합니다.
 - 실제 실행: News API 기사 1건, 한국 RSS 기사 1건, KR Trend 1건 적재와 Backend Translation 2회, 기사 crawl, Gemini 요약 1회(`aiSummaryMs=6119`, `totalMs=6514`), 로그인 SSE 질의 1회가 성공했습니다. Playwright는 `1 passed (32.9s)`로 완료됐습니다.
 - 보완: 첫 완주에서 API의 스크랩 반환 필드가 `id`가 아닌 `articleId`임을 반영했고, Windows 한글 로그 인코딩에 의존하던 SSE 저장 검증을 ASCII 로그 구조 기준으로 변경했습니다. 최종 실행은 후처리 DB·cache 검사와 container·port cleanup까지 `exit 0`으로 통과했습니다.
-- 회귀 검증: 전체 ESLint, Vite production build, PowerShell parser, Mock Full Stack E2E `9 passed / 1 skipped`가 통과했습니다.
-
-## Recently Merged
+- 회귀 검증: 전체 ESLint, Vite production build, PowerShell parser, Mock Full Stack E2E `9 passed / 1 skipped`와 Frontend CI `build-and-lint`가 통과했습니다.
 
 ### #116 랜딩 Trend E2E 기능 검증과 3D 애니메이션 경계 분리
 
