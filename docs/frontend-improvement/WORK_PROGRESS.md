@@ -13,11 +13,15 @@
 
 ## In Progress
 
+- 없음
+
+## Recently Merged
+
 ### #114 실제 RSS·Translation·Gemini 제한 호출 E2E 검증
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/114
-- 브랜치: `test/114-real-external-smoke-e2e`
-- 상태: `In Progress`
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/115
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/88b5ac6739559f3997ed967fb7d02685275e5805
 - 목적: 실제 RSS 기사 적재부터 번역 검색, 원문 crawling, Gemini 요약, 익명 Redis·로그인 MySQL 질의 저장까지 도메인 연결을 소수 호출로 검증합니다.
 - 호출 경계: Backend 검색·Perspectives Translation 최대 2회, Gemini 요약 1회와 익명·로그인 질의 각 1회입니다. 브라우저 UI 번역은 Mock으로 차단합니다.
 - 1차 실제 실행: 한국 RSS 기사 1건은 원문 stream이 비어 crawling에 실패했습니다. Translation 2회, Gemini 0회였고 Backend가 `202` fallback을 반환한 뒤 컨테이너를 정리했습니다.
@@ -29,8 +33,6 @@
 - Blocking 회귀 검증: Mock Full Stack E2E는 첫 실행에서 South Korea Trend popup 시나리오가 로컬 지연으로 timeout됐으나, CI와 동일한 1회 retry 조건에서 재시도 통과(`8 passed / 1 flaky / 1 skipped`)했습니다. 종료 후 container·network 제거와 관련 port 종료도 확인했습니다.
 - 품질 경계: 실시간 RSS의 동일 사건 국가별 coverage가 비결정적이므로 Perspectives 응답·FULLTEXT·cache 기술 경로만 확인하며 기사 수·국가 수·의미적 관련성은 합격 조건이 아닙니다.
 - 범위 제외: 실제 Google OAuth, News API, 26개국 Trend, VU 부하, 자동 retry, Backend Issue #110.
-
-## Recently Merged
 
 ### #112 미사용 Google Translate legacy 컴포넌트 정리
 
