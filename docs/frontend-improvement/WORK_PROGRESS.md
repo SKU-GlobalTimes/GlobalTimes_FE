@@ -13,7 +13,14 @@
 
 ## In Progress
 
-- 없음
+### #120 Frontend-Backend 연동 후속 Phase 로드맵 기록
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/120
+- 브랜치: `docs/120-full-stack-phase-roadmap`
+- 상태: `In Progress`
+- 목적: Backend Phase 1과 Frontend 연동 완료 이후의 Phase 2~5 후보를 현재 근거, 선행 신호, 작은 대안, 기술 도입 조건과 함께 연결합니다.
+- 범위: `full-stack-next-phase-roadmap.md`, README 진입 링크와 진척 문서만 변경하며 production code·test·workflow·신규 측정은 제외합니다.
+- 경계: Perspectives 의미 품질, 전체 외부 공급자 가용성, 실제 OAuth·배포 환경을 완료로 주장하지 않고 Backend Issue #110을 다루지 않습니다.
 
 ## Recently Merged
 

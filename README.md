@@ -153,6 +153,12 @@ FrontEnd/e2e/
 
 Playwright 시나리오는 `FrontEnd/e2e/*.spec.js`, 테스트 데이터는 `fixtures`, Mock과 JWT 보조 코드는 `support`에 있습니다.
 
+### 개선 작업 문서
+
+- [Frontend 개선 작업 진척](docs/frontend-improvement/WORK_PROGRESS.md)
+- [Frontend-Backend Full-stack E2E](docs/frontend-improvement/full-stack-e2e.md)
+- [Frontend-Backend 연동 후속 Phase 로드맵](docs/frontend-improvement/full-stack-next-phase-roadmap.md)
+
 
 ## 직접 서버 실행
 
