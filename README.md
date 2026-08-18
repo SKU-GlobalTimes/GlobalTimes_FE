@@ -111,14 +111,14 @@ Docker MySQL·Redis, Backend, Frontend, Mock 서버와 Playwright를 함께 실�
 
 ### 실제 외부 API 제한 Smoke
 
-Backend `.env`에 실제 `GOOGLE_API_KEY`, `GEMINI_API_KEY`가 있어야 합니다.
+Backend `.env`에 실제 `NEWS_API_KEY`, `GOOGLE_API_KEY`, `GEMINI_API_KEY`가 있어야 합니다.
 
 ```powershell
 cd GlobalTimes_FE
 .\scripts\run-external-smoke-e2e.cmd -SkipBrowserInstall
 ```
 
-실제 RSS·Translation·Gemini를 제한적으로 호출하므로 필요할 때만 수동 실행합니다.
+실제 News API·RSS·Google Trends 수집과 Backend Translation·Gemini를 제한적으로 호출하므로 필요할 때만 수동 실행합니다. Google OAuth 대신 fixture JWT를 사용하지만 Backend 인증 필터와 MySQL 사용자 데이터 저장 경로는 실제로 통과합니다.
 
 ### E2E 결과 확인
 

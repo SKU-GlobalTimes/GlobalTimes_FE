@@ -134,7 +134,7 @@ function Get-ExternalSmokeSecrets([string]$Path) {
     $secrets = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
     )
-    foreach ($name in "GOOGLE_API_KEY", "GEMINI_API_KEY") {
+    foreach ($name in "NEWS_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY") {
         $environmentValue = [Environment]::GetEnvironmentVariable($name)
         $dotEnvValue = Get-DotEnvFileValue $Path $name
         foreach ($value in $environmentValue, $dotEnvValue) {
@@ -183,6 +183,13 @@ function Invoke-ComposeCleanup([int]$MaxAttempts = 3) {
         if ($attempt -lt $MaxAttempts) { Start-Sleep -Seconds 2 }
     }
     return $false
+}
+
+function Invoke-MySqlScalar([string]$Query) {
+    $result = (& docker compose -p $projectName -f $composeFile exec -T mysql `
+        mysql --default-character-set=utf8mb4 -N -B -uroot -pe2epw globaltimes -e $Query) -join ""
+    if ($LASTEXITCODE -ne 0) { throw "E2E MySQL query failed." }
+    return $result.Trim()
 }
 
 try {
@@ -246,7 +253,7 @@ try {
 
     if ($ExternalSmoke) {
         $dotEnvPath = Join-Path $BackendPath ".env"
-        foreach ($secretName in "GOOGLE_API_KEY", "GEMINI_API_KEY") {
+        foreach ($secretName in "NEWS_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY") {
             if ([string]::IsNullOrWhiteSpace((Get-DotEnvValue $dotEnvPath $secretName))) {
                 throw "$secretName is required in the environment or Backend .env for External Smoke."
             }
@@ -259,9 +266,13 @@ try {
 
         $env:NEWS_FETCH_ENABLED = "false"
         Remove-Item Env:GEMINI_BASE_URL -ErrorAction SilentlyContinue
-        $env:NEWS_API_FETCH_ENABLED = "false"
+        $env:NEWS_API_FETCH_ENABLED = "true"
+        $env:NEWS_API_PAGE_SIZE = "1"
+        $env:NEWS_API_MAX_REQUESTS_PER_RUN = "1"
         $env:RSS_FETCH_ENABLED = "true"
-        $env:TREND_FETCH_ENABLED = "false"
+        $env:TREND_FETCH_ENABLED = "true"
+        $env:TREND_FETCH_COUNTRIES = "KR"
+        $env:TREND_MAX_ITEMS_PER_COUNTRY = "1"
         $env:RSS_FETCH_COUNTRIES = $rssProbe.Trim()
         $env:RSS_MAX_FEEDS_PER_RUN = "1"
         $env:RSS_MAX_ARTICLES_PER_FEED = "1"
@@ -293,6 +304,22 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Failed to copy E2E fixture." }
     & docker compose -p $projectName -f $composeFile exec -T mysql sh -c "mysql --default-character-set=utf8mb4 -uroot -pe2epw globaltimes < /tmp/full-stack-smoke.sql"
     if ($LASTEXITCODE -ne 0) { throw "Failed to load E2E fixture." }
+
+    if ($ExternalSmoke) {
+        $rssCountry = $rssProbe.Trim().ToLowerInvariant()
+        $rssArticleCount = [int](Invoke-MySqlScalar "SELECT COUNT(*) FROM article WHERE country = '$rssCountry';")
+        $newsApiArticleCount = [int](Invoke-MySqlScalar "SELECT COUNT(*) FROM article WHERE country = 'us';")
+        $externalArticleId = Invoke-MySqlScalar "SELECT article_id FROM article WHERE country = '$rssCountry' ORDER BY published_at DESC, article_id DESC LIMIT 1;"
+        $trendExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "trend:KR") -join ""
+
+        if ($rssArticleCount -lt 1) { throw "External Smoke did not persist an RSS article." }
+        if ($newsApiArticleCount -lt 1) { throw "External Smoke did not persist a News API article." }
+        if ([string]::IsNullOrWhiteSpace($externalArticleId)) { throw "External Smoke RSS article ID was not found." }
+        if ($LASTEXITCODE -ne 0 -or $trendExists.Trim() -ne "1") {
+            throw "External Smoke did not persist KR Trends in Redis."
+        }
+        $env:EXTERNAL_ARTICLE_ID = $externalArticleId.Trim()
+    }
 
     if (-not $ExternalSmoke) {
         $translationFixturePath = Join-Path $frontendPath "e2e/fixtures/redis-translations.json"
@@ -361,10 +388,20 @@ try {
         }
         $translationCalls = (Select-String -Path $backendLog -Pattern "\[TranslateUtil\] success" -AllMatches).Matches.Count
         $summaryCalls = (Select-String -Path $backendLog -Pattern "aiRequested=true" -AllMatches).Matches.Count
+        $authenticatedSsePattern = "INFO .*AiSseService.*\[Gemini SSE\].*userId=990098, articleId=$([regex]::Escape([string]$env:EXTERNAL_ARTICLE_ID))"
+        $authenticatedSseSaves = (Select-String -Path $backendLog -Pattern $authenticatedSsePattern -AllMatches -ErrorAction Stop).Matches.Count
         if ($translationCalls -lt 1 -or $translationCalls -gt 2) {
             throw "External Smoke Translation call count was outside the 1..2 boundary."
         }
         if ($summaryCalls -ne 1) { throw "External Smoke must request exactly one Gemini summary." }
+        if ($authenticatedSseSaves -ne 1) {
+            throw "External Smoke must persist exactly one authenticated Gemini conversation."
+        }
+
+        $storedScraps = [int](Invoke-MySqlScalar "SELECT COUNT(*) FROM scrap WHERE user_id = 990098 AND article_id = $($env:EXTERNAL_ARTICLE_ID);")
+        $storedChats = [int](Invoke-MySqlScalar "SELECT COUNT(*) FROM chat_history WHERE user_id = 990098 AND article_id = $($env:EXTERNAL_ARTICLE_ID);")
+        if ($storedScraps -ne 1) { throw "External Smoke authenticated scrap was not persisted." }
+        if ($storedChats -lt 1) { throw "External Smoke authenticated chat was not persisted." }
     } else {
         $perspectivesCacheExists = (& docker compose -p $projectName -f $composeFile exec -T redis redis-cli EXISTS "perspectives:article:990102") -join ""
         if ($LASTEXITCODE -ne 0 -or $perspectivesCacheExists.Trim() -ne "1") {

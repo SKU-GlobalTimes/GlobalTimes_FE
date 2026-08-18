@@ -13,18 +13,34 @@
 
 ## In Progress
 
+### #118 News API·RSS·Google Trends 실수집 로그인 사용자 E2E 검증
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/118
+- 브랜치: `test/118-real-collection-user-e2e`
+- 상태: `In Progress`
+- 목적: 실제 News API·언론사 RSS·Google Trends 적재부터 Translation 검색, Gemini 요약·로그인 SSE 질의, MySQL 대화·스크랩 저장까지 대표 사용자 사이클을 수동 Playwright E2E로 검증합니다.
+- 호출 경계: Backend #249 설정으로 News API·RSS·Trend 범위를 작게 제한하고 실제 Gemini 요약·로그인 질의를 각각 한 번만 수행하며 자동 재시도하지 않습니다.
+- 인증 경계: 실제 Google OAuth redirect 대신 fixture JWT를 사용하지만 실제 Backend 인증 필터와 사용자 MySQL 저장 경로를 통과합니다.
+- 품질 경계: Perspectives는 HTTP·번역·FULLTEXT·국가별 구성·Redis cache 기술 경로만 확인하고 기사 수·국가 수·의미적 관련성을 합격 조건으로 사용하지 않습니다. Backend Issue #110은 제외합니다.
+- 구현: 실제 수집으로 적재된 RSS 기사 ID를 E2E 대상으로 고정하고 Translation 검색, 상세·요약·Perspectives, 로그인 SSE 질의, 스크랩과 KR Trend 화면을 순서대로 검증합니다. 브라우저 UI 번역과 `cobe`만 test double로 격리했습니다.
+- 저장 검증: UI·API 재조회에 더해 종료 전 MySQL에서 fixture 사용자의 해당 기사 스크랩 1건과 채팅 이력을 직접 조회하고, Redis Perspectives cache와 `trend:KR` 존재를 확인합니다.
+- 실제 실행: News API 기사 1건, 한국 RSS 기사 1건, KR Trend 1건 적재와 Backend Translation 2회, 기사 crawl, Gemini 요약 1회(`aiSummaryMs=6119`, `totalMs=6514`), 로그인 SSE 질의 1회가 성공했습니다. Playwright는 `1 passed (32.9s)`로 완료됐습니다.
+- 보완: 첫 완주에서 API의 스크랩 반환 필드가 `id`가 아닌 `articleId`임을 반영했고, Windows 한글 로그 인코딩에 의존하던 SSE 저장 검증을 ASCII 로그 구조 기준으로 변경했습니다. 최종 실행은 후처리 DB·cache 검사와 container·port cleanup까지 `exit 0`으로 통과했습니다.
+- 회귀 검증: 전체 ESLint, Vite production build, PowerShell parser, Mock Full Stack E2E `9 passed / 1 skipped`가 통과했습니다.
+
+## Recently Merged
+
 ### #116 랜딩 Trend E2E 기능 검증과 3D 애니메이션 경계 분리
 
 - Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/116
-- 브랜치: `test/116-deterministic-landing-trends-e2e`
-- 상태: `In Progress`
+- PR: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/pull/117
+- Squash commit: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/commit/3231b8017cd2ea629b8f179448d8027c87acbdc8
+- 상태: `Done`
 - 기준선: 국가별 기능 시나리오가 자동 회전하는 지구본에서 목표 마커를 앞으로 가져오기 위해 최대 14회 canvas drag를 반복했고, 로컬 E2E에서 South Korea 시나리오가 180초 timeout 후 retry 통과해 전체 실행이 12분 이상 소요됐습니다.
 - 범위: 국가별 Trend·요약·원문 링크 계약은 semantic marker button과 Playwright의 test-only `cobe` module mock으로 결정적으로 검증하고, 실제 popup 이동은 대표 국가 1개로 제한합니다. 모바일 canvas pixel·가시 마커와 hover/focus 자동 회전 정지 검증은 real `cobe`를 사용하는 별도 3D 시각 시나리오로 유지합니다.
 - 결과: 국가별 기능 테스트는 각각 약 `91/84/85초 → 2.0/1.9/1.9초`로 단축됐고, 전체 Mock Full Stack E2E는 retry 없이 `9 passed / 1 skipped`, `12.3분 → 1.7분`으로 완료됐습니다. real `cobe` 모바일·회전 검증과 container·port cleanup도 통과했습니다.
 - 제품 경계: 실제 사용자 환경의 지구본 자동 회전과 상호작용, Backend API·schema는 변경하지 않습니다.
 - 제외: 신규 E2E 확대, 실제 RSS·Translation·Gemini 호출, Backend Issue #110.
-
-## Recently Merged
 
 ### #114 실제 RSS·Translation·Gemini 제한 호출 E2E 검증
 
