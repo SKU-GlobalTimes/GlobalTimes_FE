@@ -70,3 +70,103 @@
 
 ### 🇰🇷 한국어 버전 (Korean Ver.)
 <img width="600" alt="Keyword-based Articles Korean" src="https://github.com/user-attachments/assets/e9643eff-8078-4300-8c29-a4fb20e128fa" />
+
+
+## Frontend-Backend 실행 및 E2E 테스트
+
+### 사전 준비
+
+- JDK 17
+- Node.js `20.19+` 또는 `22.12+`
+- Docker Desktop
+- Frontend와 Backend 저장소를 같은 상위 경로에 배치
+
+```text
+workspace/
+├─ GlobalTimes_BeSide/
+└─ GlobalTimes_FE/
+```
+
+### 최초 설치
+
+```powershell
+cd GlobalTimes_FE\FrontEnd
+npm ci
+```
+
+### Mock Full-stack E2E 실행
+
+```powershell
+cd GlobalTimes_FE
+.\scripts\run-full-stack-e2e.cmd
+```
+
+Playwright Chromium이 이미 설치돼 있다면:
+
+```powershell
+.\scripts\run-full-stack-e2e.cmd -SkipBrowserInstall
+```
+
+Docker MySQL·Redis, Backend, Frontend, Mock 서버와 Playwright를 함께 실행하고 테스트 종료 후 자동 정리합니다. 실제 외부 API는 호출하지 않습니다.
+
+### 실제 외부 API 제한 Smoke
+
+Backend `.env`에 실제 `GOOGLE_API_KEY`, `GEMINI_API_KEY`가 있어야 합니다.
+
+```powershell
+cd GlobalTimes_FE
+.\scripts\run-external-smoke-e2e.cmd -SkipBrowserInstall
+```
+
+실제 RSS·Translation·Gemini를 제한적으로 호출하므로 필요할 때만 수동 실행합니다.
+
+### E2E 결과 확인
+
+```powershell
+cd GlobalTimes_FE\FrontEnd
+npm run e2e:report
+```
+
+```text
+FrontEnd/playwright-report/
+FrontEnd/test-results/
+FrontEnd/e2e-artifacts/
+```
+
+### 주요 E2E 파일
+
+```text
+scripts/run-full-stack-e2e.cmd
+scripts/run-external-smoke-e2e.cmd
+scripts/run-full-stack-e2e.ps1
+
+FrontEnd/e2e/
+├─ full-stack.spec.js
+├─ authenticated-user.spec.js
+├─ public-browsing.spec.js
+├─ search-perspectives.spec.js
+├─ landing-trends.spec.js
+├─ external-api-smoke.spec.js
+├─ fixtures/
+└─ support/
+```
+
+Playwright 시나리오는 `FrontEnd/e2e/*.spec.js`, 테스트 데이터는 `fixtures`, Mock과 JWT 보조 코드는 `support`에 있습니다.
+
+
+## 직접 서버 실행
+
+### Backend
+
+```powershell
+cd GlobalTimes_BeSide
+docker compose -f docker-compose.dev.yml up -d
+.\gradlew.bat bootRun
+```
+
+### Frontend
+
+```powershell
+cd GlobalTimes_FE\FrontEnd
+npm run dev
+```
