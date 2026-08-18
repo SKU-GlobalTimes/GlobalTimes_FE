@@ -115,4 +115,6 @@ Redis에 `KR`, `US`, `GB` 국가별 Trend fixture를 TTL과 함께 적재한 뒤
 
 국가 마커는 자동 회전하는 3D 좌표 위에 있어 pointer 좌표가 다른 마커와 겹칠 수 있다. 마커를 semantic button으로 제공하고 hover·focus 중 회전을 멈추며 keyboard activation으로 같은 선택 handler를 호출한다. 모바일 `390×844`에서는 canvas screenshot의 pixel을 표본 검사해 빈 WebGL frame이 아닌지 확인하고, 현재 앞면 국가 마커와 focus 국기가 viewport 안에 표시되는지 검증한다.
 
-국가별 기능 테스트와 3D 시각 테스트는 분리한다. 각 국가는 Trend·요약·popup 계약을 독립적으로 완결하고, canvas pixel·국기 확장 검증은 모바일 시각 시나리오가 담당한다. hover와 focus가 교차할 때는 CSS transition을 끈 상태에서 marker anchor 좌표를 비교해 둘 중 하나가 활성인 동안 자동 회전이 멈추는지 별도 검증한다. 로컬 단일 worker 기준 기존 8개 시나리오가 약 7.6분 걸렸으며, 교차 회귀를 포함한 9개 시나리오는 GitHub Runner에서 1분 15초에 통과했다. 이 랜딩 검증을 마지막 E2E 범위 확장으로 삼고 이후에는 핵심 회귀 세트를 유지한다.
+국가별 기능 테스트와 3D 시각 테스트는 분리한다. KR·US·GB 기능 테스트는 Playwright network route에서 `cobe` module만 no-op으로 대체하고 semantic marker button으로 Trend·요약·원문 링크 계약을 검증한다. 실제 popup 이동은 대표 국가 1개에서 확인한다. Frontend marker·modal·API와 Backend·Redis·Gemini mock 경로는 실제 코드를 유지하며 제품 코드에는 테스트 분기를 추가하지 않는다.
+
+canvas pixel·국기 확장 검증은 real `cobe`를 사용하는 모바일 시각 시나리오가 담당한다. hover와 focus가 교차할 때는 CSS transition을 끈 상태에서 marker anchor 좌표를 비교해 둘 중 하나가 활성인 동안 자동 회전이 멈추는지 별도 검증한다. 기능 테스트와 3D 렌더링 경계를 분리한 뒤 국가별 실행은 약 `91/84/85초`에서 `2.0/1.9/1.9초`로 줄었고, 로컬 전체 Mock Full Stack E2E는 flaky retry가 발생한 `12.3분`에서 retry 없는 `1.7분`으로 단축됐다. 실제 사용자 환경의 지구본 자동 회전은 변경하지 않는다.
