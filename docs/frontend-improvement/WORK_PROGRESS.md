@@ -13,7 +13,16 @@
 
 ## In Progress
 
-- 없음
+### #116 랜딩 Trend E2E 기능 검증과 3D 애니메이션 경계 분리
+
+- Issue: https://github.com/SKU-GlobalTimes/GlobalTimes_FE/issues/116
+- 브랜치: `test/116-deterministic-landing-trends-e2e`
+- 상태: `In Progress`
+- 기준선: 국가별 기능 시나리오가 자동 회전하는 지구본에서 목표 마커를 앞으로 가져오기 위해 최대 14회 canvas drag를 반복했고, 로컬 E2E에서 South Korea 시나리오가 180초 timeout 후 retry 통과해 전체 실행이 12분 이상 소요됐습니다.
+- 범위: 국가별 Trend·요약·원문 링크 계약은 semantic marker button과 Playwright의 test-only `cobe` module mock으로 결정적으로 검증하고, 실제 popup 이동은 대표 국가 1개로 제한합니다. 모바일 canvas pixel·가시 마커와 hover/focus 자동 회전 정지 검증은 real `cobe`를 사용하는 별도 3D 시각 시나리오로 유지합니다.
+- 결과: 국가별 기능 테스트는 각각 약 `91/84/85초 → 2.0/1.9/1.9초`로 단축됐고, 전체 Mock Full Stack E2E는 retry 없이 `9 passed / 1 skipped`, `12.3분 → 1.7분`으로 완료됐습니다. real `cobe` 모바일·회전 검증과 container·port cleanup도 통과했습니다.
+- 제품 경계: 실제 사용자 환경의 지구본 자동 회전과 상호작용, Backend API·schema는 변경하지 않습니다.
+- 제외: 신규 E2E 확대, 실제 RSS·Translation·Gemini 호출, Backend Issue #110.
 
 ## Recently Merged
 
